@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+ <title type="text">MEGALISP: Posts tagged 'Meta'</title>
+ <link rel="self" href="http://megalisp.github.io/feeds/Meta.atom.xml" />
+ <link href="http://megalisp.github.io/tags/Meta.html" />
+ <id>urn:http-megalisp-github-io:-tags-Meta-html</id>
+ <updated>2025-07-31T05:00:00Z</updated>
+ <entry>
+  <title type="text">And... We Have Lift-Off!</title>
+  <link rel="alternate" href="http://megalisp.github.io/2025/07/and-we-have-lift-off.html?utm_source=Meta&amp;utm_medium=Atom" />
+  <id>urn:http-megalisp-github-io:-2025-07-and-we-have-lift-off-html</id>
+  <published>2025-07-31T05:00:00Z</published>
+  <updated>2025-07-31T05:00:00Z</updated>
+  <author>
+   <name>Joshua Steven Grant (ie: Jost Grant)</name></author>
+  <content type="html">
+&lt;p&gt;...&lt;/p&gt;&lt;a href="http://megalisp.github.io/2025/07/and-we-have-lift-off.html?utm_source=Meta&amp;amp;utm_medium=Atom"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</content></entry></feed>

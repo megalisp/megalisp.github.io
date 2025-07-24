@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  @(define megalisp "megalisp")
+
+  @;{ Scribble template comment }
+  <meta charset="utf-8">
+  <title>@|title|</title>
+  <meta name="description" content="@|description|">
+  <meta name="author" content="@|author|">
+  <meta name="keywords" content="@|keywords|">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="@|uri-prefix|/favicon.ico">
+  <link rel="canonical" href="@|full-uri|">
+  @(when rel-next @list{
+  <link rel="next" href="@|rel-next|">})
+  @(when rel-prev @list{
+  <link rel="prev" href="@|rel-prev|">})
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" type="text/css" href="@|uri-prefix|/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="@|uri-prefix|/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="@|uri-prefix|/css/scribble.css">
+  <link rel="stylesheet" type="text/css" href="@|uri-prefix|/css/custom.css">
+
+  <!-- Feeds -->
+  <link rel="alternate" type="application/atom+xml" href="@|atom-feed-uri|" title="Atom Feed">
+  <link rel="alternate" type="application/rss+xml" href="@|rss-feed-uri|" title="RSS Feed">
+
+  <!-- JS -->
+  @google-universal-analytics["UA-xxxxx"]
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+      <a href="@|uri-prefix|/index.html" class="navbar-brand">'( ) MEGA</a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_collapse"
+        aria-controls="navbar_collapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbar_collapse">
+        <ul class="navbar-nav mr-auto">
+          @(define (ni uri label [a-attribs ""])
+          @list{
+          <li@(when (string-ci=? uri uri-path) " class=\" active\"")>
+            <a class="nav-link" href="@|uri|" @|a-attribs|>@|label|</a>
+            </li> })
+
+            @(define (craft-tag-links listof-pairs)
+            @(map (lambda (pair)
+            @list{<a class="dropdown-item" href="@(cdr pair)">@(car pair)</a>})
+            listof-pairs))
+
+            <li class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
+              <div class="dropdown-menu">
+                @craft-tag-links[(all-tag-pairs)]
+              </div>
+            </li>
+
+            @ni[(string-append uri-prefix "/Vaults.html") "Vaults"]
+
+            @ni[(string-append uri-prefix "/About.html") "About"]
+
+            <li class="nav-item">
+              <a class="nav-link" href="@|atom-feed-uri|">Atom</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="@|rss-feed-uri|">RSS</a>
+            </li>
+        </ul>
+
+        <!-- Right-aligned GitHub & Sponsor icons -->
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/megalisp" target="_blank" title="GitHub">
+              <i class="fab fa-github fa-lg text-white"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+              <i class="fas fa-heart fa-lg text-white"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div id="content" class="col-md-12">
+        @(when (string-ci=? uri-path (string-append uri-prefix "/index.html"))
+        @list{
+        <div style="text-align: center;">
+          <img src="face.png" alt="face" style="max-width: 250px; max-height: 250px; width: auto; height: auto;">
+        </div>
+
+        <div style="text-align: center;">
+          <h1>'( ) MEGA [ie: Jost Grant]</h1>
+
+          <!-- Social Icons below header -->
+          <!-- Social Icons below header -->
+          <div style="margin-top: 0.5em;">
+            <a href="https://megalisp.github.io" target="_blank" class="mx-1 text-white" title="Website">
+              <i class="fas fa-house-user fa-2x"></i>
+            </a>
+            <a href="https://gist.github.com/megalisp" target="_blank" class="mx-1 text-white" title="Gists">
+              <i class="fas fa-clipboard fa-2x"></i>
+            </a>
+            <a href="https://github.com/megalisp" target="_blank" class="mx-1 text-white" title="GitHub">
+              <i class="fab fa-github fa-2x"></i>
+            </a>
+            <a href="https://discord.gg/6Re3dCKRgV" target="_blank" class="mx-1 text-white" title="Discord">
+              <i class="fab fa-discord fa-2x"></i>
+            </a>
+            <a href="https://www.youtube.com/&#64;megalisp" target="_blank" class="mx-1 text-white" title="YouTube">
+              <i class="fab fa-youtube fa-2x"></i>
+            </a>
+            <a href="https://www.twitch.tv/megalisp" target="_blank" class="mx-1 text-white" title="Twitch">
+              <i class="fab fa-twitch fa-2x"></i>
+            </a>
+            <a href="https://megalisp.itch.io/" target="_blank" class="mx-1 text-white" title="Itch.io">
+              <i class="fab fa-itch-io fa-2x"></i>
+            </a>
+            <a href="https://suno.com/&#64;megalisp" target="_blank" class="mx-1 text-white" title="Suno">
+              <i class="fas fa-music fa-2x"></i>
+            </a>
+            <a href="https://tiktok.com/&#64;megalisp" target="_blank" class="mx-1 text-white" title="Tiktok">
+              <i class="fab fa-tiktok fa-2x"></i>
+            </a>
+            <a href="https://cash.app/$megalisp" target="_blank" class="mx-1 text-white" title="Cash App">
+              <i class="fas fa-dollar-sign fa-2x"></i>
+            </a>
+            <a href="https://paypal.me/megalisp" target="_blank" class="mx-1 text-white" title="PayPal">
+              <i class="fab fa-paypal fa-2x"></i>
+            </a>
+            <a href="https://patreon.com/megalisp" target="_blank" class="mx-1 text-white" title="Patreon">
+              <i class="fab fa-patreon fa-2x"></i>
+            </a>
+            <a href="https://github.com/sponsors/megalisp" target="_blank" class="mx-1 text-white" title="Sponsor">
+              <i class="fas fa-heart fa-2x"></i>
+            </a>
+          </div>
+
+        </div>
+
+        <div style="text-align: center;">
+          <p>MegaLisp is about <strong>Building Big Things In Lisp</strong>, This is a a place to document that process.
+            <br> <em>(If there hasn't been a formal update on here for awhile be sure to check out <code>/Vaults</code>.)</em></p>
+        </div>
+
+        <br>
+
+        })
+
+        @(when tag
+        @list{<h1>Posts tagged <em>@|tag|</em></h1>})
+        @|contents|
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div style="text-align: center;">
+        <p>@twitter-follow-button["megalisp" "Follow @MegaLisp"]</p>
+        <p>Built On <a href="https://github.com/megalisp/newt">Newt</a>; Using <a href="http://twitter.github.com/bootstrap/index.html">Bootstrap</a>.</p>
+        <p><em>The novel / uniquely hosted writing here is CC-BY-ND 4.0 unless explicitly stated otherwise.</em></p>
+        <p><em>My code & its related docs, and assets in their orbit -- do your due diligence, but it's fairly safe to assume its under the Apache2 and/or MIT License.</em></p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- JavaScript -->
+  <script type="text/javascript" src="@|uri-prefix|/js/jquery-3.2.1.slim.min.js"></script>
+  <script type="text/javascript" src="@|uri-prefix|/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

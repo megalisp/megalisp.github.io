@@ -1,0 +1,4 @@
+http://megalisp.github.io/2025/07/and-we-have-lift-off.html
+http://megalisp.github.io/subdir/foo.html
+http://megalisp.github.io/Vaults.html
+http://megalisp.github.io/About.html

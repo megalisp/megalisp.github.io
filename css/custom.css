@@ -1,0 +1,140 @@
+/* === Global Theme === */
+body {
+  background-color: #000000; /* true black */
+  color: #fdfdfd;            /* clean white text */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* === Headings === */
+h1, h2, h3, h4, h5 {
+  color: #ff9100; /* more saturated orange */
+}
+
+/* === Links === */
+a {
+  color: #ff6f00; /* bold orange */
+  text-decoration: none;
+}
+a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* === Navbar === */
+.navbar {
+  background-color: #000000 !important;
+}
+.navbar-brand {
+  color: #ff9100 !important;
+}
+.navbar-brand:hover {
+  color: #ffffff !important;
+}
+.nav-link {
+  color: #eeeeee !important;
+}
+.nav-link:hover {
+  color: #ff9100 !important;
+}
+.nav-item.active > .nav-link {
+  color: #ff9100 !important;
+  font-weight: bold;
+}
+
+/* === Dropdown === */
+.dropdown-menu {
+  background-color: #121212;
+}
+.dropdown-item {
+  color: #f5f5f5;
+}
+.dropdown-item:hover {
+  background-color: #ff9100;
+  color: #000000;
+}
+
+/* === Article Styling === */
+article {
+  background-color: #111111;
+  border: 2px solid #333;
+  padding: 1.5em;
+  margin-bottom: 2em;
+  border-radius: 6px;
+}
+article header h1, article header h2 {
+  margin-bottom: 0.2em;
+}
+.date-and-tags, .authors {
+  color: #aaaaaa;
+  font-size: 0.95em;
+}
+
+/* === Image Scaling in Articles === */
+article img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #333;
+}
+
+/* === Code Styling === */
+code {
+  color: #000000;
+  background-color: #ffcc80; /* pale orange for inline code */
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  font-weight: bold;
+}
+pre {
+  white-space: pre;
+  width: inherit;
+  background-color: #1c1c1c;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 1em;
+  overflow-x: auto;
+  border: 1px solid #444;
+}
+
+/* === Buttons (share buttons, etc.) === */
+.btn, .btn-default {
+  background-color: #ff9100;
+  color: #000000;
+  border: none;
+  font-weight: bold;
+}
+.btn:hover {
+  background-color: #ffa733;
+}
+
+/* === Responsive Navbar Fix === */
+@media (max-width: 768px) {
+  .navbar-collapse {
+    background-color: #000;
+  }
+}
+
+/* === Footer Redesign === */
+.site-footer {
+  background-color: #000;         /* match site background */
+  color: #fdfdfd;                 /* clean white text */
+  text-align: center;
+  padding: 2em 1em;
+  font-size: 0.95em;
+}
+
+.site-footer a {
+  color: #ff6f00;                 /* bold orange links */
+  text-decoration: none;
+}
+.site-footer a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.footer-divider {
+  height: 4px;
+  width: 60%;
+  background-color: #ff9100;      /* saturated orange */
+  margin: 0 auto 2em auto;
+  border-radius: 2px;
+}
