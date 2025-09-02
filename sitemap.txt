@@ -1,4 +1,5 @@
 https://megalisp.github.io//2025/07/and-we-have-lift-off.html
 https://megalisp.github.io//subdir/foo.html
+https://megalisp.github.io//posts/index.html
 https://megalisp.github.io//Plex.html
 https://megalisp.github.io//Bout.html
