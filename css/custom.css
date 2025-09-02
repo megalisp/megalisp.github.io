@@ -127,9 +127,9 @@ h1, h2 {
   letter-spacing: 0.03em; 
 }
 
-.post-title { 
-  color: #000000; 
-  font-weight: 800; 
+.post-title {
+  color: var(--primary); /* orange title */
+  font-weight: 800;
 }
 
 /* Article and card polish */
