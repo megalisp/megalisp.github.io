@@ -144,6 +144,8 @@ h1, h2 {
     flex-direction: column; 
     text-align: center; 
   }
+  /* Responsive rule for events include */
+  .events .events-inner { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 1200px) {
