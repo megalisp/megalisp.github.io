@@ -1,0 +1,168 @@
+<!-- inject-vaults.html: Vaults section for homepage -->
+<style>
+.vaults { 
+  padding: 1rem 1.2rem; 
+}
+.vaults .layout { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  width: 100%; 
+  margin: 0 auto; 
+}
+.vaults-grid { 
+  display: flex; 
+  flex-wrap: wrap; 
+  justify-content: center; 
+  gap: 0.9rem; 
+  width: 100%; 
+  align-items: stretch; /* make children equal height */
+}
+.vault-card {
+  box-sizing: border-box;
+  flex: 1 0 150px;      /* grow, but prefer ~150px base */
+  max-width: 220px;     /* cap width so grid looks consistent */
+  min-width: 120px;     /* don't get too narrow on small screens */
+  height: 130px;        /* fixed height for uniform cards */
+  margin-bottom: 1.2rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.06));
+  border: 1px solid rgba(255,255,255,0.04);
+  outline: 3px solid var(--primary);
+  outline-offset: -5px;
+  color: var(--secondary);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* center content vertically */
+  position: relative;
+}
+.vault-card h4 { 
+  margin: 0.5rem 0 0.25rem; 
+  color: var(--primary); 
+}
+.vault-card p { 
+  margin: 0.25rem 0 0; 
+}
+.vault-emoji { 
+  font-size: 1.6rem; 
+}
+.vault-card a { 
+  color: var(--primary); 
+  text-decoration: none; 
+  font-weight: 600; 
+}
+.vault-card a:hover { 
+  text-decoration: underline; 
+}
+.vault-ellipsis {
+  position: absolute; 
+  top: 8px; 
+  right: 10px; 
+  color: #ffffff; 
+  background: transparent; 
+  border: none; 
+  font-size: 1.2rem;
+  line-height: 1; 
+  text-decoration: none; 
+  padding: 0.1rem 0.3rem; 
+  border-radius: 4px; 
+  opacity: 0.95;
+}
+.vault-ellipsis:hover { 
+  color: #ffffff; 
+  text-decoration: none; 
+}
+.vault-desc {
+  position: absolute; 
+  bottom: calc(100% + 10px); 
+  left: 50%; 
+  transform: translateX(-50%) translateY(6px);
+  background: rgba(0,0,0,0.92); 
+  color: #ffffff; 
+  padding: 0.6rem 0.75rem; 
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6); 
+  opacity: 0; 
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease; 
+  max-width: 260px; 
+  text-align: center; 
+  font-size: 0.95rem; 
+  z-index: 40;
+}
+.vault-desc::after {
+  content: ''; 
+  position: absolute; 
+  top: 100%; 
+  left: 50%; 
+  transform: translateX(-50%);
+  width: 0; 
+  height: 0; 
+  border-left: 6px solid transparent; 
+  border-right: 6px solid transparent;
+  border-top: 8px solid rgba(0,0,0,0.92);
+}
+.vault-card:hover .vault-desc { 
+  opacity: 1; 
+  transform: translateX(-50%) translateY(0); 
+  pointer-events: auto; 
+}
+.vault-card:hover {
+  outline-color: #ffffff;
+  border-color: rgba(255,255,255,0.12);
+}
+.vault-card:hover h4,
+.vault-card:hover h4 a,
+.vault-card:hover a {
+  color: #ffffff;
+}
+</style>
+
+<section class="vaults" style="text-align:center; margin-top:1.5rem;">
+  <div class="layout" style="max-width:100%;">
+    <div style="grid-column:1/-1; text-align:center;">
+      <h2>Vaults</h2>
+      <p class="muted">A lot of my writing and thoughts — organized as Obsidian Vaults.</p>
+    </div>
+    <div class="vaults-grid" style="grid-column:1/-1;">
+  <div class="vault-card">
+        <div class="vault-emoji">🧠</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;"><a href="https://megalisp.github.io/megalo">megalo</a></h4>
+        </div>
+        <div class="vault-desc">Collections of notes and essays about large-scale systems and meta-architecture.</div>
+      </div>
+      <div class="vault-card">
+        <div class="vault-emoji">🎮</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;"><a href="https://megalisp.github.io/mecha">mecha</a></h4>
+        </div>
+        <div class="vault-desc">Design notes and experiments in game systems, simulation, and interactive tooling.</div>
+      </div>
+  <div class="vault-card">
+        <div class="vault-emoji">📘</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;"><a href="https://megalisp.github.io/ymology">ymology</a></h4>
+        </div>
+        <div class="vault-desc">A personal library of essays, references, and curated readings.</div>
+      </div>
+      <div class="vault-card">
+        <div class="vault-emoji">⚖️</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;"><a href="https://megalisp.github.io/ethics">ethics</a></h4>
+        </div>
+        <div class="vault-desc">Thought pieces and frameworks on ethics, policy, and responsible engineering.</div>
+      </div>
+  <div class="vault-card">
+        <div class="vault-emoji">🧪</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;"><a href="https://megalisp.github.io/science">science</a></h4>
+        </div>
+        <div class="vault-desc">Experiment logs, reproducible demos, and short writeups of technical experiments.</div>
+      </div>
+    </div>
+  </div>
+</section>

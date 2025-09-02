@@ -5,7 +5,20 @@
 ;; in newt/params.
 (define/contract (init)
   (-> any)
-  (current-scheme/host "http://megalisp.github.io")
+  ;; Check if we're in local development mode
+  (define local-dev? (getenv "NEWT_LOCAL"))
+  
+  (if local-dev?
+      ;; Local development configuration
+      (begin
+        (current-scheme/host "http://localhost:8000/")
+        (current-uri-prefix ""))
+      ;; Production configuration for GitHub Pages
+      (begin
+        (current-scheme/host "https://megalisp.github.io/")
+        (current-uri-prefix "/")))
+
+
   (current-title "MEGALISP")
   (current-author "Joshua Steven Grant (ie: Jost Grant)"))
 

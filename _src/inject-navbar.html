@@ -1,0 +1,108 @@
+<!-- inject-navbar.html: Navbar markup + component-specific CSS -->
+<style>
+/* Navbar component styles moved here from css/custom.css */
+.navbar {
+  background-color: #000000 !important;
+}
+.navbar-brand {
+  color: var(--primary) !important;
+  font-weight: 700;
+}
+.navbar-brand:hover {
+  color: var(--secondary) !important;
+}
+.nav-link {
+  color: var(--secondary) !important;
+}
+.nav-link:hover {
+  color: var(--primary) !important;
+}
+.nav-item.active > .nav-link {
+  color: var(--primary) !important;
+  font-weight: bold;
+}
+/* Dropdown rules specific to navbar */
+.dropdown-menu {
+  position: absolute; /* ensure it floats above page flow */
+  background-color: #111111;
+  border: 1px solid #333333;
+  z-index: 1100; /* higher than the notice (1000) */
+  min-width: 10rem;
+}
+.dropdown-item {
+  color: var(--secondary);
+}
+.dropdown-item:hover {
+  background-color: #222222;
+  color: var(--primary);
+}
+
+/* Icon color overrides: make GitHub and Sponsor icons orange on hover/active */
+.navbar .nav-link i { 
+  color: var(--secondary) !important; 
+  transition: color 160ms ease;
+}
+.navbar .nav-link:hover i,
+.navbar .nav-item.active > .nav-link i {
+  color: var(--primary) !important;
+}
+</style>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark galaxy-glow">
+
+  <div class="container" style="overflow: visible;">
+    <a href="@|uri-prefix|/index.html" class="navbar-brand space-accent">'( ) MEGA</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_collapse"
+      aria-controls="navbar_collapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar_collapse">
+      <ul class="navbar-nav mr-auto">
+        @(define (ni uri label [a-attribs ""]) @list{
+        <li@(when (string-ci=? uri uri-path) " class=\" active\"")>
+          <a class="nav-link" href="@|uri|" @|a-attribs|>@|label|</a>
+          </li>})
+
+          @(define (craft-tag-links listof-pairs)
+          @(map (lambda (pair)
+          @list{<a class="dropdown-item" href="@(cdr pair)">@(car pair)</a>})
+          listof-pairs))
+
+          <li class="nav-item">
+            @ni[(string-append uri-prefix "/About.html") "About"]
+          </li>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
+            <div class="dropdown-menu">
+              @craft-tag-links[(all-tag-pairs)]
+            </div>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Sub <b class="caret"></b></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="@|atom-feed-uri|">Atom</a>
+              <a class="dropdown-item" href="@|rss-feed-uri|">RSS</a>
+            </div>
+          </li>
+      </ul>
+
+      <!-- Right-aligned GitHub & Sponsor icons -->
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/megalisp" target="_blank" title="GitHub">
+            <i class="fab fa-github fa-lg text-white"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+            <i class="fas fa-heart fa-lg text-white"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

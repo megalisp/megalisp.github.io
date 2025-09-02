@@ -5,136 +5,170 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
+:root {
+  --primary: #ff6f00; /* vivid orange for main elements */
+  --secondary: #ffffff; /* white for secondary text */
+  --hero-brown: #5b3a21; /* dark brown for hero title */
+}
+
 /* === Headings === */
 h1, h2, h3, h4, h5 {
-  color: #ff9100; /* more saturated orange */
+  color: var(--primary);
+}
+
+/* === Main Layout === */
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.main-col {
+  width: 100%;
+}
+
+/* === Projects/Posts Grid === */
+.projects-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.project-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.project-card header h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary);
+}
+
+.project-meta {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.project-actions {
+  margin-top: 1rem;
+}
+
+/* === Text Utilities === */
+.muted {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* === Links === */
 a {
-  color: #ff6f00; /* bold orange */
+  color: var(--secondary);
   text-decoration: none;
 }
 a:hover {
-  color: #ffffff;
+  color: var(--primary);
   text-decoration: underline;
 }
 
-/* === Navbar === */
-.navbar {
-  background-color: #000000 !important;
-}
-.navbar-brand {
-  color: #ff9100 !important;
-}
-.navbar-brand:hover {
-  color: #ffffff !important;
-}
-.nav-link {
-  color: #eeeeee !important;
-}
-.nav-link:hover {
-  color: #ff9100 !important;
-}
-.nav-item.active > .nav-link {
-  color: #ff9100 !important;
-  font-weight: bold;
+/* Navbar and dropdown styles moved to _src/inject-navbar.html */
+
+/* === Buttons === */
+.btn {
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* === Dropdown === */
-.dropdown-menu {
-  background-color: #121212;
-}
-.dropdown-item {
-  color: #f5f5f5;
-}
-.dropdown-item:hover {
-  background-color: #ff9100;
-  color: #000000;
-}
-
-/* === Article Styling === */
-article {
+/* === Cards === */
+.card {
   background-color: #111111;
-  border: 2px solid #333;
-  padding: 1.5em;
-  margin-bottom: 2em;
-  border-radius: 6px;
-}
-article header h1, article header h2 {
-  margin-bottom: 0.2em;
-}
-.date-and-tags, .authors {
-  color: #aaaaaa;
-  font-size: 0.95em;
+  border: 1px solid #333333;
+  color: var(--secondary);
 }
 
-/* === Image Scaling in Articles === */
-article img {
-  max-width: 100%;
-  height: auto;
-  border: 1px solid #333;
+/* === Footer === */
+.site-footer {
+  background-color: #000000;
+  color: var(--secondary);
+  padding: 2rem 0;
+  border-top: 1px solid #333333;
 }
 
-/* === Code Styling === */
-code {
-  color: #000000;
-  background-color: #ffcc80; /* pale orange for inline code */
-  padding: 0.1em 0.4em;
-  border-radius: 3px;
-  font-weight: bold;
-}
-pre {
-  white-space: pre;
-  width: inherit;
-  background-color: #1c1c1c;
-  color: #ffffff;
-  border-radius: 5px;
-  padding: 1em;
-  overflow-x: auto;
-  border: 1px solid #444;
+/* === Space Theme Elements === */
+.space-accent {
+  color: var(--primary);
 }
 
-/* === Buttons (share buttons, etc.) === */
-.btn, .btn-default {
-  background-color: #ff9100;
-  color: #000000;
-  border: none;
-  font-weight: bold;
-}
-.btn:hover {
-  background-color: #ffa733;
+.space-border {
+  border: 2px solid var(--primary);
+  border-radius: 8px;
 }
 
-/* === Responsive Navbar Fix === */
-@media (max-width: 768px) {
-  .navbar-collapse {
-    background-color: #000;
+.galaxy-glow {
+  box-shadow: 0 0 20px rgba(255, 111, 0, 0.3);
+}
+
+/* Notice chevron animation */
+#homepage-notice {
+  background-image: repeating-linear-gradient(135deg, #ffffff 0 18px, #ff6f00 18px 36px);
+  background-size: 200% 100%;
+  /* animation moved to inject-notice.js to avoid template parsing of @keyframes */
+}
+
+/* Typography and spacing */
+h1.space-accent { 
+  font-family: 'Montserrat', 'Segoe UI', sans-serif; 
+  font-weight: 700; 
+}
+h1, h2 { 
+  letter-spacing: 0.03em; 
+}
+
+.post-title { 
+  color: #000000; 
+  font-weight: 800; 
+}
+
+/* Article and card polish */
+.space-card { 
+  padding: 1.25rem; 
+  background: linear-gradient(180deg, #0b0b0b, #0f0f12); 
+}
+
+/* Responsive rules */
+@media (max-width: 900px) {
+  .site-hero .hero-inner { 
+    flex-direction: column; 
+    text-align: center; 
   }
 }
 
-/* === Footer Redesign === */
-.site-footer {
-  background-color: #000;         /* match site background */
-  color: #fdfdfd;                 /* clean white text */
-  text-align: center;
-  padding: 2em 1em;
-  font-size: 0.95em;
+@media (max-width: 1200px) {
+  .vault-card { 
+    flex-basis: 28%; 
+  }
+  .vaults-grid { 
+    grid-template-columns: repeat(3, 1fr); 
+  }
 }
 
-.site-footer a {
-  color: #ff6f00;                 /* bold orange links */
-  text-decoration: none;
-}
-.site-footer a:hover {
-  color: #ffffff;
-  text-decoration: underline;
+@media (max-width: 800px) {
+  .vault-card { 
+    flex-basis: 45%; 
+  }
+  .vaults-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
 }
 
-.footer-divider {
-  height: 4px;
-  width: 60%;
-  background-color: #ff9100;      /* saturated orange */
-  margin: 0 auto 2em auto;
-  border-radius: 2px;
+@media (max-width: 500px) {
+  .vault-card { 
+    flex-basis: 100%; 
+  }
+  .vaults-grid { 
+    grid-template-columns: 1fr; 
+  }
 }

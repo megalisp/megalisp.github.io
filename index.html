@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <title>MEGALISP</title>
@@ -9,13 +8,11 @@
   <meta name="keywords" content="all, Meta">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico">
-  <link rel="canonical" href="http://megalisp.github.io/index.html">
-
+  <link rel="canonical" href="https://megalisp.github.io//index.html">
 
 
   <!-- CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="/css/pygments.css">
   <link rel="stylesheet" type="text/css" href="/css/scribble.css">
@@ -24,8 +21,7 @@
   <!-- Feeds -->
   <link rel="alternate" type="application/atom+xml" href="/feeds/all.atom.xml" title="Atom Feed">
   <link rel="alternate" type="application/rss+xml" href="/feeds/all.rss.xml" title="RSS Feed">
-
-  <!-- JS -->
+  <!-- Space styles are centralized in css/custom.css -->
   <script type="text/javascript">
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -36,174 +32,821 @@
     ga('send', 'pageview');
   </script>
 </head>
-
 <body>
+  <!-- inject-navbar.html: Navbar markup + component-specific CSS -->
+<style>
+/* Navbar component styles moved here from css/custom.css */
+.navbar {
+  background-color: #000000 !important;
+}
+.navbar-brand {
+  color: var(--primary) !important;
+  font-weight: 700;
+}
+.navbar-brand:hover {
+  color: var(--secondary) !important;
+}
+.nav-link {
+  color: var(--secondary) !important;
+}
+.nav-link:hover {
+  color: var(--primary) !important;
+}
+.nav-item.active > .nav-link {
+  color: var(--primary) !important;
+  font-weight: bold;
+}
+/* Dropdown rules specific to navbar */
+.dropdown-menu {
+  position: absolute; /* ensure it floats above page flow */
+  background-color: #111111;
+  border: 1px solid #333333;
+  z-index: 1100; /* higher than the notice (1000) */
+  min-width: 10rem;
+}
+.dropdown-item {
+  color: var(--secondary);
+}
+.dropdown-item:hover {
+  background-color: #222222;
+  color: var(--primary);
+}
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="container">
-      <a href="/index.html" class="navbar-brand">'( ) MEGA</a>
+/* Icon color overrides: make GitHub and Sponsor icons orange on hover/active */
+.navbar .nav-link i {
+  color: var(--secondary) !important;
+  transition: color 160ms ease;
+}
+.navbar .nav-link:hover i,
+.navbar .nav-item.active > .nav-link i {
+  color: var(--primary) !important;
+}
+</style>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_collapse"
-        aria-controls="navbar_collapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark galaxy-glow">
 
-      <div class="collapse navbar-collapse" id="navbar_collapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="/tags/Meta.html">Meta</a>
-              </div>
-            </li>
+  <div class="container" style="overflow: visible;">
+    <a href="/index.html" class="navbar-brand space-accent">'( ) MEGA</a>
 
-            <li>
-              <a class="nav-link" href="/Vaults.html" >Vaults</a>
-              </li> 
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_collapse"
+      aria-controls="navbar_collapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
+    <div class="collapse navbar-collapse" id="navbar_collapse">
+      <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
             <li>
               <a class="nav-link" href="/About.html" >About</a>
-              </li> 
-
-            <li class="nav-item">
-              <a class="nav-link" href="/feeds/all.atom.xml">Atom</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/feeds/all.rss.xml">RSS</a>
-            </li>
-        </ul>
-
-        <!-- Right-aligned GitHub & Sponsor icons -->
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/megalisp" target="_blank" title="GitHub">
-              <i class="fab fa-github fa-lg text-white"></i>
-            </a>
+              </li>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
-              <i class="fas fa-heart fa-lg text-white"></i>
-            </a>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/tags/Meta.html">Meta</a>
+            </div>
           </li>
-        </ul>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Sub <b class="caret"></b></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/feeds/all.atom.xml">Atom</a>
+              <a class="dropdown-item" href="/feeds/all.rss.xml">RSS</a>
+            </div>
+          </li>
+      </ul>
+
+      <!-- Right-aligned GitHub & Sponsor icons -->
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/megalisp" target="_blank" title="GitHub">
+            <i class="fab fa-github fa-lg text-white"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+            <i class="fas fa-heart fa-lg text-white"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Notice bar below navbar, above hero -->
+  <!-- inject-notice.html: Dismissible notice bar for homepage -->
+  <style>
+  #homepage-notice {
+    position: relative;
+    width: 100%;
+    background: repeating-linear-gradient(135deg, #fff, #fff 20px, #ff6f00 20px, #ff6f00 40px);
+    padding: 0.35em 0;
+    box-shadow: 0 2px 12px #0002;
+    z-index: 1000;
+    min-height: unset;
+  }
+  #homepage-notice .notice-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+  }
+  #homepage-notice .notice-text {
+    background: #111;
+    color: #fff;
+    padding: 0.35em 2.5em 0.35em 1.5em;
+    border-radius: 2em;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-align: center;
+    display: block;
+    max-width: 90vw;
+  }
+  #notice-close-btn {
+    position: absolute;
+    top: 50%;
+    right: 1.2em;
+    transform: translateY(-50%);
+    background: #111;
+    border: none;
+    font-size: 1em;
+    color: #ffffff;
+    cursor: pointer;
+    line-height: 1;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px #0006;
+  }
+  </style>
+
+  <div id="homepage-notice">
+    <div class="notice-inner">
+      <span class="notice-text">⚠️WARNING: Site Under Active Development!</span>
+      <button id="notice-close-btn" aria-label="Close notice">&times;</button>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('notice-close-btn');
+      var bar = document.getElementById('homepage-notice');
+      if(btn && bar) {
+        btn.onclick = function() { bar.style.display = 'none'; };
+      }
+    });
+  </script>
+
+  <!-- Main Content: Hero + content layout -->
+  <!-- inject-starfield.html: Full-viewport animated starfield background (canvas) -->
+  <style>
+  /* Starfield container sits behind page content */
+  #starfield-canvas-wrap { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #000; }
+  #starfield-canvas { width: 100%; height: 100%; display: block; }
+  </style>
+
+  <div id="starfield-canvas-wrap" aria-hidden="true">
+    <canvas id="starfield-canvas"></canvas>
+  </div>
+
+  <script>
+  // Minimal starfield animation using Canvas and requestAnimationFrame.
+  (function(){
+    const canvas = document.getElementById('starfield-canvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    let width = 0, height = 0, stars = [];
+
+    function resize(){
+      const dpr = window.devicePixelRatio || 1;
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = Math.max(300, Math.floor(width * dpr));
+      canvas.height = Math.max(200, Math.floor(height * dpr));
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+
+    function initStars(count){
+      stars = [];
+      for(let i=0;i<count;i++){
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          z: Math.random() * 1, // depth
+          speed: 0.2 + Math.random() * 0.9,
+          size: 0.4 + Math.random() * 1.8
+        });
+      }
+    }
+
+    let last = performance.now();
+    function frame(now){
+      const dt = Math.min(40, now - last) / 16.666; // normalized ~60fps
+      last = now;
+      // subtle fade to preserve depth
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.fillRect(0,0,width,height);
+
+      for(let s of stars){
+        s.x += s.speed * dt;
+        s.y += (s.speed * 0.05) * dt;
+        // wrap
+        if(s.x > width + 10) s.x = -10;
+        if(s.y > height + 10) s.y = -10;
+
+        const hue = 210 + s.z * 40; // bluish variation
+        const alpha = 0.6 + s.z * 0.4;
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${hue}, 80%, 90%, ${alpha})`;
+        ctx.arc(s.x, s.y, s.size * (1 + s.z), 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    function start(){
+      resize();
+      initStars(Math.max(60, Math.floor((width * height) / 5000)));
+      last = performance.now();
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', ()=>{
+      resize();
+      initStars(Math.max(60, Math.floor((width * height) / 5000)));
+    });
+
+    // start after DOM content to avoid racing with layout
+    if (document.readyState === 'loading')
+      document.addEventListener('DOMContentLoaded', start);
+    else
+      start();
+
+  })();
+  </script>
+  <!-- inject-hero.html: Hero/Header section for homepage -->
+  <style>
+  .site-hero {
+    background: linear-gradient(180deg, var(--primary) 0%, #ff7a00 60%);
+    color: var(--secondary);
+    padding: 4rem 0;
+    text-align: left;
+  }
+  .site-hero .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .hero-title {
+    font-size: 2.25rem;
+    margin: 0 0 0.25rem 0;
+    font-weight: 800;
+    color: var(--hero-brown);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    opacity: 0.95;
+    margin: 0;
+  }
+  .hero-cta {
+    margin-top: 1rem;
+  }
+  .btn-space {
+    background: linear-gradient(180deg, #ff9100, #ff7a00);
+    color: #000;
+    box-shadow: 0 6px 18px rgba(255,145,0,0.18), inset 0 -2px 4px rgba(0,0,0,0.16);
+  }
+  .btn-space:hover {
+    transform: translateY(-2px);
+  }
+  </style>
+
+  <header class="site-hero">
+    <div class="hero-inner">
+      <div>
+        <h1 class="hero-title">Building Big Things, In LISP!</h1>
+    <p class="hero-sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra.</p>
+    <p class="hero-cta"><a class="btn btn-space" href="/About.html">Read More</a></p>
+      </div>
+      <div style="margin-left:auto;">
+        <img src="face.png" alt="face" style="width:140px; height:140px; border-radius:50%; box-shadow:0 12px 32px rgba(0,0,0,0.35);">
       </div>
     </div>
-  </nav>
-
-  <!-- Main Content -->
-  <div class="container">
-    <div class="row">
-      <div id="content" class="col-md-12">
-        <div style="text-align: center;">
-          <img src="face.png" alt="face" style="max-width: 250px; max-height: 250px; width: auto; height: auto;">
-        </div>
-
-        <div style="text-align: center;">
-          <h1>'( ) MEGA [ie: Jost Grant]</h1>
-
-          <!-- Social Icons below header -->
-          <!-- Social Icons below header -->
-          <div style="margin-top: 0.5em;">
-            <a href="https://megalisp.github.io" target="_blank" class="mx-1 text-white" title="Website">
-              <i class="fas fa-house-user fa-2x"></i>
-            </a>
-            <a href="https://gist.github.com/megalisp" target="_blank" class="mx-1 text-white" title="Gists">
-              <i class="fas fa-clipboard fa-2x"></i>
-            </a>
-            <a href="https://github.com/megalisp" target="_blank" class="mx-1 text-white" title="GitHub">
-              <i class="fab fa-github fa-2x"></i>
-            </a>
-            <a href="https://discord.gg/6Re3dCKRgV" target="_blank" class="mx-1 text-white" title="Discord">
-              <i class="fab fa-discord fa-2x"></i>
-            </a>
-            <a href="https://www.youtube.com/&#64;megalisp" target="_blank" class="mx-1 text-white" title="YouTube">
-              <i class="fab fa-youtube fa-2x"></i>
-            </a>
-            <a href="https://www.twitch.tv/megalisp" target="_blank" class="mx-1 text-white" title="Twitch">
-              <i class="fab fa-twitch fa-2x"></i>
-            </a>
-            <a href="https://megalisp.itch.io/" target="_blank" class="mx-1 text-white" title="Itch.io">
-              <i class="fab fa-itch-io fa-2x"></i>
-            </a>
-            <a href="https://suno.com/&#64;megalisp" target="_blank" class="mx-1 text-white" title="Suno">
-              <i class="fas fa-music fa-2x"></i>
-            </a>
-            <a href="https://tiktok.com/&#64;megalisp" target="_blank" class="mx-1 text-white" title="Tiktok">
-              <i class="fab fa-tiktok fa-2x"></i>
-            </a>
-            <a href="https://cash.app/$megalisp" target="_blank" class="mx-1 text-white" title="Cash App">
-              <i class="fas fa-dollar-sign fa-2x"></i>
-            </a>
-            <a href="https://paypal.me/megalisp" target="_blank" class="mx-1 text-white" title="PayPal">
-              <i class="fab fa-paypal fa-2x"></i>
-            </a>
-            <a href="https://patreon.com/megalisp" target="_blank" class="mx-1 text-white" title="Patreon">
-              <i class="fab fa-patreon fa-2x"></i>
-            </a>
-            <a href="https://github.com/sponsors/megalisp" target="_blank" class="mx-1 text-white" title="Sponsor">
-              <i class="fas fa-heart fa-2x"></i>
-            </a>
-          </div>
-
-        </div>
-
-        <div style="text-align: center;">
-          <p>MegaLisp is about <strong>Building Big Things In Lisp</strong>, This is a a place to document that process.
-            <br> <em>(If there hasn't been a formal update on here for awhile be sure to check out <code>/Vaults</code>.)</em></p>
-        </div>
-
-        <br>
-
-
-
-        <article>
-  <header>
-    <h2><a href='/2025/07/and-we-have-lift-off.html'>And&hellip; We Have Lift-Off!</a></h2>
-    <p class='date-and-tags'>
-<time datetime="2025-07-31" pubdate="true">2025-07-31</time> :: <span class="tags"><a href="/tags/Meta.html">Meta</a></span></p>
-    <p class='authors'>By: <span class="authors">Joshua Steven Grant (ie: Jost Grant)</span></p>
   </header>
 
+  <!-- Inline Vaults section (moved from Vaults.scrbl) -->
+  <!-- inject-vaults.html: Vaults section for homepage -->
+  <style>
+  .vaults {
+    padding: 1rem 1.2rem;
+  }
+  .vaults .layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .vaults-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    width: 100%;
+    align-items: stretch; /* make children equal height */
+  }
+  .vault-card {
+    box-sizing: border-box;
+    flex: 1 0 150px;      /* grow, but prefer ~150px base */
+    max-width: 220px;     /* cap width so grid looks consistent */
+    min-width: 120px;     /* don't get too narrow on small screens */
+    height: 130px;        /* fixed height for uniform cards */
+    margin-bottom: 1.2rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.06));
+    border: 1px solid rgba(255,255,255,0.04);
+    outline: 3px solid var(--primary);
+    outline-offset: -5px;
+    color: var(--secondary);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* center content vertically */
+    position: relative;
+  }
+  .vault-card h4 {
+    margin: 0.5rem 0 0.25rem;
+    color: var(--primary);
+  }
+  .vault-card p {
+    margin: 0.25rem 0 0;
+  }
+  .vault-emoji {
+    font-size: 1.6rem;
+  }
+  .vault-card a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .vault-card a:hover {
+    text-decoration: underline;
+  }
+  .vault-ellipsis {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    color: #ffffff;
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    line-height: 1;
+    text-decoration: none;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    opacity: 0.95;
+  }
+  .vault-ellipsis:hover {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .vault-desc {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: rgba(0,0,0,0.92);
+    color: #ffffff;
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease, transform 160ms ease;
+    max-width: 260px;
+    text-align: center;
+    font-size: 0.95rem;
+    z-index: 40;
+  }
+  .vault-desc::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid rgba(0,0,0,0.92);
+  }
+  .vault-card:hover .vault-desc {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .vault-card:hover {
+    outline-color: #ffffff;
+    border-color: rgba(255,255,255,0.12);
+  }
+  .vault-card:hover h4,
+  .vault-card:hover h4 a,
+  .vault-card:hover a {
+    color: #ffffff;
+  }
+  </style>
 
-<p>...</p>
-  <footer>
-    <a href='/2025/07/and-we-have-lift-off.html'>&hellip; more &hellip;</a>
-  </footer>
-</article>
+  <section class="vaults" style="text-align:center; margin-top:1.5rem;">
+    <div class="layout" style="max-width:100%;">
+      <div style="grid-column:1/-1; text-align:center;">
+        <h2>Vaults</h2>
+        <p class="muted">A lot of my writing and thoughts — organized as Obsidian Vaults.</p>
+      </div>
+      <div class="vaults-grid" style="grid-column:1/-1;">
+    <div class="vault-card">
+          <div class="vault-emoji">🧠</div>
+          <div style="display:flex;align-items:center;gap:0.4em;">
+            <h4 style="margin:0;"><a href="https://megalisp.github.io/megalo">megalo</a></h4>
+          </div>
+          <div class="vault-desc">Collections of notes and essays about large-scale systems and meta-architecture.</div>
+        </div>
+        <div class="vault-card">
+          <div class="vault-emoji">🎮</div>
+          <div style="display:flex;align-items:center;gap:0.4em;">
+            <h4 style="margin:0;"><a href="https://megalisp.github.io/mecha">mecha</a></h4>
+          </div>
+          <div class="vault-desc">Design notes and experiments in game systems, simulation, and interactive tooling.</div>
+        </div>
+    <div class="vault-card">
+          <div class="vault-emoji">📘</div>
+          <div style="display:flex;align-items:center;gap:0.4em;">
+            <h4 style="margin:0;"><a href="https://megalisp.github.io/ymology">ymology</a></h4>
+          </div>
+          <div class="vault-desc">A personal library of essays, references, and curated readings.</div>
+        </div>
+        <div class="vault-card">
+          <div class="vault-emoji">⚖️</div>
+          <div style="display:flex;align-items:center;gap:0.4em;">
+            <h4 style="margin:0;"><a href="https://megalisp.github.io/ethics">ethics</a></h4>
+          </div>
+          <div class="vault-desc">Thought pieces and frameworks on ethics, policy, and responsible engineering.</div>
+        </div>
+    <div class="vault-card">
+          <div class="vault-emoji">🧪</div>
+          <div style="display:flex;align-items:center;gap:0.4em;">
+            <h4 style="margin:0;"><a href="https://megalisp.github.io/science">science</a></h4>
+          </div>
+          <div class="vault-desc">Experiment logs, reproducible demos, and short writeups of technical experiments.</div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-      <div style="text-align: center;">
-        <p><a href="https://twitter.com/megalisp"
-              class="twitter-follow-button"
-              data-show-count="false"
-              data-lang="en">
-             "Follow @MegaLisp"
-           </a>
-           <script type="text/javascript">
-             !function(d,s,id){
-                 var js,fjs=d.getElementsByTagName(s)[0];
-                 if(!d.getElementById(id)){
-                     js=d.createElement(s);
-                     js.id=id;
-                     js.src="//platform.twitter.com/widgets.js";
-                     fjs.parentNode.insertBefore(js,fjs);
-                 }
-             }(document,"script","twitter-wjs");
-           </script></p>
-        <p>Built On <a href="https://github.com/megalisp/newt">Newt</a>; Using <a href="http://twitter.github.com/bootstrap/index.html">Bootstrap</a>.</p>
-        <p><em>The novel / uniquely hosted writing here is CC-BY-ND 4.0 unless explicitly stated otherwise.</em></p>
-        <p><em>My code & its related docs, and assets in their orbit -- do your due diligence, but it's fairly safe to assume its under the Apache2 and/or MIT License.</em></p>
+  <main class="layout">
+    <section class="main-col">
+
+
+  <!-- inject-featured-video.html: Featured Video section for homepage -->
+  <style>
+  .video-hover-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .video-hover-iframe {
+    pointer-events: none;
+    filter: grayscale(0.2) brightness(0.8);
+    transition: filter 0.3s;
+  }
+  .video-hover-container:hover .video-hover-iframe {
+    pointer-events: auto;
+    filter: none;
+  }
+  .video-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: rgba(16,16,16,0.92);
+    transition: opacity 0.3s;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+  .video-hover-container:hover .video-hover-overlay {
+    opacity: 0;
+    pointer-events: none;
+  }
+  </style>
+
+  <section class="intro-video" style="margin:2.5rem 0 1rem 0; text-align:center; width:100%;">
+    <h2 style="color:var(--primary);margin-bottom:1.2rem;">Intro Vid</h2>
+    <div style="display:flex;justify-content:center;width:100%;">
+      <div style="position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px #0008;margin:0 auto;">
+        <div class="video-hover-container">
+          <div class="video-hover-overlay">[...]</div>
+          <iframe class="video-hover-iframe" width="560" height="315" src="https://www.youtube.com/embed/xghZgrE1zRI?autoplay=1&controls=0&mute=1&rel=0&modestbranding=1&showinfo=0" title="Intro Vid" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>
+        </div>
       </div>
-    </footer>
+    </div>
+  </section>
+  <!-- inject-interests.html: Interests & Skills section for homepage -->
+  <style>
+  .interests-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .pill {
+    display: inline-block;
+    background: linear-gradient(180deg, #ff9100, #ff7a00); /* orange */
+    color: #000000; /* black text */
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .pill:hover { opacity: 0.95; transform: translateY(-1px); color: #fff; }
+  </style>
+
+  <section class="interests">
+    <h3>Interests & Skills</h3>
+    <div class="interests-list">
+      <a class="pill" href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank" rel="noopener">Lisp</a>
+      <a class="pill" href="https://racket-lang.org" target="_blank" rel="noopener">Racket</a>
+    </div>
+  </section>
+  <!-- inject-featured-repos.html: Featured Repos section for homepage -->
+  <section class="featured-repos" style="margin:2.5rem 0 2rem 0;">
+    <h2 style="color:var(--primary);margin-bottom:1.2rem;">Featured Repos</h2>
+    <!-- Horizontal, touch-friendly scrollbox for featured repos -->
+    <div id="github-featured-repos" class="repos-list" style="display:flex;overflow-x:auto;gap:1.2em;padding-bottom:0.25rem;-webkit-overflow-scrolling:touch;">
+      <!-- Static placeholders so layout doesn't jump if JS fetch is delayed or blocked -->
+    <div class="repo-pill placeholder" style="flex:0 0 auto;display:block;min-width:220px;border-radius:8px;padding:1em 1.2em;background:rgba(0,0,0,0.06);color:#ff6f00;box-shadow:0 2px 8px rgba(0,0,0,0.04);">rawind</div>
+    <div class="repo-pill placeholder" style="flex:0 0 auto;display:block;min-width:220px;border-radius:8px;padding:1em 1.2em;background:rgba(0,0,0,0.06);color:#ff6f00;box-shadow:0 2px 8px rgba(0,0,0,0.04);">cordian</div>
+    </div>
+  </section>
+  <script>
+    // Dynamically fetch and render featured GitHub repos
+    const featuredRepos = [
+      { owner: 'megalisp', repo: 'rawind' },
+      { owner: 'megalisp', repo: 'cordian' }
+    ];
+    const container = document.getElementById('github-featured-repos');
+    if (container) {
+      let placeholdersRemoved = false;
+      function removePlaceholdersOnce() {
+        if (placeholdersRemoved) return;
+        placeholdersRemoved = true;
+        container.querySelectorAll('.placeholder').forEach(n => n.remove());
+      }
+
+      featuredRepos.forEach(({owner, repo}) => {
+        fetch(`https://api.github.com/repos/${owner}/${repo}`)
+          .then(r => {
+            if (!r.ok) throw new Error('fetch-failed');
+            return r.json();
+          })
+          .then(data => {
+            // remove placeholders on first successful fetch
+            removePlaceholdersOnce();
+
+            const el = document.createElement('a');
+            el.className = 'repo-pill';
+            el.href = data.html_url;
+            el.target = '_blank';
+            // ensure pills do not shrink and participate in horizontal scroll
+            el.style.display = 'block';
+            el.style.flex = '0 0 auto';
+            el.style.minWidth = '220px';
+            el.style.background = 'rgba(0,0,0,0.10)';
+            el.style.borderRadius = '8px';
+            el.style.padding = '1em 1.2em';
+            el.style.color = '#ff6f00';
+            el.style.textDecoration = 'none';
+            el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+            el.innerHTML = `
+              <div style="font-size:1.1em;font-weight:bold;">${data.full_name || repo}</div>
+              <div style="font-size:0.98em;color:#ddd;margin:0.2em 0 0.4em 0;">${data.description || ''}</div>
+              <div style="font-size:0.92em;color:#999;">
+                ★ ${data.stargazers_count || 0} &nbsp; ⑂ ${data.forks_count || 0}
+              </div>
+            `;
+            container.appendChild(el);
+          })
+          .catch(() => {
+            // leave placeholders if fetch fails; do nothing
+          });
+      });
+    }
+  </script>
+  <!-- inject-featured-projects.html: Featured Projects section for homepage -->
+  <style>
+  .featured {
+    margin-bottom: 1.25rem;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+    .feature-card {
+    background: linear-gradient(180deg, #050505, #0b0b0b);
+    color: #e9e9e9;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .feature-card h3 {
+    margin-top: 0;
+    color: #ffffff;
+  }
+
+  .feature-card .muted {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .feature-card p:last-child {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+  }
+  </style>
+
+  <section class="featured">
+      <h2>Featured Projects</h2>
+    <div class="featured-grid">
+      <div class="feature-card">
+        <h3><a href="#">Lorem Ipsum Dolor</a></h3>
+        <p class="muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+        <p><a class="btn btn-sm btn-space" href="#">Read</a></p>
+      </div>
+      <div class="feature-card">
+        <h3><a href="#">Consectetur Adipiscing</a></h3>
+        <p class="muted">Cras suscipit, quam vitae dapibus facilisis, sapien urna mattis dui, eu facilisis ligula nunc sed augue.</p>
+        <p><a class="btn btn-sm btn-space" href="#">Browse</a></p>
+      </div>
+      <div class="feature-card">
+        <h3><a href="#">Proin Eget Tellus</a></h3>
+        <p class="muted">Integer tempor, augue at faucibus sodales, lorem ipsum gravida nunc, non gravida sapien arcu eget velit.</p>
+        <p><a class="btn btn-sm btn-space" href="#">Learn</a></p>
+      </div>
+    </div>
+  </section>
+  <!-- inject-latest-posts.html: Latest Blog Posts section for homepage -->
+  <section class="latest-posts" style="margin:2.5rem 0 2rem 0;">
+    <h2 style="color:var(--primary);margin-bottom:1.2rem;">Latest Blog Posts</h2>
+    <div class="posts-list">
+      <div class="projects-grid">
+    <article class="project-card">
+      <header>
+        <h3><a href='/2025/07/and-we-have-lift-off.html'>And&hellip; We Have Lift-Off!</a></h3>
+        <p class='project-meta'><span>
+  <time datetime="2025-07-31" pubdate="true">2025-07-31</time></span> :: <span class="tags"><a href="/tags/Meta.html">Meta</a></span></p>
+      </header>
+      <div>
+  <p>...</p></div>
+      <div class="project-actions"><a class="btn btn-sm btn-space" href='/2025/07/and-we-have-lift-off.html'>...</a></div>
+    </article>
   </div>
+    </div>
+    <div style="text-align:right;margin-top:0.7rem;">
+      <a href="/Vaults.html" class="btn btn-sm btn-space">View all posts</a>
+    </div>
+  </section>
+  <!-- inject-newsletter.html: Newsletter signup section for homepage -->
+  <style>
+  .newsletter-card {
+    background: linear-gradient(180deg, #0b0b0b, #1a1a1a); /* much darker */
+    padding: 1rem;
+    border-radius: 8px;
+    color: #eaeaea; /* light text for contrast */
+    border: 1px solid rgba(255,255,255,0.03);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.7);
+  }
+  </style>
+
+  <section class="newsletter">
+    <div class="newsletter-card">
+      <h3>Join the Launch List</h3>
+      <p>Short, occasional updates about major projects and demos.</p>
+      <p><a class="btn btn-space" href="mailto:megalisp+subscribe&#64;example.com?subject=Subscribe">Subscribe</a></p>
+    </div>
+  </section>
+
+  <!-- <div class="projects-grid">
+  <article class="project-card">
+    <header>
+      <h3><a href='/2025/07/and-we-have-lift-off.html'>And&hellip; We Have Lift-Off!</a></h3>
+      <p class='project-meta'><span>
+<time datetime="2025-07-31" pubdate="true">2025-07-31</time></span> :: <span class="tags"><a href="/tags/Meta.html">Meta</a></span></p>
+    </header>
+    <div>
+<p>...</p></div>
+    <div class="project-actions"><a class="btn btn-sm btn-space" href='/2025/07/and-we-have-lift-off.html'>...</a></div>
+  </article>
+</div> removed: posts now shown only in Latest Blog Posts section -->
+    </section>
+
+  <!-- Sidebar removed -->
+  </main>
+
+  <!-- Footer -->
+  <!-- interject-footer.html: Centralized footer include -->
+<style>
+/* Footer accents for small credit links (moved into footer include) */
+.footer-credit a.accent { color: #ff7a00; font-weight: 600; text-decoration: none; }
+.footer-credit a.accent:hover { text-decoration: underline; }
+/* Twitter follow button accent */
+.twitter-follow-button {
+  border: 2px solid #ff7a00;
+  border-radius: 999px;
+  display: inline-block;
+}
+.twitter-follow-button:hover { background: rgba(255,122,0,0.06); }
+</style>
+<footer class="site-footer galaxy-glow space-border" style="margin-top:2em;">
+  <!-- inject-socials.html: Centered social icons using Font Awesome (CDN) -->
+<style>
+.socials-center { text-align: center; margin: 0.6rem 0 0.8rem; }
+.socials-center p { margin: 0; }
+.socials-center .social { display: inline-block; margin: 0 0.6rem; color: #ff7a00; font-size: 28px; transition: transform 160ms ease, color 160ms ease; }
+.socials-center .social:hover { transform: translateY(-4px); color: #ffffff; }
+.socials-center .social:focus { outline: 2px solid #ff7a00; outline-offset: 4px; }
+</style>
+
+<div class="socials-center" role="navigation" aria-label="Social links">
+  <p>
+    <a class="social" href="https://megalisp.github.io" target="_blank" rel="noopener" aria-label="Website"><i class="fa-solid fa-house-user" aria-hidden="true"></i></a>
+    <a class="social" href="https://gist.github.com/megalisp" target="_blank" rel="noopener" aria-label="Gists"><i class="fa-solid fa-clipboard" aria-hidden="true"></i></a>
+    <a class="social" href="https://github.com/megalisp" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+    <a class="social" href="https://discord.gg/6Re3dCKRgV" target="_blank" rel="noopener" aria-label="Discord"><i class="fa-brands fa-discord" aria-hidden="true"></i></a>
+    <a class="social" href="https://www.youtube.com/megalisp" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+    <a class="social" href="https://www.twitch.tv/megalisp" target="_blank" rel="noopener" aria-label="Twitch"><i class="fa-brands fa-twitch" aria-hidden="true"></i></a>
+    <a class="social" href="https://megalisp.itch.io/" target="_blank" rel="noopener" aria-label="Itch.io"><i class="fa-brands fa-itch-io" aria-hidden="true"></i></a>
+    <a class="social" href="https://suno.com/megalisp" target="_blank" rel="noopener" aria-label="Suno"><i class="fa-solid fa-music" aria-hidden="true"></i></a>
+    <a class="social" href="https://tiktok.com/megalisp" target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i></a>
+    <a class="social" href="https://cash.app/$megalisp" target="_blank" rel="noopener" aria-label="Cash App"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i></a>
+    <a class="social" href="https://paypal.me/megalisp" target="_blank" rel="noopener" aria-label="PayPal"><i class="fa-brands fa-paypal" aria-hidden="true"></i></a>
+    <a class="social" href="https://patreon.com/megalisp" target="_blank" rel="noopener" aria-label="Patreon"><i class="fa-brands fa-patreon" aria-hidden="true"></i></a>
+    <a class="social" href="https://github.com/sponsors/megalisp" target="_blank" rel="noopener" aria-label="Sponsor"><i class="fa-solid fa-heart" aria-hidden="true"></i></a>
+  </p>
+</div>
+  <div class="footer-divider" style="background-color:var(--primary);height:4px;width:60%;margin:0 auto 2em auto;border-radius:2px;"></div>
+    <div style="text-align: center;">
+      <p><a href="https://twitter.com/megalisp"
+            class="twitter-follow-button"
+            data-show-count="false"
+            data-lang="en">
+           "Follow @MegaLisp"
+         </a>
+         <script type="text/javascript">
+           !function(d,s,id){
+               var js,fjs=d.getElementsByTagName(s)[0];
+               if(!d.getElementById(id)){
+                   js=d.createElement(s);
+                   js.id=id;
+                   js.src="//platform.twitter.com/widgets.js";
+                   fjs.parentNode.insertBefore(js,fjs);
+               }
+           }(document,"script","twitter-wjs");
+         </script></p>
+      <p class="footer-credit">Built On <a class="accent" href="https://github.com/megalisp/newt">Newt</a>; Using <a class="accent" href="http://twitter.github.com/bootstrap/index.html">Bootstrap</a>.</p>
+      <p><em>The novel / uniquely hosted writing here is CC-BY-ND 4.0 unless explicitly stated otherwise.</em></p>
+    </div>
+</footer>
+  <!-- JavaScript -->
 
   <!-- JavaScript -->
   <script type="text/javascript" src="/js/jquery-3.2.1.slim.min.js"></script>
   <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

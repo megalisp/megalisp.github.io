@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <title>And... We Have Lift-Off!</title>
@@ -9,13 +8,11 @@
   <meta name="keywords" content="Meta">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico">
-  <link rel="canonical" href="http://megalisp.github.io/2025/07/and-we-have-lift-off.html">
-
+  <link rel="canonical" href="https://megalisp.github.io//2025/07/and-we-have-lift-off.html">
 
 
   <!-- CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="/css/pygments.css">
   <link rel="stylesheet" type="text/css" href="/css/scribble.css">
@@ -24,8 +21,7 @@
   <!-- Feeds -->
   <link rel="alternate" type="application/atom+xml" href="/feeds/all.atom.xml" title="Atom Feed">
   <link rel="alternate" type="application/rss+xml" href="/feeds/all.rss.xml" title="RSS Feed">
-
-  <!-- JS -->
+  <!-- Space styles are centralized in css/custom.css -->
   <script type="text/javascript">
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -36,81 +32,138 @@
     ga('send', 'pageview');
   </script>
 </head>
-
 <body>
+  <!-- inject-navbar.html: Navbar markup + component-specific CSS -->
+<style>
+/* Navbar component styles moved here from css/custom.css */
+.navbar {
+  background-color: #000000 !important;
+}
+.navbar-brand {
+  color: var(--primary) !important;
+  font-weight: 700;
+}
+.navbar-brand:hover {
+  color: var(--secondary) !important;
+}
+.nav-link {
+  color: var(--secondary) !important;
+}
+.nav-link:hover {
+  color: var(--primary) !important;
+}
+.nav-item.active > .nav-link {
+  color: var(--primary) !important;
+  font-weight: bold;
+}
+/* Dropdown rules specific to navbar */
+.dropdown-menu {
+  position: absolute; /* ensure it floats above page flow */
+  background-color: #111111;
+  border: 1px solid #333333;
+  z-index: 1100; /* higher than the notice (1000) */
+  min-width: 10rem;
+}
+.dropdown-item {
+  color: var(--secondary);
+}
+.dropdown-item:hover {
+  background-color: #222222;
+  color: var(--primary);
+}
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="container">
-      <a href="/index.html" class="navbar-brand">'( ) MEGA</a>
+/* Icon color overrides: make GitHub and Sponsor icons orange on hover/active */
+.navbar .nav-link i {
+  color: var(--secondary) !important;
+  transition: color 160ms ease;
+}
+.navbar .nav-link:hover i,
+.navbar .nav-item.active > .nav-link i {
+  color: var(--primary) !important;
+}
+</style>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_collapse"
-        aria-controls="navbar_collapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark galaxy-glow">
 
-      <div class="collapse navbar-collapse" id="navbar_collapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="/tags/Meta.html">Meta</a>
-              </div>
-            </li>
+  <div class="container" style="overflow: visible;">
+    <a href="/index.html" class="navbar-brand space-accent">'( ) MEGA</a>
 
-            <li>
-              <a class="nav-link" href="/Vaults.html" >Vaults</a>
-              </li> 
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_collapse"
+      aria-controls="navbar_collapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
+    <div class="collapse navbar-collapse" id="navbar_collapse">
+      <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
             <li>
               <a class="nav-link" href="/About.html" >About</a>
-              </li> 
-
-            <li class="nav-item">
-              <a class="nav-link" href="/feeds/all.atom.xml">Atom</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/feeds/all.rss.xml">RSS</a>
-            </li>
-        </ul>
-
-        <!-- Right-aligned GitHub & Sponsor icons -->
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/megalisp" target="_blank" title="GitHub">
-              <i class="fab fa-github fa-lg text-white"></i>
-            </a>
+              </li>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
-              <i class="fas fa-heart fa-lg text-white"></i>
-            </a>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/tags/Meta.html">Meta</a>
+            </div>
           </li>
-        </ul>
-      </div>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Sub <b class="caret"></b></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/feeds/all.atom.xml">Atom</a>
+              <a class="dropdown-item" href="/feeds/all.rss.xml">RSS</a>
+            </div>
+          </li>
+      </ul>
+
+      <!-- Right-aligned GitHub & Sponsor icons -->
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/megalisp" target="_blank" title="GitHub">
+            <i class="fab fa-github fa-lg text-white"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+            <i class="fas fa-heart fa-lg text-white"></i>
+          </a>
+        </li>
+      </ul>
     </div>
-  </nav>
-
-  <!-- Main Content -->
-  <div class="container">
-    <div class="row">
-      <div id="content" class="col-md-12">
+  </div>
+</nav>
 
 
+  <!-- Notice bar below navbar, above hero -->
 
-        <article>
+
+  <!-- Main Content: Hero + content layout -->
+
+
+
+
+  <main class="layout">
+    <section class="main-col">
+
+
+
+
+  <!-- <article class="galaxy-glow space-border" style="margin-bottom:2em;">
   <header>
-    <h1>And&hellip; We Have Lift-Off!</h1>
-    <p class='date-and-tags'>
-<time datetime="2025-07-31" pubdate="true">2025-07-31</time> :: <span class="tags"><a href="/tags/Meta.html">Meta</a></span></p>
-    <p class='authors'>By: <span class="authors">Joshua Steven Grant (ie: Jost Grant)</span></p>
+    <h1 class="post-title">And&hellip; We Have Lift-Off!</h1>
+    <p class='date-and-tags'><span class="space-accent">
+<time datetime="2025-07-31" pubdate="true">2025-07-31</time></span> :: <span class="tags"><a href="/tags/Meta.html">Meta</a></span></p>
+    <p class='authors'>By: <span class="space-accent"><span class="authors">Joshua Steven Grant (ie: Jost Grant)</span></span></p>
   </header>
+  <div style="margin-top:1em;">
 
 <p>...</p>
 <!--more-->
 
 <p>Test test test</p>
-  <footer>
+  </div>
+  <footer style="margin-top:2em;">
     <script type="text/javascript">
       !function(d,s,id){
           var js,fjs=d.getElementsByTagName(s)[0];
@@ -124,7 +177,7 @@
     </script>
     <a href="https://twitter.com/share"
        class="twitter-share-button"
-       data-url="http://megalisp.github.io/2025/07/and-we-have-lift-off.html"
+       data-url="https://megalisp.github.io//2025/07/and-we-have-lift-off.html"
        data-dnt="true">
       "Tweet"</a>
     <div class="row justify-content-center">
@@ -136,40 +189,82 @@
       </nav>
     </div>
   </footer>
-</article>
-      </div>
-    </div>
+</article> removed: posts now shown only in Latest Blog Posts section -->
+    </section>
 
-    <!-- Footer -->
-    <footer>
-      <div style="text-align: center;">
-        <p><a href="https://twitter.com/megalisp"
-              class="twitter-follow-button"
-              data-show-count="false"
-              data-lang="en">
-             "Follow @MegaLisp"
-           </a>
-           <script type="text/javascript">
-             !function(d,s,id){
-                 var js,fjs=d.getElementsByTagName(s)[0];
-                 if(!d.getElementById(id)){
-                     js=d.createElement(s);
-                     js.id=id;
-                     js.src="//platform.twitter.com/widgets.js";
-                     fjs.parentNode.insertBefore(js,fjs);
-                 }
-             }(document,"script","twitter-wjs");
-           </script></p>
-        <p>Built On <a href="https://github.com/megalisp/newt">Newt</a>; Using <a href="http://twitter.github.com/bootstrap/index.html">Bootstrap</a>.</p>
-        <p><em>The novel / uniquely hosted writing here is CC-BY-ND 4.0 unless explicitly stated otherwise.</em></p>
-        <p><em>My code & its related docs, and assets in their orbit -- do your due diligence, but it's fairly safe to assume its under the Apache2 and/or MIT License.</em></p>
-      </div>
-    </footer>
-  </div>
+  <!-- Sidebar removed -->
+  </main>
+
+  <!-- Footer -->
+  <!-- interject-footer.html: Centralized footer include -->
+<style>
+/* Footer accents for small credit links (moved into footer include) */
+.footer-credit a.accent { color: #ff7a00; font-weight: 600; text-decoration: none; }
+.footer-credit a.accent:hover { text-decoration: underline; }
+/* Twitter follow button accent */
+.twitter-follow-button {
+  border: 2px solid #ff7a00;
+  border-radius: 999px;
+  display: inline-block;
+}
+.twitter-follow-button:hover { background: rgba(255,122,0,0.06); }
+</style>
+<footer class="site-footer galaxy-glow space-border" style="margin-top:2em;">
+  <!-- inject-socials.html: Centered social icons using Font Awesome (CDN) -->
+<style>
+.socials-center { text-align: center; margin: 0.6rem 0 0.8rem; }
+.socials-center p { margin: 0; }
+.socials-center .social { display: inline-block; margin: 0 0.6rem; color: #ff7a00; font-size: 28px; transition: transform 160ms ease, color 160ms ease; }
+.socials-center .social:hover { transform: translateY(-4px); color: #ffffff; }
+.socials-center .social:focus { outline: 2px solid #ff7a00; outline-offset: 4px; }
+</style>
+
+<div class="socials-center" role="navigation" aria-label="Social links">
+  <p>
+    <a class="social" href="https://megalisp.github.io" target="_blank" rel="noopener" aria-label="Website"><i class="fa-solid fa-house-user" aria-hidden="true"></i></a>
+    <a class="social" href="https://gist.github.com/megalisp" target="_blank" rel="noopener" aria-label="Gists"><i class="fa-solid fa-clipboard" aria-hidden="true"></i></a>
+    <a class="social" href="https://github.com/megalisp" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+    <a class="social" href="https://discord.gg/6Re3dCKRgV" target="_blank" rel="noopener" aria-label="Discord"><i class="fa-brands fa-discord" aria-hidden="true"></i></a>
+    <a class="social" href="https://www.youtube.com/megalisp" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+    <a class="social" href="https://www.twitch.tv/megalisp" target="_blank" rel="noopener" aria-label="Twitch"><i class="fa-brands fa-twitch" aria-hidden="true"></i></a>
+    <a class="social" href="https://megalisp.itch.io/" target="_blank" rel="noopener" aria-label="Itch.io"><i class="fa-brands fa-itch-io" aria-hidden="true"></i></a>
+    <a class="social" href="https://suno.com/megalisp" target="_blank" rel="noopener" aria-label="Suno"><i class="fa-solid fa-music" aria-hidden="true"></i></a>
+    <a class="social" href="https://tiktok.com/megalisp" target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i></a>
+    <a class="social" href="https://cash.app/$megalisp" target="_blank" rel="noopener" aria-label="Cash App"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i></a>
+    <a class="social" href="https://paypal.me/megalisp" target="_blank" rel="noopener" aria-label="PayPal"><i class="fa-brands fa-paypal" aria-hidden="true"></i></a>
+    <a class="social" href="https://patreon.com/megalisp" target="_blank" rel="noopener" aria-label="Patreon"><i class="fa-brands fa-patreon" aria-hidden="true"></i></a>
+    <a class="social" href="https://github.com/sponsors/megalisp" target="_blank" rel="noopener" aria-label="Sponsor"><i class="fa-solid fa-heart" aria-hidden="true"></i></a>
+  </p>
+</div>
+  <div class="footer-divider" style="background-color:var(--primary);height:4px;width:60%;margin:0 auto 2em auto;border-radius:2px;"></div>
+    <div style="text-align: center;">
+      <p><a href="https://twitter.com/megalisp"
+            class="twitter-follow-button"
+            data-show-count="false"
+            data-lang="en">
+           "Follow @MegaLisp"
+         </a>
+         <script type="text/javascript">
+           !function(d,s,id){
+               var js,fjs=d.getElementsByTagName(s)[0];
+               if(!d.getElementById(id)){
+                   js=d.createElement(s);
+                   js.id=id;
+                   js.src="//platform.twitter.com/widgets.js";
+                   fjs.parentNode.insertBefore(js,fjs);
+               }
+           }(document,"script","twitter-wjs");
+         </script></p>
+      <p class="footer-credit">Built On <a class="accent" href="https://github.com/megalisp/newt">Newt</a>; Using <a class="accent" href="http://twitter.github.com/bootstrap/index.html">Bootstrap</a>.</p>
+      <p><em>The novel / uniquely hosted writing here is CC-BY-ND 4.0 unless explicitly stated otherwise.</em></p>
+    </div>
+</footer>
+  <!-- JavaScript -->
 
   <!-- JavaScript -->
   <script type="text/javascript" src="/js/jquery-3.2.1.slim.min.js"></script>
   <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

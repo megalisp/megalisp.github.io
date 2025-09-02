@@ -1,0 +1,28 @@
+<!-- inject-interests.html: Interests & Skills section for homepage -->
+<style>
+.interests-list { 
+  display: flex; 
+  gap: 0.5rem; 
+  flex-wrap: wrap; 
+  margin-top: 0.5rem; 
+}
+.pill {
+  display: inline-block;
+  background: linear-gradient(180deg, #ff9100, #ff7a00); /* orange */
+  color: #000000; /* black text */
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+.pill:hover { opacity: 0.95; transform: translateY(-1px); color: #fff; }
+</style>
+
+<section class="interests">
+  <h3>Interests & Skills</h3>
+  <div class="interests-list">
+    <a class="pill" href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank" rel="noopener">Lisp</a>
+    <a class="pill" href="https://racket-lang.org" target="_blank" rel="noopener">Racket</a>
+  </div>
+</section>

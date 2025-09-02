@@ -1,0 +1,59 @@
+<!-- inject-featured-projects.html: Featured Projects section for homepage -->
+<style>
+.featured {
+  margin-bottom: 1.25rem;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+  .feature-card {
+  background: linear-gradient(180deg, #050505, #0b0b0b);
+  color: #e9e9e9;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-card h3 {
+  margin-top: 0;
+  color: #ffffff;
+}
+
+.feature-card .muted {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.feature-card p:last-child {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+</style>
+
+<section class="featured">
+    <h2>Featured Projects</h2>
+  <div class="featured-grid">
+    <div class="feature-card">
+      <h3><a href="#">Lorem Ipsum Dolor</a></h3>
+      <p class="muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+      <p><a class="btn btn-sm btn-space" href="#">Read</a></p>
+    </div>
+    <div class="feature-card">
+      <h3><a href="#">Consectetur Adipiscing</a></h3>
+      <p class="muted">Cras suscipit, quam vitae dapibus facilisis, sapien urna mattis dui, eu facilisis ligula nunc sed augue.</p>
+      <p><a class="btn btn-sm btn-space" href="#">Browse</a></p>
+    </div>
+    <div class="feature-card">
+      <h3><a href="#">Proin Eget Tellus</a></h3>
+      <p class="muted">Integer tempor, augue at faucibus sodales, lorem ipsum gravida nunc, non gravida sapien arcu eget velit.</p>
+      <p><a class="btn btn-sm btn-space" href="#">Learn</a></p>
+    </div>
+  </div>
+</section>

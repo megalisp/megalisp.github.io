@@ -1,0 +1,65 @@
+<!-- inject-notice.html: Dismissible notice bar for homepage -->
+<style>
+#homepage-notice {
+  position: relative;
+  width: 100%;
+  background: repeating-linear-gradient(135deg, #fff, #fff 20px, #ff6f00 20px, #ff6f00 40px);
+  padding: 0.35em 0;
+  box-shadow: 0 2px 12px #0002;
+  z-index: 1000;
+  min-height: unset;
+}
+#homepage-notice .notice-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+#homepage-notice .notice-text {
+  background: #111;
+  color: #fff;
+  padding: 0.35em 2.5em 0.35em 1.5em;
+  border-radius: 2em;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-align: center;
+  display: block;
+  max-width: 90vw;
+}
+#notice-close-btn {
+  position: absolute;
+  top: 50%;
+  right: 1.2em;
+  transform: translateY(-50%);
+  background: #111;
+  border: none;
+  font-size: 1em;
+  color: #ffffff;
+  cursor: pointer;
+  line-height: 1;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px #0006;
+}
+</style>
+
+<div id="homepage-notice">
+  <div class="notice-inner">
+    <span class="notice-text">⚠️WARNING: Site Under Active Development!</span>
+    <button id="notice-close-btn" aria-label="Close notice">&times;</button>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('notice-close-btn');
+    var bar = document.getElementById('homepage-notice');
+    if(btn && bar) {
+      btn.onclick = function() { bar.style.display = 'none'; };
+    }
+  });
+</script>

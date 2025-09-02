@@ -1,13 +1,12 @@
-<article>
-  <header>
-    <h2><a href='@|uri-path|'>@|title|</a></h2>
-    <p class='date-and-tags'>@|date| :: @|tags|</p>
-    <p class='authors'>By: @|authors|</p>
-  </header>
-  
-  @|content-only|
-  @(when more?
-    @list{<footer>
-            <a href='@|uri-path|'>&hellip; more &hellip;</a>
-          </footer>})
-</article>
+
+<div class="projects-grid">
+  <article class="project-card">
+    <header>
+      <h3><a href='@|uri-path|'>@|title|</a></h3>
+      <p class='project-meta'><span>@|date|</span> :: @|tags|</p>
+    </header>
+    <div>@|content-only|</div>
+    @(when more?
+      @list{<div class="project-actions"><a class="btn btn-sm btn-space" href='@|uri-path|'>...</a></div>})
+  </article>
+</div>

@@ -1,13 +1,15 @@
-<article>
+
+<article class="galaxy-glow space-border" style="margin-bottom:2em;">
   <header>
-    <h1>@|title|</h1>
-    <p class='date-and-tags'>@|date| :: @|tags|</p>
-    <p class='authors'>By: @|authors|</p>
+    <h1 class="post-title">@|title|</h1>
+    <p class='date-and-tags'><span class="space-accent">@|date|</span> :: @|tags|</p>
+    <p class='authors'>By: <span class="space-accent">@|authors|</span></p>
   </header>
-  @|content|
-  <footer>
+  <div style="margin-top:1em;">
+    @|content|
+  </div>
+  <footer style="margin-top:2em;">
     @twitter-share-button[full-uri]
-    @older/newer-links[older-uri older-title newer-uri newer-title
-                       #:for-bs 4]
+    @older/newer-links[older-uri older-title newer-uri newer-title #:for-bs 4]
   </footer>
 </article>
