@@ -65,10 +65,12 @@
   @(include-template "inject-newsletter.html")
       })
 
-  <!-- @|contents| removed: posts now shown only in Latest Blog Posts section -->
+  @(unless (string-ci=? uri-path (string-append uri-prefix "/index.html"))
+    @list{
+      @|contents|
+    })
     </section>
 
-  <!-- Sidebar removed -->
   </main>
 
   <!-- Footer -->
