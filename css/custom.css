@@ -221,3 +221,99 @@ h1, h2 {
 a.btn-space:hover, .btn-space:hover {
   color: #fff !important;
 }
+
+
+
+
+
+/* === Highlighted text for ==HIGHLIGHT== === */
+.highlight {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-weight: 600;
+  box-shadow: 0 1px 4px 0 rgba(255, 111, 0, 0.10);
+}
+hr {
+  border: none;
+  border-top: 1px dashed var(--primary);
+  margin: 1.5em 0;
+  height: 0;
+  background: none;
+}
+/* === Blockquotes (subtle) === */
+blockquote {
+  background: none;
+  color: #bfae9e;
+  border-left: 3px solid #bfae9e;
+  padding: 0.05em 1em 0.05em 1em;
+  margin: 0.8em 0 1.2em 0;
+  border-radius: 0 4px 4px 0;
+  font-size: 1.01rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* === Bubble Quote (speech bubble, orange bar, etc) === */
+.bubble-quote {
+  display: inline-block;
+  background: #fff;
+  color: #5b3a21; /* dark brown */
+  padding: 0.35em 1em 0.35em 1.2em;
+  margin: 0.8em 0 1.6em 0;
+  border-radius: 18px 18px 18px 8px;
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 400;
+  position: relative;
+  box-shadow: 0 4px 18px 0 rgba(255, 111, 0, 0.13);
+  overflow: visible;
+  border-left: 6px solid var(--primary);
+  min-width: 180px;
+  max-width: 100%;
+}
+.bubble-quote::before {
+  content: '';
+  display: none;
+}
+.bubble-quote:after {
+  content: '';
+  position: absolute;
+  left: 32px;
+  bottom: -16px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 16px solid #fff;
+  z-index: 2;
+}
+.bubble-quote .quote-mark {
+  font-family: serif;
+  color: var(--primary);
+  font-size: 1.3em;
+  margin-right: 0.2em;
+  vertical-align: middle;
+  display: inline;
+}
+
+
+/* === Spoiler === */
+.spoiler {
+  background: #888;
+  color: #888;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  position: relative;
+  user-select: none;
+}
+.spoiler.revealed {
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+
