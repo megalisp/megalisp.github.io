@@ -3,15 +3,15 @@
  <channel>
   <title>MEGALISP: Posts tagged 'Meta'</title>
   <description>MEGALISP: Posts tagged 'Meta'</description>
-  <link>https://megalisp.github.io//tags/Meta.html</link>
+  <link>http://localhost:8000//tags/Meta.html</link>
   <lastBuildDate>Thu, 31 Jul 2025 05:00:00 UT</lastBuildDate>
   <pubDate>Thu, 31 Jul 2025 05:00:00 UT</pubDate>
   <ttl>1800</ttl>
   <item>
    <title>And... We Have Lift-Off!</title>
-   <link>https://megalisp.github.io//2025/07/and-we-have-lift-off.html?utm_source=Meta&amp;utm_medium=RSS</link>
-   <guid isPermaLink="false">urn:https-megalisp-github-io:-2025-07-and-we-have-lift-off-html</guid>
+   <link>http://localhost:8000//2025/07/and-we-have-lift-off.html?utm_source=Meta&amp;utm_medium=RSS</link>
+   <guid isPermaLink="false">urn:http-localhost-8000:-2025-07-and-we-have-lift-off-html</guid>
    <pubDate>Thu, 31 Jul 2025 05:00:00 UT</pubDate>
    <author>Joshua Steven Grant (ie: Jost Grant)</author>
    <description>
-&lt;p&gt;...&lt;/p&gt;&lt;a href="https://megalisp.github.io//2025/07/and-we-have-lift-off.html?utm_source=Meta&amp;amp;utm_medium=RSS"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</description></item></channel></rss>
+&lt;p&gt;...&lt;/p&gt;&lt;a href="http://localhost:8000//2025/07/and-we-have-lift-off.html?utm_source=Meta&amp;amp;utm_medium=RSS"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</description></item></channel></rss>

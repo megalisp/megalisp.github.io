@@ -199,10 +199,6 @@
         try { renderTextInto(textEl, messages[ni]); } catch(e) {}
       }
 
-      if (messages.length > 1) {
-        tickerInterval = setInterval(advance, 8000);
-      }
-
       var prevBtn = document.getElementById('notice-prev-btn');
       var nextBtn = document.getElementById('notice-next-btn');
 
@@ -218,8 +214,16 @@
         if (messages.length > 1) tickerInterval = setInterval(advance, 8000);
       }
 
+      // Always enable navigation, even for single-message arrays
+      if (prevBtn) prevBtn.disabled = false;
+      if (nextBtn) nextBtn.disabled = false;
       if (prevBtn) prevBtn.addEventListener('click', function() { showIndex(textEl._tickerIndex - 1); resetInterval(); });
       if (nextBtn) nextBtn.addEventListener('click', function() { showIndex(textEl._tickerIndex + 1); resetInterval(); });
+
+      // Always allow manual navigation, but only auto-advance if more than one message
+      if (messages.length > 1) {
+        tickerInterval = setInterval(advance, 8000);
+      }
     }
 
     // Load messages from site root TICKER.json (non-cached)
@@ -230,13 +234,11 @@
       }).then(function(arr) {
         if (Array.isArray(arr) && arr.length > 0) {
           messages = arr.map(function(x){ return String(x); });
-          try { renderTextInto(textEl, messages[0]); } catch(e) {}
-          startTicker();
-        } else {
-          startTicker();
         }
+        // Always start ticker, even if fallback
+        startTicker();
       }).catch(function() {
-        // fallback to default
+        // fallback to default, but always start ticker
         startTicker();
       });
     } else {
