@@ -174,3 +174,43 @@ h1, h2 {
     grid-template-columns: 1fr; 
   }
 }
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 750px) {
+  .events .events-inner {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1.25rem;
+  }
+  .events .calendar,
+  .events .upcoming {
+    width: 100%;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .events .upcoming {
+    margin-top: 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+a.btn-space:hover, .btn-space:hover {
+  color: #fff !important;
+}
