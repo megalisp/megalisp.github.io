@@ -1,16 +1,4 @@
 .<!-- inject-events.html: Calendar + Upcoming Events block -->
-<script>
-// EVENTS: edit these at the top of the file
-var EVENTS = [
-  { title: "Major Website Revamp!", date: "2025-09-02", time: "00:00", url: "#", category: "Misc", color: "#ff6f00", description: "Full website revamp. Starting on much better footing to regularly post by end of year." },
-  { title: "Megaplex Discord", date: "2025-09-10", time: "00:00", url: "#", category: "Social", color: "#8bc34a", description: "Initial version of the Discord Server up and going." },
-  { title: "Intro Video", date: "2025-09-10", time: "20:00", url: "#", category: "Video", color: "#e53935", description: "Initial intro-video, even if it's just demostream b-roll." },
-  // Coding Stream recurrence (Tuesdays & Thursdays). Use `recurrence.skip` to skip specific ISO dates.
-  { title: "Coding Stream", time: "19:00", url: "#", category: "Stream", color: "#9c27b0", description: "Live coding session.", recurrence: { freq: "weekly", interval: 1, byDay: ["Tue","Thu"], start: "2025-10-01", end: "2025-11-30", skip: [ "2025-10-14" ] } },
-  { title: "Newt: ''New Intentions''", date: "2025-09-20", time: "00:00", url: "https://example.com/events/newt-workshop", category: "Release", color: "#00bcd4", description: "A directional release for Newt describing where we're heading (ie: our Intentions)." },
-
-];
-</script>
 
 <style>
 .events { padding: 1.2rem; }
@@ -140,6 +128,26 @@ var EVENTS = [
 </section>
 
 <script>
+
+// Events are loaded exclusively from /EVENTS.json served from the site root.
+// If fetch fails, the calendar renders empty and an error is logged to the console.
+function loadEventsJson(){
+  return fetch('/EVENTS.json', { cache: 'no-store' }).then(function(resp){ if(!resp.ok) throw new Error('fetch_failed'); return resp.json(); });
+}
+
+// Helper to load external events from /EVENTS.md when available. The file contains an HTML-embedded
+// <script id="external-events" type="application/json">[...]<\/script> block we can parse.
+function loadExternalEvents(){
+  return fetch('/EVENTS.md', { cache: 'no-store' }).then(function(resp){ if(!resp.ok) throw new Error('fetch_failed'); return resp.text(); }).then(function(txt){
+    // parse the external <script id="external-events"> block
+    var m = txt.match(/<script[^>]*id=(?:"|')external-events(?:"|')[^>]*>([\s\S]*?)<\/script>/i);
+    if(!m) throw new Error('no_external_block');
+    try{ var parsed = JSON.parse(m[1]); if(Array.isArray(parsed)) return parsed; } catch(e) { throw e; }
+    throw new Error('parse_failed');
+  });
+}
+
+
 function renderCalendarForMonth(events, year, month){
   var weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   var whead = document.getElementById('cal-weekdays');
@@ -308,102 +316,113 @@ function renderUpcoming(events, maxItems){
 // Initialize
 document.addEventListener('DOMContentLoaded', function(){
   var now = new Date();
-  // expand recurrence rules for the next 6 months
-  var EXPANDED_EVENTS = expandAllEvents(EVENTS, 6);
-  // EXPANDED_EVENTS already includes non-recurring events; avoid duplicating by using it directly
-  var ALL_EVENTS = EXPANDED_EVENTS;
-  showMonth(now.getFullYear(), now.getMonth(), ALL_EVENTS);
-  renderUpcoming(ALL_EVENTS);
-  // hook up controls
-  var prev=document.getElementById('cal-prev'), next=document.getElementById('cal-next'), today=document.getElementById('cal-today');
-  if(prev) prev.addEventListener('click', prevMonth);
-  if(next) next.addEventListener('click', nextMonth);
-  if(today) today.addEventListener('click', goToday);
-  // build legend from categories/colors
-  var legendBtn = document.getElementById('legend-toggle');
-  var legendBox = document.getElementById('event-legend');
-  if(legendBtn && legendBox){
-    var mapping = {};
-    ALL_EVENTS.forEach(function(ev){ var cat = ev.category || 'Other'; var col = ev.color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(); if(!mapping[cat]) mapping[cat]=col; });
-  // build a titled legend with bordered items
-  legendBox.innerHTML = '';
-  var title = document.createElement('div'); title.className='legend-title'; title.textContent = 'Ledgend'; title.style.borderColor = 'rgba(255,111,0,0.9)'; legendBox.appendChild(title);
-  var itemsWrap = document.createElement('div'); itemsWrap.className='legend-items';
-  Object.keys(mapping).forEach(function(cat){ var item=document.createElement('div'); item.className='legend-item'; item.style.borderColor = 'rgba(255,111,0,0.12)'; var c=document.createElement('span'); c.className='legend-circle'; c.style.background = mapping[cat]; var label=document.createElement('span'); label.textContent = cat; item.appendChild(c); item.appendChild(label); itemsWrap.appendChild(item); });
-  legendBox.appendChild(itemsWrap);
-  legendBtn.addEventListener('click', function(){ if(legendBox.style.display==='none' || legendBox.style.display===''){ legendBox.style.display='block'; legendBtn.setAttribute('aria-expanded','true'); legendBtn.classList.add('active'); } else { legendBox.style.display='none'; legendBtn.setAttribute('aria-expanded','false'); legendBtn.classList.remove('active'); } });
-  }
-  // calendar tooltip
-  var tooltip = document.createElement('div'); tooltip.className='calendar-tooltip'; tooltip.id='calendar-tooltip'; document.body.appendChild(tooltip);
-  function showTooltip(evt, items){
-  if(!items || !items.length) return; tooltip.innerHTML='';
-  // deduplicate items by title/date/time/url to avoid duplicates
-  var seen = {};
-  var uniq = [];
-  items.forEach(function(it){ var key = (it.title||'') + '|' + (it.date||'') + '|' + (it.time||'') + '|' + (it.url||''); if(!seen[key]){ seen[key]=true; uniq.push(it); } });
 
-  // render each event as its own block: header (color dot + category) then time + title and optional description
-  uniq.forEach(function(it){
-    var block = document.createElement('div'); block.className = 'tt-item';
-    // header for this event: colored dot + category/type
-    var header = document.createElement('div'); header.className = 'tt-header';
-    var catDot = document.createElement('span'); catDot.className = 'tt-cat-dot'; catDot.style.background = it.color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-    var catLabel = document.createElement('span'); catLabel.className = 'tt-category'; catLabel.textContent = it.category || 'Event';
-    header.appendChild(catDot); header.appendChild(catLabel);
-    block.appendChild(header);
-
-    var row = document.createElement('div'); row.className = 'tt-row';
-    var time = document.createElement('span'); time.className='tt-time'; time.textContent = (it.time? (it.time + ' · '): '');
-    var t = document.createElement('span'); t.className='tt-title'; var a=document.createElement('a'); a.href = it.url || '#'; a.textContent = it.title || ''; a.style.color='inherit'; a.style.textDecoration='none'; t.appendChild(a);
-    row.appendChild(time); row.appendChild(t);
-    block.appendChild(row);
-
-    if(it.description){ var desc=document.createElement('div'); desc.className='muted'; desc.textContent = it.description; desc.style.marginTop='0.25rem'; block.appendChild(desc); }
-    tooltip.appendChild(block);
+  // Load events from /EVENTS.json only
+  loadEventsJson().then(function(fetched){
+    return fetched;
+  }).catch(function(err){
+    // If fetch failed, return an empty list so the UI renders no events
+    console.error('Failed to fetch /EVENTS.json, rendering empty calendar:', err);
+    return [];
+  }).then(function(baseEvents){
+    // expand recurrence rules for the next 6 months
+    var EXPANDED_EVENTS = expandAllEvents(baseEvents, 6);
+    var ALL_EVENTS = EXPANDED_EVENTS;
+    // initial render
+    showMonth(now.getFullYear(), now.getMonth(), ALL_EVENTS);
+    renderUpcoming(ALL_EVENTS);
+    // hook up controls
+    var prev=document.getElementById('cal-prev'), next=document.getElementById('cal-next'), today=document.getElementById('cal-today');
+    if(prev) prev.addEventListener('click', prevMonth);
+    if(next) next.addEventListener('click', nextMonth);
+    if(today) today.addEventListener('click', goToday);
+    // build legend from categories/colors
+    var legendBtn = document.getElementById('legend-toggle');
+    var legendBox = document.getElementById('event-legend');
+    if(legendBtn && legendBox){
+      var mapping = {};
+      ALL_EVENTS.forEach(function(ev){ var cat = ev.category || 'Other'; var col = ev.color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(); if(!mapping[cat]) mapping[cat]=col; });
+      // build a titled legend with bordered items
+      legendBox.innerHTML = '';
+      var title = document.createElement('div'); title.className='legend-title'; title.textContent = 'Ledgend'; title.style.borderColor = 'rgba(255,111,0,0.9)'; legendBox.appendChild(title);
+      var itemsWrap = document.createElement('div'); itemsWrap.className='legend-items';
+      Object.keys(mapping).forEach(function(cat){ var item=document.createElement('div'); item.className='legend-item'; item.style.borderColor = 'rgba(255,111,0,0.12)'; var c=document.createElement('span'); c.className='legend-circle'; c.style.background = mapping[cat]; var label=document.createElement('span'); label.textContent = cat; item.appendChild(c); item.appendChild(label); itemsWrap.appendChild(item); });
+      legendBox.appendChild(itemsWrap);
+      legendBtn.addEventListener('click', function(){ if(legendBox.style.display==='none' || legendBox.style.display===''){ legendBox.style.display='block'; legendBtn.setAttribute('aria-expanded','true'); legendBtn.classList.add('active'); } else { legendBox.style.display='none'; legendBtn.setAttribute('aria-expanded','false'); legendBtn.classList.remove('active'); } });
+    }
+    // calendar tooltip
+    var tooltip = document.createElement('div'); tooltip.className='calendar-tooltip'; tooltip.id='calendar-tooltip'; document.body.appendChild(tooltip);
+    function showTooltip(evt, items){
+      if(!items || !items.length) return; tooltip.innerHTML='';
+      // deduplicate items by title/date/time/url to avoid duplicates
+      var seen = {};
+      var uniq = [];
+      items.forEach(function(it){ var key = (it.title||'') + '|' + (it.date||'') + '|' + (it.time||'') + '|' + (it.url||''); if(!seen[key]){ seen[key]=true; uniq.push(it); } });
+      // render each event as its own block: header (color dot + category) then time + title and optional description
+      uniq.forEach(function(it){
+        var block = document.createElement('div'); block.className = 'tt-item';
+        // header for this event: colored dot + category/type
+        var header = document.createElement('div'); header.className = 'tt-header';
+        var catDot = document.createElement('span'); catDot.className = 'tt-cat-dot'; catDot.style.background = it.color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+        var catLabel = document.createElement('span'); catLabel.className = 'tt-category'; catLabel.textContent = it.category || 'Event';
+        header.appendChild(catDot); header.appendChild(catLabel);
+        block.appendChild(header);
+        var row = document.createElement('div'); row.className = 'tt-row';
+        var time = document.createElement('span'); time.className='tt-time'; time.textContent = (it.time? (it.time + ' · '): '');
+        var t = document.createElement('span'); t.className='tt-title'; var a=document.createElement('a'); a.href = it.url || '#'; a.textContent = it.title || ''; a.style.color='inherit'; a.style.textDecoration='none'; t.appendChild(a);
+        row.appendChild(time); row.appendChild(t);
+        block.appendChild(row);
+        if(it.description){ var desc=document.createElement('div'); desc.className='muted'; desc.textContent = it.description; desc.style.marginTop='0.25rem'; block.appendChild(desc); }
+        tooltip.appendChild(block);
+      });
+      // ensure tooltip is wide enough for time + title; measure and set min-width
+      tooltip.style.display='block'; tooltip.style.left = (evt.pageX + 12) + 'px'; tooltip.style.top = (evt.pageY + 12) + 'px';
+      var maxW = 0; Array.from(tooltip.children).forEach(function(c){ var w = c.scrollWidth; if(w>maxW) maxW=w; });
+      var minW = Math.max(180, Math.min(600, maxW + 40)); tooltip.style.minWidth = minW + 'px';
+    }
+    function hideTooltip(){ tooltip.style.display='none'; tooltip.innerHTML=''; }
+    // attach handlers to day cells via event delegation
+    var daysContainer = document.getElementById('cal-days');
+    if(daysContainer){
+      daysContainer.addEventListener('mouseover', function(e){ var day = e.target.closest('.day.event'); if(!day) return; try{ var items = day.dataset.events? JSON.parse(day.dataset.events): []; showTooltip(e, items); } catch(ex){ /* ignore */ } });
+      daysContainer.addEventListener('mousemove', function(e){ if(tooltip.style.display==='block'){ tooltip.style.left = (e.pageX + 12) + 'px'; tooltip.style.top = (e.pageY + 12) + 'px'; } });
+      daysContainer.addEventListener('mouseout', function(e){ var related = e.relatedTarget; if(!related || !eventIsInside(related, daysContainer)){ hideTooltip(); } });
+      // click to scroll upcoming (scroll the upcoming list container only)
+      daysContainer.addEventListener('click', function(e){
+        var day = e.target.closest('.day');
+        if(!day) return;
+        e.preventDefault(); e.stopPropagation();
+        var date = day.dataset.date; if(!date) return;
+        var ul = document.getElementById('upcoming-list'); if(!ul) return;
+        // find all matching upcoming items for this date
+        var targets = Array.from(ul.querySelectorAll('[data-date="'+date+'"]'));
+        if(!targets.length){
+          // not in the currently rendered upcoming list: render more items and try again
+          try{ renderUpcoming(ALL_EVENTS, 40); } catch(x){}
+          targets = Array.from(ul.querySelectorAll('[data-date="'+date+'"]'));
+        }
+        if(targets.length){
+          var first = targets[0];
+          // compute offset of first target inside the scroll container
+          var containerTop = ul.getBoundingClientRect().top;
+          var targetTop = first.getBoundingClientRect().top;
+          var currentScroll = ul.scrollTop;
+          var offset = targetTop - containerTop + currentScroll - 8; // small padding
+          ul.scrollTo({ top: offset, behavior: 'smooth' });
+          // highlight all matching items briefly
+          targets.forEach(function(t){ t.classList.add('highlight'); });
+          try{ first.tabIndex = -1; first.focus(); } catch(x){}
+          setTimeout(function(){ targets.forEach(function(t){ t.classList.remove('highlight'); }); }, 2200);
+        }
+      });
+    }
+    function eventIsInside(node, container){ return container.contains(node); }
+  }).catch(function(err){
+    // Final catch: log and render an empty calendar
+    console.error('Events initialization failed:', err);
+    var ALL_EVENTS = [];
+    showMonth(now.getFullYear(), now.getMonth(), ALL_EVENTS);
+    renderUpcoming(ALL_EVENTS);
   });
-
-  // ensure tooltip is wide enough for time + title; measure and set min-width
-  tooltip.style.display='block'; tooltip.style.left = (evt.pageX + 12) + 'px'; tooltip.style.top = (evt.pageY + 12) + 'px';
-  var maxW = 0; Array.from(tooltip.children).forEach(function(c){ var w = c.scrollWidth; if(w>maxW) maxW=w; });
-  var minW = Math.max(180, Math.min(600, maxW + 40)); tooltip.style.minWidth = minW + 'px';
-  }
-  function hideTooltip(){ tooltip.style.display='none'; tooltip.innerHTML=''; }
-  // attach handlers to day cells via event delegation
-  var daysContainer = document.getElementById('cal-days');
-  if(daysContainer){
-    daysContainer.addEventListener('mouseover', function(e){ var day = e.target.closest('.day.event'); if(!day) return; try{ var items = day.dataset.events? JSON.parse(day.dataset.events): []; showTooltip(e, items); } catch(ex){ /* ignore */ } });
-    daysContainer.addEventListener('mousemove', function(e){ if(tooltip.style.display==='block'){ tooltip.style.left = (e.pageX + 12) + 'px'; tooltip.style.top = (e.pageY + 12) + 'px'; } });
-    daysContainer.addEventListener('mouseout', function(e){ var related = e.relatedTarget; if(!related || !eventIsInside(related, daysContainer)){ hideTooltip(); } });
-    // click to scroll upcoming (scroll the upcoming list container only)
-    daysContainer.addEventListener('click', function(e){
-      var day = e.target.closest('.day');
-      if(!day) return;
-      e.preventDefault(); e.stopPropagation();
-      var date = day.dataset.date; if(!date) return;
-      var ul = document.getElementById('upcoming-list'); if(!ul) return;
-      // find all matching upcoming items for this date
-      var targets = Array.from(ul.querySelectorAll('[data-date="'+date+'"]'));
-      if(!targets.length){
-        // not in the currently rendered upcoming list: render more items and try again
-        try{ renderUpcoming(ALL_EVENTS, 40); } catch(x){}
-        targets = Array.from(ul.querySelectorAll('[data-date="'+date+'"]'));
-      }
-      if(targets.length){
-        var first = targets[0];
-        // compute offset of first target inside the scroll container
-        var containerTop = ul.getBoundingClientRect().top;
-        var targetTop = first.getBoundingClientRect().top;
-        var currentScroll = ul.scrollTop;
-        var offset = targetTop - containerTop + currentScroll - 8; // small padding
-        ul.scrollTo({ top: offset, behavior: 'smooth' });
-
-        // highlight all matching items briefly
-        targets.forEach(function(t){ t.classList.add('highlight'); });
-        try{ first.tabIndex = -1; first.focus(); } catch(x){}
-        setTimeout(function(){ targets.forEach(function(t){ t.classList.remove('highlight'); }); }, 2200);
-      }
-    });
-  }
-  function eventIsInside(node, container){ return container.contains(node); }
 });
 </script>
