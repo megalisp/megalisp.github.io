@@ -206,7 +206,14 @@ h1, h2 {
 
 
 
-
+  /* small-screen fallback */
+  @media (max-width: 480px) {
+    .vault-desc {
+      width: auto;
+      max-width: 260px;
+      padding: 0.6rem 0.75rem;
+    }
+  }
 
 
 
