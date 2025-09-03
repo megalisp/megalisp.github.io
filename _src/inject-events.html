@@ -132,6 +132,16 @@
 // Events are loaded exclusively from /_EVENTS.json served from the site root.
 // If fetch fails, the calendar renders empty and an error is logged to the console.
 function loadEventsJson(){
+  var el = document.getElementById('injected-events');
+  if (el) {
+    try {
+      return Promise.resolve(JSON.parse(el.textContent));
+    } catch (e) {
+      console.error('Failed to parse injected events JSON', e);
+      return Promise.resolve([]);
+    }
+  }
+  // fallback: try to fetch (should not be needed)
   return fetch('/_EVENTS.json', { cache: 'no-store' }).then(function(resp){ if(!resp.ok) throw new Error('fetch_failed'); return resp.json(); });
 }
 

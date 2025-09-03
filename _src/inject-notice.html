@@ -230,8 +230,8 @@
       }
     }
 
-    // Try to load messages from injected <script type="application/json" id="notice-ticker-json">.
-    var tickerScript = document.getElementById('notice-ticker-json');
+    // Try to load messages from injected <script type="application/json" id="injected-ticker">.
+    var tickerScript = document.getElementById('injected-ticker');
     var loadedFromScript = false;
     if (tickerScript && tickerScript.textContent.trim().length > 0) {
       try {
