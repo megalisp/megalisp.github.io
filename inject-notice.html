@@ -21,31 +21,6 @@
 
 /* the .notice-wrap uses Bootstrap's .container to match main content width */
 .notice-wrap {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-/* navigation buttons beside the ticker */
-.notice-nav-btn {
-  background: #111;
-  color: #ff7a00;
-  border: none;
-  width: 2rem;
-  height: 2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 0.15rem;
-  border-radius: 0.35rem;
-  cursor: pointer;
-  box-shadow: 0 1px 3px #0006;
-}
-.notice-nav-btn:hover { color: #fff; }
-
-/* body wrapper that holds nav, text, and close inside one dark pill */
-.notice-body {
   background: #111;
   color: #fff;
   padding: 0.25em 0.6em;
@@ -55,26 +30,16 @@
   gap: 0.25rem;
   flex: 1 1 auto;
   position: relative;
-}
-
-.notice-nav-left { display:flex; align-items:center; gap: 0.15rem; }
-
-/* subtler ticker styling: less padding, smaller radius */
-#homepage-notice .notice-text {
+  background: #111;
   color: #fff;
+  padding: 0.25em 0.8em;
+  border-radius: 0.5em;
   font-weight: 600;
   font-size: 1.0em;
   text-align: center;
   display: block;
+  flex: 1 1 auto;
   box-sizing: border-box;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 7rem); /* leave room for nav + close */
-  z-index: 2;
 }
 
 #notice-close-btn {
@@ -101,17 +66,21 @@
 /* ticker link colors (markdown links inside the ticker) */
 #homepage-notice .notice-text a,
 #homepage-notice .notice-text a:visited,
-#homepage-notice .notice-item a {
-  color: #ff7a00;
-  text-decoration: underline;
-}
-#homepage-notice .notice-text a:hover,
-#homepage-notice .notice-item a:hover {
-  color: #ffffff;
-  text-decoration: underline;
-}
-
-/* highlight (==text==) styling inside ticker */
+    #homepage-notice .notice-text {
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.0em;
+      text-align: center;
+      display: block;
+      box-sizing: border-box;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: calc(100% - 7rem); /* leave room for nav + close */
+      z-index: 2;
 #homepage-notice .notice-text mark,
 #homepage-notice .notice-item mark {
   background: #ff7a00;
@@ -144,52 +113,19 @@
     var tickerInterval = null;
     var messages = [textEl ? textEl.textContent.trim() : '⚠️WARNING: Site Under Active Development!'];
 
-    function isSafeUrl(url) {
-      try {
-        var u = url.trim();
-        return /^(https?:|\/|mailto:)/i.test(u);
-      } catch (e) { return false; }
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, function(c) {
-        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c];
-      });
-    }
-
-    function markdownToHtml(line) {
-      var s = String(line || '');
-      var m = s.match(/^\s*>\s*(.*)$/);
-      if (m) {
-        return '<q>' + escapeHtml(m[1]) + '</q>';
-      }
-      s = escapeHtml(s);
-      s = s.replace(/`([^`]+)`/g, function(_, code) { return '<code>' + escapeHtml(code) + '</code>'; });
-      s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(_, text, url) {
-        if (isSafeUrl(url)) {
-          return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(text) + '</a>';
-        }
-        return escapeHtml(text + ' (' + url + ')');
-      });
-      s = s.replace(/\*\*([^*]+)\*\*/g, function(_, t) { return '<strong>' + escapeHtml(t) + '</strong>'; });
-      s = s.replace(/__([^_]+)__/g, function(_, t) { return '<u>' + escapeHtml(t) + '</u>'; });
-      s = s.replace(/==([^=]+)==/g, function(_, t) { return '<mark>' + escapeHtml(t) + '</mark>'; });
-      s = s.replace(/\*([^*]+)\*/g, function(_, t) { return '<em>' + escapeHtml(t) + '</em>'; });
-      return s;
-    }
-
     function renderTextInto(el, text) {
       if (!el) return;
       try {
-        el.innerHTML = markdownToHtml(String(text || ''));
-      } catch (e) {
-        el.textContent = String(text || '');
-      }
+        while (el.firstChild) el.removeChild(el.firstChild);
+        var frag = parseInlineMarkdown(String(text || ''));
+        el.appendChild(frag);
+      } catch (e) { el.textContent = String(text || ''); }
     }
 
     function startTicker() {
       if (!messages || messages.length === 0) return;
       var idx = 0;
+      // show first immediately
       renderTextInto(textEl, messages[0]);
       textEl._tickerIndex = 0;
 
@@ -221,6 +157,56 @@
       if (prevBtn) prevBtn.addEventListener('click', function() { showIndex(textEl._tickerIndex - 1); resetInterval(); });
       if (nextBtn) nextBtn.addEventListener('click', function() { showIndex(textEl._tickerIndex + 1); resetInterval(); });
     }
+      // Inline markdown -> sanitized HTML converter (for one-line messages).
+      // Escapes HTML, then converts a small set of inline markdown tokens to tags.
+      function isSafeUrl(url) {
+        try {
+          var u = url.trim();
+          return /^(https?:|\/|mailto:)/i.test(u);
+        } catch (e) { return false; }
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function(c) {
+          return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c];
+        });
+      }
+
+      function markdownToHtml(line) {
+        var s = String(line || '');
+        // handle leading quote >
+        var m = s.match(/^\s*>\s*(.*)$/);
+        if (m) {
+          return '<q>' + escapeHtml(m[1]) + '</q>';
+        }
+        // escape first
+        s = escapeHtml(s);
+        // code spans first
+        s = s.replace(/`([^`]+)`/g, function(_, code) { return '<code>' + escapeHtml(code) + '</code>'; });
+        // links [text](url)
+        s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(_, text, url) {
+          if (isSafeUrl(url)) {
+            return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(text) + '</a>';
+          }
+          return escapeHtml(text + ' (' + url + ')');
+        });
+        // bold **text**
+        s = s.replace(/\*\*([^*]+)\*\*/g, function(_, t) { return '<strong>' + escapeHtml(t) + '</strong>'; });
+        // underline __text__
+        s = s.replace(/__([^_]+)__/g, function(_, t) { return '<u>' + escapeHtml(t) + '</u>'; });
+        // highlight ==text==
+        s = s.replace(/==([^=]+)==/g, function(_, t) { return '<mark>' + escapeHtml(t) + '</mark>'; });
+        // italic *text* (do last)
+        s = s.replace(/\*([^*]+)\*/g, function(_, t) { return '<em>' + escapeHtml(t) + '</em>'; });
+        return s;
+      }
+
+      function createItem(text) {
+        var el = document.createElement('div');
+        el.className = 'notice-item';
+        el.innerHTML = markdownToHtml(String(text || ''));
+        return el;
+      }
 
     // Load messages from site root TICKER.json (non-cached)
     if (window.fetch) {

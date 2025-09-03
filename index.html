@@ -158,51 +158,239 @@
     justify-content: center;
     position: relative;
     width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem; /* small breathing room at viewport edges */
   }
-  #homepage-notice .notice-text {
+
+  /* the .notice-wrap uses Bootstrap's .container to match main content width */
+  .notice-wrap {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  /* navigation buttons beside the ticker */
+  .notice-nav-btn {
+    background: #111;
+    color: #ff7a00;
+    border: none;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.15rem;
+    border-radius: 0.35rem;
+    cursor: pointer;
+    box-shadow: 0 1px 3px #0006;
+  }
+  .notice-nav-btn:hover { color: #fff; }
+
+  /* body wrapper that holds nav, text, and close inside one dark pill */
+  .notice-body {
     background: #111;
     color: #fff;
-    padding: 0.35em 2.5em 0.35em 1.5em;
-    border-radius: 2em;
-    font-weight: bold;
-    font-size: 1.1em;
+    padding: 0.25em 0.6em;
+    border-radius: 0.5em;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1 1 auto;
+    position: relative;
+  }
+
+  .notice-nav-left { display:flex; align-items:center; gap: 0.15rem; }
+
+  /* subtler ticker styling: less padding, smaller radius */
+  #homepage-notice .notice-text {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.0em;
     text-align: center;
     display: block;
-    max-width: 90vw;
-  }
-  #notice-close-btn {
+    box-sizing: border-box;
     position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 7rem); /* leave room for nav + close */
+    z-index: 2;
+  }
+
+  #notice-close-btn {
+    position: absolute; /* anchor to full-width bar */
     top: 50%;
-    right: 1.2em;
+    right: 20px; /* 20px gap from the full bar edge */
     transform: translateY(-50%);
     background: #111;
     border: none;
-    font-size: 1em;
+    font-size: 1.05em;
     color: #ffffff;
     cursor: pointer;
     line-height: 1;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.6em;
+    height: 1.6em;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 1px 4px #0006;
+    z-index: 1100;
+  }
+
+  /* ticker link colors (markdown links inside the ticker) */
+  #homepage-notice .notice-text a,
+  #homepage-notice .notice-text a:visited,
+  #homepage-notice .notice-item a {
+    color: #ff7a00;
+    text-decoration: underline;
+  }
+  #homepage-notice .notice-text a:hover,
+  #homepage-notice .notice-item a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+  /* highlight (==text==) styling inside ticker */
+  #homepage-notice .notice-text mark,
+  #homepage-notice .notice-item mark {
+    background: #ff7a00;
+    color: #111;
+    padding: 0 0.12em;
+    border-radius: 0.12em;
+    font-weight: 700;
   }
   </style>
 
   <div id="homepage-notice">
     <div class="notice-inner">
-      <span class="notice-text">⚠️WARNING: Site Under Active Development!</span>
-      <button id="notice-close-btn" aria-label="Close notice">&times;</button>
+      <div class="container notice-wrap">
+        <div class="notice-body">
+          <div class="notice-nav-left" style="display:flex; align-items:center;">
+            <button class="notice-nav-btn" id="notice-prev-btn" aria-label="previous message">&lt;</button>
+            <button class="notice-nav-btn" id="notice-next-btn" aria-label="next message">&gt;</button>
+          </div>
+          <span class="notice-text" id="notice-text">⚠️WARNING: Site Under Active Development!</span>
+          <button id="notice-close-btn" aria-label="Close notice">&times;</button>
+        </div>
+      </div>
     </div>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var btn = document.getElementById('notice-close-btn');
       var bar = document.getElementById('homepage-notice');
-      if(btn && bar) {
-        btn.onclick = function() { bar.style.display = 'none'; };
+      var textEl = document.getElementById('notice-text');
+      var tickerInterval = null;
+      var messages = [textEl ? textEl.textContent.trim() : '⚠️WARNING: Site Under Active Development!'];
+
+      function isSafeUrl(url) {
+        try {
+          var u = url.trim();
+          return /^(https?:|\/|mailto:)/i.test(u);
+        } catch (e) { return false; }
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function(c) {
+          return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c];
+        });
+      }
+
+      function markdownToHtml(line) {
+        var s = String(line || '');
+        var m = s.match(/^\s*>\s*(.*)$/);
+        if (m) {
+          return '<q>' + escapeHtml(m[1]) + '</q>';
+        }
+        s = escapeHtml(s);
+        s = s.replace(/`([^`]+)`/g, function(_, code) { return '<code>' + escapeHtml(code) + '</code>'; });
+        s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(_, text, url) {
+          if (isSafeUrl(url)) {
+            return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(text) + '</a>';
+          }
+          return escapeHtml(text + ' (' + url + ')');
+        });
+        s = s.replace(/\*\*([^*]+)\*\*/g, function(_, t) { return '<strong>' + escapeHtml(t) + '</strong>'; });
+        s = s.replace(/__([^_]+)__/g, function(_, t) { return '<u>' + escapeHtml(t) + '</u>'; });
+        s = s.replace(/==([^=]+)==/g, function(_, t) { return '<mark>' + escapeHtml(t) + '</mark>'; });
+        s = s.replace(/\*([^*]+)\*/g, function(_, t) { return '<em>' + escapeHtml(t) + '</em>'; });
+        return s;
+      }
+
+      function renderTextInto(el, text) {
+        if (!el) return;
+        try {
+          el.innerHTML = markdownToHtml(String(text || ''));
+        } catch (e) {
+          el.textContent = String(text || '');
+        }
+      }
+
+      function startTicker() {
+        if (!messages || messages.length === 0) return;
+        var idx = 0;
+        renderTextInto(textEl, messages[0]);
+        textEl._tickerIndex = 0;
+
+        function advance() {
+          var ni = (textEl._tickerIndex + 1) % messages.length;
+          textEl._tickerIndex = ni;
+          try { renderTextInto(textEl, messages[ni]); } catch(e) {}
+        }
+
+        if (messages.length > 1) {
+          tickerInterval = setInterval(advance, 8000);
+        }
+
+        var prevBtn = document.getElementById('notice-prev-btn');
+        var nextBtn = document.getElementById('notice-next-btn');
+
+        function showIndex(i) {
+          if (!messages || !messages.length) return;
+          i = ((i % messages.length) + messages.length) % messages.length;
+          textEl._tickerIndex = i;
+          try { renderTextInto(textEl, messages[i]); } catch(e) {}
+        }
+
+        function resetInterval() {
+          if (tickerInterval) clearInterval(tickerInterval);
+          if (messages.length > 1) tickerInterval = setInterval(advance, 8000);
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', function() { showIndex(textEl._tickerIndex - 1); resetInterval(); });
+        if (nextBtn) nextBtn.addEventListener('click', function() { showIndex(textEl._tickerIndex + 1); resetInterval(); });
+      }
+
+      // Load messages from site root TICKER.json (non-cached)
+      if (window.fetch) {
+        fetch('/TICKER.json', { cache: 'no-store' }).then(function(resp) {
+          if (!resp.ok) throw new Error('bad response');
+          return resp.json();
+        }).then(function(arr) {
+          if (Array.isArray(arr) && arr.length > 0) {
+            messages = arr.map(function(x){ return String(x); });
+            try { renderTextInto(textEl, messages[0]); } catch(e) {}
+            startTicker();
+          } else {
+            startTicker();
+          }
+        }).catch(function() {
+          // fallback to default
+          startTicker();
+        });
+      } else {
+        startTicker();
+      }
+
+      if (btn && bar) {
+        btn.onclick = function() {
+          bar.style.display = 'none';
+          if (tickerInterval) { clearInterval(tickerInterval); tickerInterval = null; }
+        };
       }
     });
   </script>
