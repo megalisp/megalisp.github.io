@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
  <title type="text">MEGALISP: MEGALISP</title>
- <link rel="self" href="http://localhost:8000//feeds/all.atom.xml" />
- <link href="http://localhost:8000//index.html" />
- <id>urn:http-localhost-8000:-index-html</id>
+ <link rel="self" href="https://megalisp.github.io//feeds/all.atom.xml" />
+ <link href="https://megalisp.github.io//index.html" />
+ <id>urn:https-megalisp-github-io:-index-html</id>
  <updated>2025-07-31T05:00:00Z</updated>
  <entry>
   <title type="text">And... We Have Lift-Off!</title>
-  <link rel="alternate" href="http://localhost:8000//2025/07/and-we-have-lift-off.html?utm_source=all&amp;utm_medium=Atom" />
-  <id>urn:http-localhost-8000:-2025-07-and-we-have-lift-off-html</id>
+  <link rel="alternate" href="https://megalisp.github.io//2025/07/and-we-have-lift-off.html?utm_source=all&amp;utm_medium=Atom" />
+  <id>urn:https-megalisp-github-io:-2025-07-and-we-have-lift-off-html</id>
   <published>2025-07-31T05:00:00Z</published>
   <updated>2025-07-31T05:00:00Z</updated>
   <author>
    <name>Joshua Steven Grant (ie: Jost Grant)</name></author>
   <content type="html">
-&lt;p&gt;...&lt;/p&gt;&lt;a href="http://localhost:8000//2025/07/and-we-have-lift-off.html?utm_source=all&amp;amp;utm_medium=Atom"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</content></entry></feed>
+&lt;p&gt;...&lt;/p&gt;&lt;a href="https://megalisp.github.io//2025/07/and-we-have-lift-off.html?utm_source=all&amp;amp;utm_medium=Atom"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</content></entry></feed>

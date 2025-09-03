@@ -136,6 +136,10 @@
     </div>
   </div>
 </div>
+<!-- Ticker JSON injected for JS to read if present -->
+<script type="application/json" id="notice-ticker-json">
+<!-- inject _TICKER.json contents here at build time -->
+</script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('notice-close-btn');
@@ -226,19 +230,33 @@
       }
     }
 
-    // Load messages from site root TICKER.json (non-cached)
-    if (window.fetch) {
+    // Try to load messages from injected <script type="application/json" id="notice-ticker-json">.
+    var tickerScript = document.getElementById('notice-ticker-json');
+    var loadedFromScript = false;
+    if (tickerScript && tickerScript.textContent.trim().length > 0) {
+      try {
+        var arr = JSON.parse(tickerScript.textContent);
+        if (Array.isArray(arr) && arr.length > 0) {
+          messages = arr.map(function(x){ return String(x); });
+          loadedFromScript = true;
+        }
+      } catch (e) { /* ignore, fallback to fetch */ }
+    }
+    // If not present, fetch _TICKER.json and inject it into the script tag for future use
+    if (!loadedFromScript && window.fetch) {
       fetch('/_TICKER.json', { cache: 'no-store' }).then(function(resp) {
         if (!resp.ok) throw new Error('bad response');
         return resp.json();
       }).then(function(arr) {
         if (Array.isArray(arr) && arr.length > 0) {
           messages = arr.map(function(x){ return String(x); });
+          // Inject into the script tag for future loads
+          if (tickerScript) {
+            tickerScript.textContent = JSON.stringify(arr, null, 2);
+          }
         }
-        // Always start ticker, even if fallback
         startTicker();
       }).catch(function() {
-        // fallback to default, but always start ticker
         startTicker();
       });
     } else {

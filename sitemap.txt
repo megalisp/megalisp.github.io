@@ -1,5 +1,5 @@
-http://localhost:8000//2025/07/and-we-have-lift-off.html
-http://localhost:8000//subdir/foo.html
-http://localhost:8000//posts/index.html
-http://localhost:8000//Plex.html
-http://localhost:8000//Bout.html
+https://megalisp.github.io//2025/07/and-we-have-lift-off.html
+https://megalisp.github.io//subdir/foo.html
+https://megalisp.github.io//posts/index.html
+https://megalisp.github.io//Plex.html
+https://megalisp.github.io//Bout.html
