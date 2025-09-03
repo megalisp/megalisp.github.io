@@ -129,10 +129,10 @@
 
 <script>
 
-// Events are loaded exclusively from /EVENTS.json served from the site root.
+// Events are loaded exclusively from /_EVENTS.json served from the site root.
 // If fetch fails, the calendar renders empty and an error is logged to the console.
 function loadEventsJson(){
-  return fetch('/EVENTS.json', { cache: 'no-store' }).then(function(resp){ if(!resp.ok) throw new Error('fetch_failed'); return resp.json(); });
+  return fetch('/_EVENTS.json', { cache: 'no-store' }).then(function(resp){ if(!resp.ok) throw new Error('fetch_failed'); return resp.json(); });
 }
 
 // Helper to load external events from /EVENTS.md when available. The file contains an HTML-embedded

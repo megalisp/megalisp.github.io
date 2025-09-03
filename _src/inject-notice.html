@@ -224,7 +224,7 @@
 
     // Load messages from site root TICKER.json (non-cached)
     if (window.fetch) {
-      fetch('/TICKER.json', { cache: 'no-store' }).then(function(resp) {
+      fetch('/_TICKER.json', { cache: 'no-store' }).then(function(resp) {
         if (!resp.ok) throw new Error('bad response');
         return resp.json();
       }).then(function(arr) {
