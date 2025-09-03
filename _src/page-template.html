@@ -25,6 +25,13 @@
   <link rel="alternate" type="application/atom+xml" href="@|atom-feed-uri|" title="Atom Feed">
   <link rel="alternate" type="application/rss+xml" href="@|rss-feed-uri|" title="RSS Feed">
   <!-- Space styles are centralized in css/custom.css -->
+  <!-- Inject events and ticker JSON at build time -->
+  <script id="injected-events" type="application/json">
+    @(file->string "_EVENTS.json")
+  </script>
+  <script id="injected-ticker" type="application/json">
+    @(file->string "_TICKER.json")
+  </script>
   @google-universal-analytics["UA-xxxxx"]
 </head>
 <body>
