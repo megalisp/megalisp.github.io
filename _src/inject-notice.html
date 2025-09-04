@@ -32,8 +32,9 @@
   background: #111;
   color: #ff7a00;
   border: none;
-  width: 2rem;
-  height: 2rem;
+  width: 2.2em;
+  min-height: 2.2em;
+  padding: 0.25em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -41,6 +42,7 @@
   border-radius: 0.35rem;
   cursor: pointer;
   box-shadow: 0 1px 3px #0006;
+  font-size: 1em;
 }
 .notice-nav-btn:hover { color: #fff; }
 
@@ -48,18 +50,19 @@
 .notice-body {
   background: #111;
   color: #fff;
-  padding: 0.25em 0.6em;
+  padding: 0.3em 0.6em;
   border-radius: 0.5em;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   flex: 1 1 auto;
   position: relative;
+  box-sizing: border-box;
 }
 
 .notice-nav-left { display:flex; align-items:center; gap: 0.15rem; }
 
-/* subtler ticker styling: less padding, smaller radius */
+/* allow the message to participate in layout and wrap as needed */
 #homepage-notice .notice-text {
   color: #fff;
   font-weight: 600;
@@ -67,35 +70,46 @@
   text-align: center;
   display: block;
   box-sizing: border-box;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 7rem); /* leave room for nav + close */
+  position: relative;
+  left: auto;
+  transform: none;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  max-width: none;
   z-index: 2;
+  flex: 1 1 auto;
+  word-break: break-word;
+  line-height: 1.3;
+  padding: 0.15em 0;
 }
 
 #notice-close-btn {
-  position: absolute; /* anchor to full-width bar */
-  top: 50%;
-  right: 20px; /* 20px gap from the full bar edge */
-  transform: translateY(-50%);
+  position: relative;
+  top: auto;
+  right: auto;
+  transform: none;
   background: #111;
   border: none;
   font-size: 1.05em;
   color: #ffffff;
   cursor: pointer;
   line-height: 1;
-  width: 1.6em;
-  height: 1.6em;
+  width: 1.8em;
+  height: 1.8em;
   border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 1px 4px #0006;
   z-index: 1100;
+}
+
+/* Controls container: keep nav + close on a single row */
+.notice-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* ticker link colors (markdown links inside the ticker) */
@@ -120,15 +134,19 @@
   border-radius: 0.12em;
   font-weight: 700;
 }
+
+
 </style>
 
 <div id="homepage-notice">
   <div class="notice-inner">
     <div class="container notice-wrap">
       <div class="notice-body">
-        <div class="notice-nav-left" style="display:flex; align-items:center;">
-          <button class="notice-nav-btn" id="notice-prev-btn" aria-label="previous message">&lt;</button>
-          <button class="notice-nav-btn" id="notice-next-btn" aria-label="next message">&gt;</button>
+        <div class="notice-controls">
+          <div class="notice-nav-left" style="display:flex; align-items:center;">
+            <button class="notice-nav-btn" id="notice-prev-btn" aria-label="previous message">&lt;</button>
+            <button class="notice-nav-btn" id="notice-next-btn" aria-label="next message">&gt;</button>
+          </div>
         </div>
         <span class="notice-text" id="notice-text">⚠️WARNING: Site Under Active Development!</span>
         <button id="notice-close-btn" aria-label="Close notice">&times;</button>
