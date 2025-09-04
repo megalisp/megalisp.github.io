@@ -37,6 +37,8 @@
 <body>
   @(include-template "inject-navbar.html")
 
+  <!-- Global starfield for all pages (canvas sits behind content) -->
+  @(include-template "inject-starfield.html")
 
   <!-- Notice bar below navbar, above hero -->
   @(when (string-ci=? uri-path (string-append uri-prefix "/index.html"))
@@ -47,7 +49,6 @@
   <!-- Main Content: Hero + content layout -->
   @(when (string-ci=? uri-path (string-append uri-prefix "/index.html"))
   @list{
-  @(include-template "inject-starfield.html")
   @(include-template "inject-hero.html")
   })
 

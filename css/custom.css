@@ -90,6 +90,39 @@ a:hover {
 
 /* Navbar and dropdown styles moved to _src/inject-navbar.html */
 
+/* Prevent dropdown-toggle labels (Tags / Sub) from appearing underlined like active page links */
+.nav-link.dropdown-toggle {
+  text-decoration: none !important;
+  color: var(--secondary) !important;
+}
+
+.nav-link.dropdown-toggle:hover {
+  color: var(--primary) !important;
+}
+
+/* Strong override: ensure navbar dropdown labels (Tags / Sub) never inherit
+   the active-link underline from page-specific inline styles on the homepage.
+   This selector has higher specificity than `.nav-item.active > .nav-link`.
+*/
+.navbar .nav-item.dropdown > .nav-link.dropdown-toggle {
+  text-decoration: none !important;
+  text-decoration-color: transparent !important;
+  text-underline-offset: 0 !important;
+  color: var(--secondary) !important;
+}
+.navbar .nav-item.dropdown > .nav-link.dropdown-toggle:hover {
+  color: var(--primary) !important;
+  text-decoration: none !important;
+}
+
+/* Ensure dropdown labels are not bold (override active-link bolding) */
+.navbar .nav-item.dropdown > .nav-link.dropdown-toggle {
+  font-weight: 400 !important;
+}
+.navbar .nav-item.dropdown > .nav-link.dropdown-toggle:hover {
+  font-weight: 400 !important;
+}
+
 /* === Buttons === */
 .btn {
   border-radius: 4px;
@@ -121,6 +154,20 @@ a:hover {
 .space-border {
   border: 2px solid var(--primary);
   border-radius: 8px;
+}
+
+/* Make post/article containers use a mostly-opaque black background so the
+   orange outline reads clearly; slight transparency keeps subtle context.
+   Target the article element with this class to avoid affecting other small
+   UI elements that might reuse .space-border. */
+article.space-border {
+  /* stronger rule to override any other background rules */
+  background-color: rgba(0,0,0,0.82) !important;
+  padding: 1.25rem;
+  position: relative; /* create a stacking context */
+  z-index: 1; /* sit above the starfield canvas */
+  background-clip: padding-box;
+  transition: background-color 220ms ease;
 }
 
 .galaxy-glow {

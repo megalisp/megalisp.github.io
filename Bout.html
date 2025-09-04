@@ -117,6 +117,13 @@
   color: var(--primary) !important;
   font-weight: bold;
 }
+/* underline active page link in white for clearer indication (Plex, Bout, etc.) */
+.nav-item.active > .nav-link {
+  text-decoration: underline !important;
+  text-decoration-color: var(--secondary) !important;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
 /* Dropdown rules specific to navbar */
 .dropdown-menu {
   position: absolute; /* ensure it floats above page flow */
@@ -200,6 +207,95 @@
   </div>
 </nav>
 
+  <!-- Global starfield for all pages (canvas sits behind content) -->
+  <!-- inject-starfield.html: Full-viewport animated starfield background (canvas) -->
+<style>
+/* Starfield container sits behind page content */
+#starfield-canvas-wrap { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #000; }
+#starfield-canvas { width: 100%; height: 100%; display: block; }
+</style>
+
+<div id="starfield-canvas-wrap" aria-hidden="true">
+  <canvas id="starfield-canvas"></canvas>
+</div>
+
+<script>
+// Minimal starfield animation using Canvas and requestAnimationFrame.
+(function(){
+  const canvas = document.getElementById('starfield-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0, height = 0, stars = [];
+
+  function resize(){
+    const dpr = window.devicePixelRatio || 1;
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = Math.max(300, Math.floor(width * dpr));
+    canvas.height = Math.max(200, Math.floor(height * dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function initStars(count){
+    stars = [];
+    for(let i=0;i<count;i++){
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z: Math.random() * 1, // depth
+        speed: 0.2 + Math.random() * 0.9,
+        size: 0.4 + Math.random() * 1.8
+      });
+    }
+  }
+
+  let last = performance.now();
+  function frame(now){
+    const dt = Math.min(40, now - last) / 16.666; // normalized ~60fps
+    last = now;
+    // subtle fade to preserve depth
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0,0,width,height);
+
+    for(let s of stars){
+      s.x += s.speed * dt;
+      s.y += (s.speed * 0.05) * dt;
+      // wrap
+      if(s.x > width + 10) s.x = -10;
+      if(s.y > height + 10) s.y = -10;
+
+      const hue = 210 + s.z * 40; // bluish variation
+      const alpha = 0.6 + s.z * 0.4;
+      ctx.beginPath();
+      ctx.fillStyle = `hsla(${hue}, 80%, 90%, ${alpha})`;
+      ctx.arc(s.x, s.y, s.size * (1 + s.z), 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function start(){
+    resize();
+    initStars(Math.max(60, Math.floor((width * height) / 5000)));
+    last = performance.now();
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', ()=>{
+    resize();
+    initStars(Math.max(60, Math.floor((width * height) / 5000)));
+  });
+
+  // start after DOM content to avoid racing with layout
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else
+    start();
+
+})();
+</script>
 
   <!-- Notice bar below navbar, above hero -->
 

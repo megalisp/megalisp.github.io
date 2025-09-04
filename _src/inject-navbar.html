@@ -21,6 +21,13 @@
   color: var(--primary) !important;
   font-weight: bold;
 }
+/* underline active page link in white for clearer indication (Plex, Bout, etc.) */
+.nav-item.active > .nav-link {
+  text-decoration: underline !important;
+  text-decoration-color: var(--secondary) !important;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
 /* Dropdown rules specific to navbar */
 .dropdown-menu {
   position: absolute; /* ensure it floats above page flow */

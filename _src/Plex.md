@@ -1,51 +1,57 @@
+<div class="card mb-3">
+  <div class="card-body">
+
 <div class="bubble-quote" style="margin-top:1em;">
   <span class="quote-mark">&#8220;</span>
   We Are Still <b>Setting Things Up</b> Expect Things To Be Wonky Till End Of Year-ish 2025.
   <span class="quote-mark">&#8221;</span>
 </div>
 
-## The Megaplex 
-> Megalisp's Community
+<h2>The Megaplex</h2>
+<blockquote class="blockquote">
+  <p>Megalisp's Community</p>
+</blockquote>
 
-Welcome to the Megaplex — the community hub for Megalisp.
+<p>Welcome to the Megaplex — the community hub for Megalisp.</p>
 
-We're trying to cultivate Techno-Optimism through a Retro-Futurist Aesthetic.
+<p>We're trying to cultivate Techno-Optimism through a Retro-Futurist Aesthetic.</p>
 
-Going all-in on Lisp via Racket; Hoping to take it and move it somewhere else ultimately. 
+<p>Going all-in on Lisp via Racket; Hoping to take it and move it somewhere else ultimately.</p>
 
-(We'll see how possible that is in-practice lol)
+<p>(We'll see how possible that is in-practice lol)</p>
 
----
+<hr/>
 
-## Da Rules
-"This Is A Christian Minecraft Server" level community. Keep it safe-for-work, safe-for-church.
+<h2>Da Rules</h2>
+<p>"This Is A Christian Minecraft Server" level community. Keep it safe-for-work, safe-for-church.</p>
 
+<hr/>
 
----
+<h2>Da Stack</h2>
+<p><span class="highlight">TODO</span> Add software we develop for the community.</p>
 
-## Da Stack
-<span class="highlight">TODO</span> Add software we develop for the community.
+<p><span class="spoiler"><strong>(Notably</strong>: Cordian, Bandbit, Observ, Etc)</span></p>
 
-<span class="spoiler"><strong>(Notably</strong>: Cordian, Bandbit, Observ, Etc)</span>
+<hr/>
 
----
+<h3>Common Interests</h3>
+<blockquote class="blockquote"><p><strong>The Vibe Check.</strong></p></blockquote>
 
-### Common Interests
-> **The Vibe Check.**
+<ul>
+  <li><strong>S-Expressions</strong>: Code Is Data, Data Is Code; Homoiconclasm.</li>
+  <li><strong>List Processing</strong>: Lisp, Scheme, Racket, Infinity and Beyond.</li>
+  <li><strong>Actor Driven</strong>: Message-Passing isn't enough (not nearly enough).</li>
+  <li><strong>Spatial Computing</strong>: Zoomable, Pannable Interfaces. VR/AR Adjacent.</li>
+  <li><strong>Living Con-Cells</strong> Cellular Automata, Emergent Behavior, LLM Agents</li>
+  <li><strong>Creative Coding</strong>: Generative Art, Conversational Environments (REPLs).</li>
+  <li><strong>Open Source</strong>: Collaboration, sharing, and learning together</li>
+  <li><strong>Gaming</strong>: Minecraft, Garry's Mod, Moddable Games In-General.</li>
+  <li><strong>Events</strong>: ...?!</li>
+</ul>
 
-- **S-Expressions**: Code Is Data, Data Is Code; Homoiconclasm. 
-- **List Processing**: Lisp, Scheme, Racket, Infinity and Beyond.
-- **Actor Driven**: Message-Passing isn't enough (not nearly enough).
-- **Spatial Computing**: Zoomable, Pannable Interfaces. VR/AR Adjacent.
-- **Living Con-Cells** Cellular Automata, Emergent Behavior, LLM Agents
-- **Creative Coding**: Generative Art, Conversational Environments (REPLs).
-- **Open Source**: Collaboration, sharing, and learning together
-- **Gaming**: Minecraft, Garry's Mod, Moddable Games In-General. 
-- **Events**: ...?!
+<hr/>
 
----
-
-## Join In
+<h2>Join In</h2>
 
 <div class="row">
   <div class="col-md-6">
@@ -69,5 +75,8 @@ Going all-in on Lisp via Racket; Hoping to take it and move it somewhere else ul
         </a>
       </div>
     </div>
+  </div>
+</div>
+
   </div>
 </div>
