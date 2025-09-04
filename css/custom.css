@@ -204,14 +204,18 @@ h1, h2 {
   .events .events-inner {
   display: grid !important;
   grid-template-columns: 1fr !important;
-  gap: 1.25rem;
+  gap: 0.75rem;
   }
   .events .calendar,
   .events .upcoming {
     width: 100%;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
+    /* allow the panels to use the full viewport width on small screens
+       and when zoomed; keep a small internal padding for breathing room */
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
   .events .upcoming {
     margin-top: 0;
