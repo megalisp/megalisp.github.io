@@ -83,6 +83,21 @@
 ]
 
   </script>
+  <script id="injected-repos" type="application/json">
+    [
+  {
+    "title": "Megaplex",
+    "repos": [
+      { "owner": "megalisp", "repo": "megalisp.github.io" },
+      { "owner": "megalisp", "repo": "megaplex" },
+      { "owner": "megalisp", "repo": "observ" },
+      { "owner": "megalisp", "repo": "cordian" },
+      { "owner": "megalisp", "repo": "bandbit" }
+    ]
+  }
+]
+
+  </script>
   <script type="text/javascript">
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -834,7 +849,7 @@
     width: 100%;
     height: 100%;
     z-index: 2;
-    background: rgba(16,16,16,0.92);
+    background: rgba(5,5,5,0.50);
     transition: opacity 0.3s;
     opacity: 1;
     display: flex;
@@ -843,6 +858,15 @@
     color: #fff;
     font-size: 1.5rem;
     letter-spacing: 0.05em;
+  }
+  .video-hover-overlay .placeholder-text {
+    background: #000000a8;
+    color: #ff6f00;
+    padding: 0.35em 1.1em;
+    border-radius: 0.6em;
+    font-weight: bold;
+    font-size: 1em;
+    box-shadow: 0 2px 8px #0003;
   }
   .video-hover-container:hover .video-hover-overlay {
     opacity: 0;
@@ -855,7 +879,7 @@
     <div style="display:flex;justify-content:center;width:100%;">
       <div style="position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px #0008;margin:0 auto;">
         <div class="video-hover-container">
-          <div class="video-hover-overlay">[...]</div>
+    <div class="video-hover-overlay"><span class="placeholder-text">[ P L A C E H O L D E R ]</span></div>
           <iframe class="video-hover-iframe" width="560" height="315" src="https://www.youtube.com/embed/xghZgrE1zRI?autoplay=1&controls=0&mute=1&rel=0&modestbranding=1&showinfo=0" title="Intro Vid" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>
         </div>
       </div>
@@ -1327,69 +1351,219 @@
       <a class="pill" href="https://racket-lang.org" target="_blank" rel="noopener">Racket</a>
     </div>
   </section>
-  <!-- inject-featured-repos.html: Featured Repos section for homepage -->
-  <section class="featured-repos" style="margin:2.5rem 0 2rem 0;">
-    <h2 style="color:var(--primary);margin-bottom:1.2rem;">Featured Repos</h2>
-    <!-- Horizontal, touch-friendly scrollbox for featured repos -->
-    <div id="github-featured-repos" class="repos-list" style="display:flex;overflow-x:auto;gap:1.2em;padding-bottom:0.25rem;-webkit-overflow-scrolling:touch;">
-      <!-- Static placeholders so layout doesn't jump if JS fetch is delayed or blocked -->
-    <div class="repo-pill placeholder" style="flex:0 0 auto;display:block;min-width:220px;border-radius:8px;padding:1em 1.2em;background:rgba(0,0,0,0.06);color:#ff6f00;box-shadow:0 2px 8px rgba(0,0,0,0.04);">rawind</div>
-    <div class="repo-pill placeholder" style="flex:0 0 auto;display:block;min-width:220px;border-radius:8px;padding:1em 1.2em;background:rgba(0,0,0,0.06);color:#ff6f00;box-shadow:0 2px 8px rgba(0,0,0,0.04);">cordian</div>
-    </div>
+  <!-- inject-relevant-repos.html: Relevant Repos section for homepage -->
+  <style>
+    .relevant-repos-group {
+      background: linear-gradient(90deg, #0a0a0a 80%, #181818 100%);
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+      border: 1.5px solid #181818;
+      margin-bottom: 2.2em;
+      padding: 1.1em 1.2em 0.5em 1.2em;
+      transition: box-shadow 0.2s;
+    }
+    .relevant-repos-group.collapsed {
+      padding-bottom: 0.2em;
+    }
+    .relevant-repos-group h3 {
+      cursor: pointer;
+      user-select: none;
+      margin-top: 0.1em;
+      margin-bottom: 0.2em !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 1.18em;
+      color: #fff;
+      transition: color 0.2s;
+    }
+    .relevant-repos-group h3 .arrow {
+      font-size: 1.1em;
+      transition: transform 0.2s;
+      display: inline-block;
+      color: #ff6f00;
+    }
+    .relevant-repos-group.collapsed h3 .arrow {
+      transform: rotate(-90deg);
+    }
+    .relevant-repos-group .repos-list {
+      transition: max-height 0.25s cubic-bezier(.4,0,.2,1), opacity 0.2s;
+      overflow: hidden;
+      opacity: 1;
+      max-height: 500px;
+    }
+    /* Make the horizontal repos-list scrollbar match the orange Upcoming scrollbar */
+    .relevant-repos-group .repos-list {
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) transparent;
+    }
+    .relevant-repos-group .repos-list::-webkit-scrollbar { height:20px; }
+    .relevant-repos-group .repos-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius:6px; border:2px solid rgba(0,0,0,0.15); }
+
+    /* Global tooltip for repo descriptions so it won't be clipped by the horizontal scroll */
+    .repo-desc-popup-global {
+      position: absolute;
+      z-index: 1200;
+      background: #222;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.6em;
+      min-width: 200px;
+      max-width: 420px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      font-size: 0.95rem;
+      display: none;
+      white-space: pre-line;
+      max-height: 70vh;
+      overflow: auto;
+    }
+    .relevant-repos-group.collapsed .repos-list {
+      opacity: 0;
+      max-height: 0;
+      pointer-events: none;
+    }
+  </style>
+
+  <section class="relevant-repos" style="margin:2.5rem 0 2rem 0;">
+    <h2 style="color:var(--primary);margin-bottom:1.2rem;">Relevant Repos</h2>
+    <div id="github-relevant-repos-groups"></div>
   </section>
   <script>
-    // Dynamically fetch and render featured GitHub repos
-    const featuredRepos = [
-      { owner: 'megalisp', repo: 'rawind' },
-      { owner: 'megalisp', repo: 'cordian' }
-    ];
-    const container = document.getElementById('github-featured-repos');
-    if (container) {
-      let placeholdersRemoved = false;
-      function removePlaceholdersOnce() {
-        if (placeholdersRemoved) return;
-        placeholdersRemoved = true;
-        container.querySelectorAll('.placeholder').forEach(n => n.remove());
+    (function(){
+      // No embedded default groups here; prefer injected or top-level _REPOS.json. If neither exists we render nothing.
+
+      // Load repo groups: injected -> fetch /_REPOS.json -> fallback
+      function loadRepoGroups() {
+        return new Promise(function(resolve){
+          var inj = document.getElementById('injected-repos');
+          if (inj && inj.textContent && inj.textContent.trim().length > 0) {
+            try { var parsed = JSON.parse(inj.textContent); if (Array.isArray(parsed)) return resolve(parsed); } catch(e) { /* ignore */ }
+          }
+          if (window.fetch) {
+            fetch('/_REPOS.json', { cache: 'no-store' }).then(function(resp){ if(!resp.ok) throw new Error('bad'); return resp.json(); }).then(function(json){ if(Array.isArray(json)) return resolve(json); resolve([]); }).catch(function(){ resolve([]); });
+          } else {
+            resolve([]);
+          }
+        });
       }
 
-      featuredRepos.forEach(({owner, repo}) => {
-        fetch(`https://api.github.com/repos/${owner}/${repo}`)
-          .then(r => {
-            if (!r.ok) throw new Error('fetch-failed');
-            return r.json();
-          })
-          .then(data => {
-            // remove placeholders on first successful fetch
-            removePlaceholdersOnce();
+      function buildGroups(relevantRepoGroups) {
+        const groupsContainer = document.getElementById('github-relevant-repos-groups');
+        if (!groupsContainer) return;
+        relevantRepoGroups.forEach(function(group){
+          const groupSection = document.createElement('div');
+          groupSection.className = 'relevant-repos-group';
+          groupSection.style.marginBottom = '2.2em';
 
-            const el = document.createElement('a');
-            el.className = 'repo-pill';
-            el.href = data.html_url;
-            el.target = '_blank';
-            // ensure pills do not shrink and participate in horizontal scroll
-            el.style.display = 'block';
-            el.style.flex = '0 0 auto';
-            el.style.minWidth = '220px';
-            el.style.background = 'rgba(0,0,0,0.10)';
-            el.style.borderRadius = '8px';
-            el.style.padding = '1em 1.2em';
-            el.style.color = '#ff6f00';
-            el.style.textDecoration = 'none';
-            el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
-            el.innerHTML = `
-              <div style="font-size:1.1em;font-weight:bold;">${data.full_name || repo}</div>
-              <div style="font-size:0.98em;color:#ddd;margin:0.2em 0 0.4em 0;">${data.description || ''}</div>
-              <div style="font-size:0.92em;color:#999;">
-                ★ ${data.stargazers_count || 0} &nbsp; ⑂ ${data.forks_count || 0}
-              </div>
-            `;
-            container.appendChild(el);
-          })
-          .catch(() => {
-            // leave placeholders if fetch fails; do nothing
+          const groupTitle = document.createElement('h3');
+          groupTitle.innerHTML = `<span class="arrow" style="font-size:1.1em;">&#9654;</span> <span>${group.title}</span>`;
+          groupTitle.onclick = function(){ groupSection.classList.toggle('collapsed'); };
+          groupSection.appendChild(groupTitle);
+
+          const repoList = document.createElement('div');
+          repoList.className = 'repos-list';
+          repoList.style.display = 'flex';
+          repoList.style.overflowX = 'auto';
+          repoList.style.gap = '1.2em';
+          repoList.style.paddingBottom = '0.25rem';
+          repoList.style.WebkitOverflowScrolling = 'touch';
+
+          (group.repos || []).forEach(function(r){
+            const ph = document.createElement('div');
+            ph.className = 'repo-pill placeholder';
+            ph.style.flex = '0 0 auto';
+            ph.style.display = 'block';
+            ph.style.minWidth = '220px';
+            ph.style.borderRadius = '8px';
+            ph.style.padding = '1em 1.2em';
+            ph.style.background = 'rgba(0,0,0,0.06)';
+            ph.style.color = '#ff6f00';
+            ph.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+            ph.textContent = r.repo;
+            repoList.appendChild(ph);
+
+            // Fetch repo metadata from GitHub (client-side fallback)
+            fetch(`https://api.github.com/repos/${r.owner}/${r.repo}`).then(function(resp){ if(!resp.ok) throw new Error('fetch-failed'); return resp.json(); }).then(function(data){
+              const el = document.createElement('a');
+              el.className = 'repo-pill';
+              el.href = data.html_url;
+              el.target = '_blank';
+              el.style.display = 'block';
+              el.style.flex = '0 0 auto';
+              el.style.minWidth = '220px';
+              el.style.background = 'rgba(0,0,0,0.10)';
+              el.style.borderRadius = '8px';
+              el.style.padding = '1em 1.2em';
+              el.style.color = '#ff6f00';
+              el.style.textDecoration = 'none';
+              el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+              var desc = data.description || '';
+              var truncated = desc.length > 50 ? desc.slice(0,47) + '...' : desc;
+              el.innerHTML = `
+                <div style="font-size:1.1em;font-weight:bold;">${data.full_name || r.repo}</div>
+                <div style="font-size:0.98em;color:#ddd;margin:0.2em 0 0.4em 0;">${truncated}</div>
+                <div style="font-size:0.92em;color:#999;">★ ${data.stargazers_count || 0} &nbsp; ⑂ ${data.forks_count || 0}</div>
+              `;
+              if (desc.length > 0) el.dataset.fullDesc = desc.replace(/"/g,'&quot;');
+              repoList.replaceChild(el, ph);
+            }).catch(function(){ /* leave placeholder */ });
           });
+
+          groupSection.appendChild(repoList);
+          groupsContainer.appendChild(groupSection);
+        });
+      }
+
+      // Kick off
+      loadRepoGroups().then(buildGroups);
+
+      // Global tooltip element (document-level to avoid clipping)
+      const globalTT = document.createElement('div');
+      globalTT.className = 'repo-desc-popup-global';
+      globalTT.id = 'repo-desc-popup-global';
+      globalTT.setAttribute('role','tooltip');
+      document.body.appendChild(globalTT);
+
+      // Helpers: clamp to viewport
+      function clampPosition(x,y,tooltip){
+        var tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+        var pad = 8;
+        var maxX = window.scrollX + window.innerWidth - tw - pad;
+        var maxY = window.scrollY + window.innerHeight - th - pad;
+        var nx = Math.min(maxX, Math.max(window.scrollX + pad, x));
+        var ny = Math.min(maxY, Math.max(window.scrollY + pad, y));
+        return {x: nx, y: ny};
+      }
+
+      var pointerShownFor = null;
+      document.addEventListener('mouseover', function(e){
+        var pill = e.target.closest('.repo-pill');
+        if (!pill) return;
+        var full = pill.dataset.fullDesc;
+        if (!full) return;
+        globalTT.innerHTML = full;
+        globalTT.style.display = 'block';
+        pointerShownFor = pill;
+        var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalTT);
+        globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px';
       });
-    }
+      document.addEventListener('mousemove', function(e){ if (globalTT.style.display === 'block') { var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalTT); globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px'; } });
+      document.addEventListener('mouseout', function(e){
+        var related = e.relatedTarget;
+        if (!related || !related.closest || !related.closest('.repo-pill')) {
+          globalTT.style.display = 'none'; pointerShownFor = null;
+        }
+      });
+
+      // keyboard accessibility: show tooltip on focus, hide on blur
+      document.addEventListener('focusin', function(e){ var pill = e.target.closest('.repo-pill'); if (pill && pill.dataset.fullDesc) { globalTT.innerHTML = pill.dataset.fullDesc; globalTT.style.display = 'block'; var r = pill.getBoundingClientRect(); var pos = clampPosition(window.scrollX + r.right + 12, window.scrollY + r.top, globalTT); globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px'; } });
+      document.addEventListener('focusout', function(e){ if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.repo-pill')) { globalTT.style.display = 'none'; } });
+
+      // touch support: tap a pill to toggle tooltip
+      document.addEventListener('touchstart', function(e){ var pill = e.target.closest('.repo-pill'); if (!pill) return; var full = pill.dataset.fullDesc; if (!full) return; if (globalTT.style.display === 'block' && pointerShownFor === pill) { globalTT.style.display = 'none'; pointerShownFor = null; } else { globalTT.innerHTML = full; globalTT.style.display = 'block'; pointerShownFor = pill; var r = pill.getBoundingClientRect(); var pos = clampPosition(window.scrollX + r.right + 12, window.scrollY + r.top, globalTT); globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px'; } }, {passive:true});
+
+    })();
   </script>
   <!-- inject-featured-projects.html: Featured Projects section for homepage -->
   <style>

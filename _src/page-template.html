@@ -32,6 +32,9 @@
   <script id="injected-ticker" type="application/json">
     @(file->string "_TICKER.json")
   </script>
+  <script id="injected-repos" type="application/json">
+    @(file->string "_REPOS.json")
+  </script>
   @google-universal-analytics["UA-xxxxx"]
 </head>
 <body>
@@ -68,7 +71,7 @@
   @(include-template "inject-featured-video.html")
   @(include-template "inject-events.html")
   @(include-template "inject-interests.html")
-  @(include-template "inject-featured-repos.html")
+  @(include-template "inject-relevant-repos.html")
   @(include-template "inject-featured-projects.html")
   @(include-template "inject-latest-posts.html")
   @(include-template "inject-newsletter.html")
