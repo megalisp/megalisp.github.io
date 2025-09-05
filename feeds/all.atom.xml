@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
- <title type="text">MEGALISP: MEGALISP</title>
+ <title type="text">MEGALISP = Building Big Things, In LISP.: MEGALISP = Building Big Things, In LISP.</title>
  <link rel="self" href="https://megalisp.github.io//feeds/all.atom.xml" />
  <link href="https://megalisp.github.io//index.html" />
  <id>urn:https-megalisp-github-io:-index-html</id>

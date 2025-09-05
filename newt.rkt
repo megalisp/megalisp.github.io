@@ -19,7 +19,7 @@
         (current-uri-prefix "/")))
 
 
-  (current-title "MEGALISP")
+  (current-title "MEGALISP = Building Big Things, In LISP.")
   (current-author "Joshua Steven Grant (ie: Jost Grant)"))
 
 ;; Called once per post and non-post page, on the contents.
