@@ -523,3 +523,18 @@ blockquote {
     grid-template-columns: 1fr;
   }
 }
+
+/* === Page Navigation Styling === */
+.page-link {
+  background-color: #1a1a1a; /* very dark grey */
+  color: var(--primary); /* vivid orange */
+  border: 2px solid var(--primary); /* orange outline */
+  outline: none;
+  transition: color 0.18s, border-color 0.18s, background 0.18s;
+}
+.page-link:hover,
+.page-link:focus {
+  background-color: #2d1a00; /* slightly orange-tinted dark for hover */
+  color: #fff;
+  border-color: var(--primary);
+}

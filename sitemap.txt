@@ -1,3 +1,5 @@
+https://megalisp.github.io//1/01/the-linux-common-denominator.html
+https://megalisp.github.io//1/01/why-b-a-d-worse-technology-almost-always-wins.html
 https://megalisp.github.io//2025/07/and-we-have-lift-off.html
 https://megalisp.github.io//subdir/foo.html
 https://megalisp.github.io//series/index.html

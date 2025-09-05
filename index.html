@@ -5,7 +5,7 @@
   <title>MEGALISP = Building Big Things, In LISP.</title>
   <meta name="description" content="MEGALISP = Building Big Things, In LISP.">
   <meta name="author" content="Joshua Steven Grant (ie: Jost Grant)">
-  <meta name="keywords" content="all, Meta">
+  <meta name="keywords" content="all, Linux, Meta, Tech, Opinion">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico">
   <link rel="canonical" href="https://megalisp.github.io//index.html">
@@ -227,7 +227,7 @@
           <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="/tags/Meta.html">Meta</a>
+              <a class="dropdown-item" href="/tags/Linux.html">Linux</a><a class="dropdown-item" href="/tags/Meta.html">Meta</a><a class="dropdown-item" href="/tags/Opinion.html">Opinion</a><a class="dropdown-item" href="/tags/Tech.html">Tech</a>
             </div>
           </li>
 
@@ -2474,10 +2474,43 @@
   <time datetime="2025-07-31" pubdate="true">2025-07-31</time></span> :: <span class="tags"><a href="/tags/Meta.html">Meta</a></span></p>
       </header>
       <div>
-  <p>...</p></div>
+  <p>&hellip;</p></div>
       <div class="project-actions"><a class="btn btn-sm btn-space" href='/2025/07/and-we-have-lift-off.html'>...</a></div>
     </article>
   </div>
+  <div class="projects-grid">
+    <article class="project-card">
+      <header>
+        <h3><a href='/1/01/the-linux-common-denominator.html'>The Linux Common Denominator</a></h3>
+        <p class='project-meta'><span>
+  <time datetime="0001-01-01" pubdate="true">0001-01-01</time></span> :: <span class="tags"><a href="/tags/Tech.html">Tech</a>, <a href="/tags/Linux.html">Linux</a></span></p>
+      </header>
+      <div>
+  <p>&hellip;</p></div>
+      <div class="project-actions"><a class="btn btn-sm btn-space" href='/1/01/the-linux-common-denominator.html'>...</a></div>
+    </article>
+  </div>
+  <div class="projects-grid">
+    <article class="project-card">
+      <header>
+        <h3><a href='/1/01/why-b-a-d-worse-technology-almost-always-wins.html'>Why B̶a̶d̶ Worse Technology (Almost) ALWAYS Wins</a></h3>
+        <p class='project-meta'><span>
+  <time datetime="0001-01-01" pubdate="true">0001-01-01</time></span> :: <span class="tags"><a href="/tags/Opinion.html">Opinion</a>, <a href="/tags/Meta.html">Meta</a></span></p>
+      </header>
+      <div>
+  <p>&hellip;</p></div>
+      <div class="project-actions"><a class="btn btn-sm btn-space" href='/1/01/why-b-a-d-worse-technology-almost-always-wins.html'>...</a></div>
+    </article>
+  </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            // Hide any post/article with a date containing 0001-01-01
+            document.querySelectorAll('.posts-list time[datetime^="0001-01-01"]').forEach(function(timeEl) {
+              var post = timeEl.closest('article, li, .project-card');
+              if (post) post.style.display = 'none';
+            });
+          });
+        </script>
 
         <!-- Recent list template: will be moved into the first project-card at runtime -->
         <div id="recent-list-template" style="display:none;">

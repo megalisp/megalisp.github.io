@@ -4,6 +4,15 @@
   <div class="latest-parent">
     <div class="posts-list">
       @|contents|
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Hide any post/article with a date containing 0001-01-01
+          document.querySelectorAll('.posts-list time[datetime^="0001-01-01"]').forEach(function(timeEl) {
+            var post = timeEl.closest('article, li, .project-card');
+            if (post) post.style.display = 'none';
+          });
+        });
+      </script>
 
       <!-- Recent list template: will be moved into the first project-card at runtime -->
       <div id="recent-list-template" style="display:none;">
