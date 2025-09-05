@@ -75,6 +75,18 @@
   color: #d4d4d8;
 }
 
+/* Hover/focus: highlight skill name */
+.skill-item:hover .skill-name,
+.skill-item:focus .skill-name,
+.skill-item:focus-within .skill-name {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  transition: color 140ms ease, text-decoration-color 140ms ease;
+}
+
 .skill-percent {
   color: #71717a;
 }
@@ -94,6 +106,22 @@
   box-shadow: 0 0 20px rgba(249, 115, 22, 0.65);
   transition: width 0.6s ease-out;
 }
+/* Tooltip for skill familiarity */
+.skill-tooltip {
+  position: absolute;
+  z-index: 1200;
+  background: #111;
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  display: none;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.skill-item[data-url] { cursor: pointer; }
 
 .toolbelt {
   display: flex;
@@ -220,16 +248,28 @@
 <script>
 // Data from the React component
 const coreSkills = [
-  { name: "Racket", level: 90 },
-  { name: "Gerbil Scheme", level: 40 },
-  { name: "Chez Scheme", level: 75 },
-  { name: "Common-Lisp", level: 40 },
-  { name: "RXRS Scheme", level: 70 },
-  { name: "Go / C / C++", level: 20 },
+  { name: "Racket", level: 90, url: "https://racket-lang.org" },
+  { name: "Gerbil Scheme", level: 40, url: "https://cons.io" },
+  { name: "Chez Scheme", level: 75, url: "https://cisco.github.io/ChezScheme/" },
+  { name: "Common-Lisp", level: 40, url: "https://common-lisp.net" },
+  { name: "RXRS Scheme", level: 70, url: "https://r6rs.org" },
+  { name: "Go / C / C++", level: 20, url: "https://en.wikipedia.org/wiki/C_(programming_language)" },
 ];
 
 const toolbelt = [
-  "Fedora Atomic" ,"Docker / Podman", "Bootc", "Quadlets", "Flatpak", "XREPL", "Raylib", "OpenAPI", "WASM", "HTML", "SXML","Scribble"
+  { name: "Docker / Podman", url: "https://podman.io/" },
+  { name: "Fedora Atomic", url: "https://fedoraproject.org/atomic-desktops/" },
+  { name: "UBLue", url: "https://universal-blue.org/" },
+  { name: "Bootc" },
+  { name: "Quadlets", url: "https://docs.bazzite.gg/Installing_and_Managing_Software/Quadlet/"},
+  { name: "Flatpak", url: "https://flatpak.org/" },
+  { name: "XREPL" },
+  { name: "Raylib", url: "https://www.raylib.com/" },
+  { name: "OpenAPI", url: "https://www.openapis.org/" },
+  { name: "WASM", url: "https://webassembly.org/" },
+  { name: "HTML", url: "https://developer.mozilla.org/en-US/docs/Web/HTML" },
+  { name: "SXML" },
+  { name: "Scribble", url: "https://docs.racket-lang.org/scribble/" }
 ];
 
 const radarData = [
@@ -251,17 +291,21 @@ const interests = [
 // Populate skills
 function populateSkills() {
   const skillsList = document.getElementById('skills-list');
-  skillsList.innerHTML = coreSkills.map(skill => `
-    <div class="skill-item">
-      <div class="skill-header">
-        <span class="skill-name">${skill.name}</span>
-        <span class="skill-percent">${skill.level}%</span>
-      </div>
-      <div class="skill-meter">
-        <div class="skill-fill" style="width: 0%" data-width="${skill.level}%"></div>
-      </div>
-    </div>
-  `).join('');
+  skillsList.innerHTML = coreSkills.map(skill => {
+    // avoid nested template backticks when emitting optional attributes
+    const urlAttr = skill.url ? (' data-url="' + skill.url + '"') : '';
+    return (
+      '<div class="skill-item"' + urlAttr + '>' +
+        '<div class="skill-header">' +
+          '<span class="skill-name">' + skill.name + '</span>' +
+          '<span class="skill-percent">' + skill.level + '%</span>' +
+        '</div>' +
+        '<div class="skill-meter">' +
+          '<div class="skill-fill" style="width: 0%" data-width="' + skill.level + '%"></div>' +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
   
   // Animate skill bars
   setTimeout(() => {
@@ -271,12 +315,105 @@ function populateSkills() {
   }, 100);
 }
 
+// Tooltip logic for skill familiarity
+function makeSkillTooltip() {
+  const tip = document.createElement('div');
+  tip.className = 'skill-tooltip';
+  tip.id = 'skill-tooltip';
+  document.body.appendChild(tip);
+  return tip;
+}
+
+function familiarityLabel(percent) {
+  const p = Number(percent);
+  if (p < 20) return 'Barely Familiar';
+  if (p < 40) return 'Little Familiar';
+  if (p < 60) return 'Mildly Familiar';
+  if (p < 80) return 'Notably Familiar';
+  return 'Very Familiar';
+}
+
+function attachSkillTooltips() {
+  const tip = document.getElementById('skill-tooltip') || makeSkillTooltip();
+  // Attach to the whole skill-item so hovering anywhere in the row shows the tooltip
+  document.querySelectorAll('.skill-item').forEach(item => {
+    const fill = item.querySelector('.skill-fill');
+    if (!fill) return;
+    // make the item and fill focusable for keyboard accessibility
+    item.setAttribute('tabindex', '0');
+    fill.setAttribute('tabindex', '0');
+    const pct = (fill.dataset.width || '0').toString().replace('%','');
+    const label = familiarityLabel(pct);
+
+    function showAt(x, y) {
+      tip.textContent = label;
+      tip.style.display = 'block';
+      const pad = 8;
+      const tw = tip.offsetWidth || 100;
+      const th = tip.offsetHeight || 30;
+      let nx = Math.min(window.scrollX + window.innerWidth - tw - pad, Math.max(window.scrollX + pad, x));
+      let ny = Math.min(window.scrollY + window.innerHeight - th - pad, Math.max(window.scrollY + pad, y));
+      tip.style.left = nx + 'px';
+      tip.style.top = ny + 'px';
+    }
+
+    function showPointer(e) {
+      const ev = (e.touches && e.touches[0]) ? e.touches[0] : e;
+      showAt(ev.pageX, ev.pageY - 10);
+    }
+
+    function showRelative() {
+      // position tooltip near the right edge of the item
+      const r = item.getBoundingClientRect();
+      const x = window.scrollX + r.right - 8;
+      const y = window.scrollY + r.top + (r.height/2) - 12;
+      showAt(x, y);
+    }
+
+    function hide() { tip.style.display = 'none'; }
+
+    // Mouse interactions
+    item.addEventListener('mouseenter', showPointer);
+    item.addEventListener('mousemove', showPointer);
+    item.addEventListener('mouseleave', hide);
+
+    // Keyboard interactions (focus on the row shows tooltip positioned relative to the row)
+    item.addEventListener('focus', function(){ showRelative(); });
+    item.addEventListener('blur', hide);
+
+    // Touch: toggle tooltip when tapping the row
+    item.addEventListener('touchstart', function(e){ e.preventDefault(); const ev = e.touches[0]; if (tip.style.display === 'block') hide(); else showAt(ev.pageX, ev.pageY - 10); }, {passive:false});
+
+    // Keep the original fill focus handlers too (for direct keyboard focus)
+    fill.addEventListener('focus', function(){ showRelative(); });
+    fill.addEventListener('blur', hide);
+    // If item has a URL, make it clickable and keyboard-activatable
+    const url = item.getAttribute('data-url');
+    if (url) {
+      // set ARIA role and label
+      const nm = (item.querySelector('.skill-name') || {textContent:''}).textContent.trim();
+      item.setAttribute('role','link');
+      item.setAttribute('aria-label', nm + ' — opens in a new tab');
+      item.addEventListener('click', function(e){ window.open(url, '_blank', 'noopener'); });
+      item.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.open(url, '_blank', 'noopener'); } });
+    }
+  });
+}
+
 // Populate toolbelt
 function populateToolbelt() {
   const toolbeltEl = document.getElementById('toolbelt');
-  toolbeltEl.innerHTML = toolbelt.map(tool => `
-    <span class="tool-badge">${tool}</span>
-  `).join('');
+  toolbeltEl.innerHTML = toolbelt.map(tool => {
+    if (typeof tool === 'string') {
+      return `<span class="tool-badge">${tool}</span>`;
+    }
+    const name = (tool.name || '');
+    if (tool.url) {
+      // render as link that opens in new tab
+      return `<a class="tool-badge" href="${tool.url}" target="_blank" rel="noopener" title="Open ${name}">${name}</a>`;
+    }
+    return `<span class="tool-badge">${name}</span>`;
+  }).join('');
 }
 
 // Create radar chart
@@ -356,5 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
   populateToolbelt();
   createRadarChart();
   populateInterests();
+  // Attach tooltips after a short delay to ensure bars exist
+  setTimeout(attachSkillTooltips, 220);
 });
 </script>

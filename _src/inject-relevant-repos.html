@@ -24,6 +24,17 @@
     color: #fff;
     transition: color 0.2s;
   }
+  .relevant-repos-group h3 .repo-reload-btn {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.35rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  .relevant-repos-group h3 .repo-reload-btn:hover { background: rgba(255,255,255,0.03); }
   .relevant-repos-group h3 .arrow {
     font-size: 1.1em;
     transition: transform 0.2s;
@@ -103,10 +114,24 @@
         groupSection.className = 'relevant-repos-group';
         groupSection.style.marginBottom = '2.2em';
 
-        const groupTitle = document.createElement('h3');
-        groupTitle.innerHTML = `<span class="arrow" style="font-size:1.1em;">&#9654;</span> <span>${group.title}</span>`;
-        groupTitle.onclick = function(){ groupSection.classList.toggle('collapsed'); };
-        groupSection.appendChild(groupTitle);
+  const groupTitle = document.createElement('h3');
+  const arrowSpan = document.createElement('span');
+  arrowSpan.className = 'arrow';
+  arrowSpan.style.fontSize = '1.1em';
+  arrowSpan.innerHTML = '&#9654;';
+  const titleSpan = document.createElement('span');
+  titleSpan.textContent = group.title;
+  const reloadBtn = document.createElement('button');
+  reloadBtn.className = 'repo-reload-btn';
+  reloadBtn.type = 'button';
+  reloadBtn.title = 'Refresh group';
+  reloadBtn.innerText = '⟳';
+
+  groupTitle.appendChild(arrowSpan);
+  groupTitle.appendChild(titleSpan);
+  groupTitle.appendChild(reloadBtn);
+  groupTitle.onclick = function(){ groupSection.classList.toggle('collapsed'); };
+  groupSection.appendChild(groupTitle);
 
         const repoList = document.createElement('div');
         repoList.className = 'repos-list';
@@ -116,9 +141,12 @@
         repoList.style.paddingBottom = '0.25rem';
         repoList.style.WebkitOverflowScrolling = 'touch';
 
+        // create placeholders (with owner/repo data attributes) so we can refresh later
         (group.repos || []).forEach(function(r){
           const ph = document.createElement('div');
           ph.className = 'repo-pill placeholder';
+          ph.dataset.owner = r.owner;
+          ph.dataset.repo = r.repo;
           ph.style.flex = '0 0 auto';
           ph.style.display = 'block';
           ph.style.minWidth = '220px';
@@ -129,33 +157,47 @@
           ph.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
           ph.textContent = r.repo;
           repoList.appendChild(ph);
-
-          // Fetch repo metadata from GitHub (client-side fallback)
-          fetch(`https://api.github.com/repos/${r.owner}/${r.repo}`).then(function(resp){ if(!resp.ok) throw new Error('fetch-failed'); return resp.json(); }).then(function(data){
-            const el = document.createElement('a');
-            el.className = 'repo-pill';
-            el.href = data.html_url;
-            el.target = '_blank';
-            el.style.display = 'block';
-            el.style.flex = '0 0 auto';
-            el.style.minWidth = '220px';
-            el.style.background = 'rgba(0,0,0,0.10)';
-            el.style.borderRadius = '8px';
-            el.style.padding = '1em 1.2em';
-            el.style.color = '#ff6f00';
-            el.style.textDecoration = 'none';
-            el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
-            var desc = data.description || '';
-            var truncated = desc.length > 50 ? desc.slice(0,47) + '...' : desc;
-            el.innerHTML = `
-              <div style="font-size:1.1em;font-weight:bold;">${data.full_name || r.repo}</div>
-              <div style="font-size:0.98em;color:#ddd;margin:0.2em 0 0.4em 0;">${truncated}</div>
-              <div style="font-size:0.92em;color:#999;">★ ${data.stargazers_count || 0} &nbsp; ⑂ ${data.forks_count || 0}</div>
-            `;
-            if (desc.length > 0) el.dataset.fullDesc = desc.replace(/"/g,'&quot;');
-            repoList.replaceChild(el, ph);
-          }).catch(function(){ /* leave placeholder */ });
         });
+
+        // fetch metadata for this group's placeholders
+        function fetchReposInList(listEl, repoDefs) {
+          if (!window.fetch) return;
+          // show a quick pulse on the reload button
+          reloadBtn.disabled = true; reloadBtn.innerText = '⟳';
+          var pending = repoDefs.length;
+          repoDefs.forEach(function(r){
+            fetch('https://api.github.com/repos/' + encodeURIComponent(r.owner) + '/' + encodeURIComponent(r.repo)).then(function(resp){ if(!resp.ok) throw new Error('fetch-failed'); return resp.json(); }).then(function(data){
+              // find the placeholder for this repo
+              var selector = '.repo-pill.placeholder[data-owner="' + r.owner + '"][data-repo="' + r.repo + '"]';
+              var ph = listEl.querySelector(selector);
+              if (!ph) return;
+              var el = document.createElement('a');
+              el.className = 'repo-pill';
+              el.href = data.html_url || ('https://github.com/' + r.owner + '/' + r.repo);
+              el.target = '_blank';
+              el.style.display = 'block';
+              el.style.flex = '0 0 auto';
+              el.style.minWidth = '220px';
+              el.style.background = 'rgba(0,0,0,0.10)';
+              el.style.borderRadius = '8px';
+              el.style.padding = '1em 1.2em';
+              el.style.color = '#ff6f00';
+              el.style.textDecoration = 'none';
+              el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+              var desc = data.description || '';
+              var truncated = desc.length > 50 ? desc.slice(0,47) + '...' : desc;
+              el.innerHTML = '\n              <div style="font-size:1.1em;font-weight:bold;">' + (data.full_name || r.repo) + '</div>\n              <div style="font-size:0.98em;color:#ddd;margin:0.2em 0 0.4em 0;">' + truncated + '</div>\n              <div style="font-size:0.92em;color:#999;">★ ' + (data.stargazers_count || 0) + ' &nbsp; ⑂ ' + (data.forks_count || 0) + '</div>\n            ';
+              if (desc.length > 0) el.dataset.fullDesc = (desc + '').replace(/"/g,'&quot;');
+              listEl.replaceChild(el, ph);
+            }).catch(function(){ /* leave placeholder */ }).finally(function(){ pending--; if (pending<=0) { reloadBtn.disabled = false; reloadBtn.innerText = '⟳'; } });
+          });
+        }
+
+        // initial fetch
+        fetchReposInList(repoList, group.repos || []);
+
+        // wire reload button
+        reloadBtn.addEventListener('click', function(e){ e.stopPropagation(); fetchReposInList(repoList, group.repos || []); });
 
         groupSection.appendChild(repoList);
         groupsContainer.appendChild(groupSection);
