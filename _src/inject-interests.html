@@ -1,28 +1,356 @@
-<!-- inject-interests.html: Interests & Skills section for homepage -->
+<!-- inject-interests.html: Interests & Skills section adapted from React component -->
 <style>
-.interests-list { 
-  display: flex; 
-  gap: 0.5rem; 
-  flex-wrap: wrap; 
-  margin-top: 0.5rem; 
+/* Dark theme with orange accents */
+.skills-container {
+  background: #000;
+  color: #e4e4e7;
+  padding: 2rem;
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+  margin: 2rem 0;
 }
-.pill {
-  display: inline-block;
-  background: linear-gradient(180deg, #ff9100, #ff7a00); /* orange */
-  color: #000000; /* black text */
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  text-decoration: none;
+
+.skills-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(249,115,22,0.15), transparent 55%);
+  pointer-events: none;
+}
+
+.skills-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1.2fr 1fr;
+  position: relative;
+  z-index: 1;
+}
+
+.skills-card {
+  background: rgba(9, 9, 11, 0.7);
+  border: 1px solid rgba(39, 39, 42, 0.8);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #a1a1aa;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.875rem;
   font-weight: 600;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
 }
-.pill:hover { opacity: 0.95; transform: translateY(-1px); color: #fff; }
+
+.skills-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 1.5rem;
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.skill-name {
+  color: #d4d4d8;
+}
+
+.skill-percent {
+  color: #71717a;
+}
+
+.skill-meter {
+  height: 0.5rem;
+  width: 100%;
+  background: rgba(39, 39, 42, 0.8);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.skill-fill {
+  height: 100%;
+  background: #f97316;
+  border-radius: 9999px;
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.65);
+  transition: width 0.6s ease-out;
+}
+
+.toolbelt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tool-badge {
+  background: #18181b;
+  color: #d4d4d8;
+  border: 1px solid #27272a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+
+.tool-badge:hover {
+  background: rgba(39, 39, 42, 0.8);
+}
+
+.radar-container {
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.interests-section {
+  margin-top: 3rem;
+}
+
+.interests-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 2rem;
+}
+
+.interest-card {
+  background: rgba(9, 9, 11, 0.7);
+  border: 1px solid rgba(39, 39, 42, 0.8);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.interest-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.interest-icon {
+  color: #f97316;
+  width: 1rem;
+  height: 1rem;
+}
+
+.interest-desc {
+  color: #a1a1aa;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.interest-detail {
+  color: #a1a1aa;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
 </style>
 
-<section class="interests">
-  <h3>Interests & Skills</h3>
-  <div class="interests-list">
-    <a class="pill" href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank" rel="noopener">Lisp</a>
-    <a class="pill" href="https://racket-lang.org" target="_blank" rel="noopener">Racket</a>
+<div class="skills-container">
+  <!-- Main section title -->
+  <div style="margin-bottom: 2rem;">
+    <h3 style="color: #f97316; margin-bottom: 1rem;">Interests & Skills</h3>
   </div>
-</section>
+  
+  <div class="skills-grid">
+    <!-- Left: Core Skills -->
+    <div class="skills-card">
+      <div class="section-title">Bars & Bricks</div>
+      <h2 class="card-title">Programming-Languages, Tech-Stacks, And Platforms.</h2>
+      
+      <div class="skills-list" id="skills-list">
+        <!-- Skills will be populated by JavaScript -->
+      </div>
+      
+      <div class="toolbelt" id="toolbelt">
+        <!-- Tools will be populated by JavaScript -->
+      </div>
+    </div>
+    
+    <!-- Right: Radar Chart -->
+    <div class="skills-card">
+      <div class="section-title">Heat Map</div>
+      <h3 class="card-title" style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="color: #f97316;"></span> Breadth Radar
+      </h3>
+      <div class="radar-container" id="radar-container">
+        <!-- Radar chart will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Interests Section -->
+  <div class="interests-section">
+    <div class="section-title">Focusing On</div>
+    <div class="interests-grid" id="interests-grid">
+      <!-- Interest cards will be populated by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<script>
+// Data from the React component
+const coreSkills = [
+  { name: "Racket", level: 90 },
+  { name: "Gerbil Scheme", level: 40 },
+  { name: "Chez Scheme", level: 75 },
+  { name: "Common-Lisp", level: 40 },
+  { name: "RXRS Scheme", level: 70 },
+  { name: "Go / C / C++", level: 20 },
+];
+
+const toolbelt = [
+  "Fedora Atomic" ,"Docker / Podman", "Bootc", "Quadlets", "Flatpak", "XREPL", "Raylib", "OpenAPI", "WASM", "HTML", "SXML","Scribble"
+];
+
+const radarData = [
+  { subject: "Frontend", value: 30, angle: 0 },
+  { subject: "Backend", value: 30, angle: 60 },
+  { subject: "DevOps", value: 30, angle: 120 },
+  { subject: "DX / Tooling", value: 30, angle: 180 },
+  { subject: "UX", value: 30, angle: 240 },
+  { subject: "AI / ML", value: 30, angle: 300 },
+];
+
+const interests = [
+  { icon: "🌌", label: "Spatial Computing", desc: "Moving interfaces from 1.5D to 2.5-3D.", detail: "ipsumzeta quorbits flenxar" },
+  { icon: "☯️", label: "Homoiconclasm", desc: "Code Is Data. Data Is Code. It's all language.", detail: "vexalon primetuid sogran" },
+  { icon: "🎭", label: "Theatrics", desc: "Actor Driven Programming.", detail: "murpish tevalon crinsta" },
+  { icon: "⚙️", label: "Modify It", desc: "Everything should be mo(l)dable.", detail: "brundel pexario yulb" },
+];
+
+// Populate skills
+function populateSkills() {
+  const skillsList = document.getElementById('skills-list');
+  skillsList.innerHTML = coreSkills.map(skill => `
+    <div class="skill-item">
+      <div class="skill-header">
+        <span class="skill-name">${skill.name}</span>
+        <span class="skill-percent">${skill.level}%</span>
+      </div>
+      <div class="skill-meter">
+        <div class="skill-fill" style="width: 0%" data-width="${skill.level}%"></div>
+      </div>
+    </div>
+  `).join('');
+  
+  // Animate skill bars
+  setTimeout(() => {
+    document.querySelectorAll('.skill-fill').forEach(fill => {
+      fill.style.width = fill.dataset.width;
+    });
+  }, 100);
+}
+
+// Populate toolbelt
+function populateToolbelt() {
+  const toolbeltEl = document.getElementById('toolbelt');
+  toolbeltEl.innerHTML = toolbelt.map(tool => `
+    <span class="tool-badge">${tool}</span>
+  `).join('');
+}
+
+// Create radar chart
+function createRadarChart() {
+  const container = document.getElementById('radar-container');
+  const size = 280;
+  const center = size / 2;
+  const maxRadius = 100;
+  
+  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="overflow: visible;">`;
+  
+  // Grid circles
+  for (let i = 1; i <= 4; i++) {
+    const radius = (maxRadius * i) / 4;
+    svg += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="#27272a" stroke-width="1"/>`;
+  }
+  
+  // Grid lines
+  radarData.forEach(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const x = center + maxRadius * Math.cos(angle);
+    const y = center + maxRadius * Math.sin(angle);
+    svg += `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="#27272a" stroke-width="1"/>`;
+  });
+  
+  // Data polygon
+  const points = radarData.map(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const radius = (item.value / 100) * maxRadius;
+    const x = center + radius * Math.cos(angle);
+    const y = center + radius * Math.sin(angle);
+    return `${x},${y}`;
+  }).join(' ');
+  
+  svg += `<polygon points="${points}" fill="#f97316" fill-opacity="0.35" stroke="#f97316" stroke-width="2"/>`;
+  
+  // Data points
+  radarData.forEach(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const radius = (item.value / 100) * maxRadius;
+    const x = center + radius * Math.cos(angle);
+    const y = center + radius * Math.sin(angle);
+    svg += `<circle cx="${x}" cy="${y}" r="3" fill="#f97316"/>`;
+  });
+  
+  // Labels
+  radarData.forEach(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const labelRadius = maxRadius + 20;
+    const x = center + labelRadius * Math.cos(angle);
+    const y = center + labelRadius * Math.sin(angle);
+    svg += `<text x="${x}" y="${y}" text-anchor="middle" alignment-baseline="middle" fill="#d4d4d8" font-size="12">${item.subject}</text>`;
+  });
+  
+  svg += '</svg>';
+  container.innerHTML = svg;
+}
+
+// Populate interests
+function populateInterests() {
+  const interestsGrid = document.getElementById('interests-grid');
+  interestsGrid.innerHTML = interests.map(interest => `
+    <div class="interest-card">
+      <div class="interest-title">
+        <span class="interest-icon">${interest.icon}</span>
+        ${interest.label}
+      </div>
+      <div class="interest-desc">${interest.desc}</div>
+      <div class="interest-detail">${interest.detail}</div>
+    </div>
+  `).join('');
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', function() {
+  populateSkills();
+  populateToolbelt();
+  createRadarChart();
+  populateInterests();
+});
+</script>

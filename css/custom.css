@@ -512,3 +512,14 @@ blockquote {
   /* ticker JSON/text on a new line, centered */
   #homepage-notice .notice-text { order: 3; flex-basis: 100%; width: 100%; text-align: center; padding-top: 0.35rem; }
 }
+
+
+/* Media queries for skills section */
+@media (max-width: 768px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+  .skills-list {
+    grid-template-columns: 1fr;
+  }
+}
