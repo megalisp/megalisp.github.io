@@ -1,10 +1,46 @@
 <!-- inject-latest-posts.html: Latest Blog Posts section for homepage -->
 <section class="latest-posts" style="margin:2.5rem 0 2rem 0;">
   <h2 style="color:var(--primary);margin-bottom:1.2rem;">Latest Blog Posts</h2>
-  <div class="posts-list">
-    @|contents|
-  </div>
-  <div style="text-align:right;margin-top:0.7rem;">
-    <a href="@|uri-prefix|/posts/" class="btn btn-sm btn-space">View all posts</a>
+  <div class="latest-parent">
+    <div class="posts-list">
+      @|contents|
+
+      <!-- Recent list template: will be moved into the first project-card at runtime -->
+      <div id="recent-list-template" style="display:none;">
+        <div class="recent-list-inline" aria-label="Recent posts">
+          <h3 class="recent-list-title">Recent Posts</h3>
+          <ul class="recent-list">
+            <li><time datetime="2025-07-31">2025-07-31 10:00</time> — <a href="#">Placeholder post one</a></li>
+            <li><time="2025-07-30"><time datetime="2025-07-30">2025-07-30 14:25</time> — <a href="#">Placeholder post two</a></li>
+            <li><time datetime="2025-07-29">2025-07-29 09:12</time> — <a href="#">Placeholder post three</a></li>
+            <li><time datetime="2025-07-28">2025-07-28 18:40</time> — <a href="#">Placeholder post four</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          try {
+            var tpl = document.getElementById('recent-list-template');
+            if (!tpl) return;
+            var projectsGrid = document.querySelector('.projects-grid');
+            if (!projectsGrid) { tpl.style.display = 'none'; return; }
+            var firstCard = projectsGrid.querySelector('article.project-card');
+            if (!firstCard) { tpl.style.display = 'none'; return; }
+            var container = document.createElement('div');
+            container.className = 'recent-list-inline';
+            container.innerHTML = tpl.innerHTML;
+            // append inside the first project-card, after its content
+            firstCard.appendChild(container);
+            // remove template from DOM
+            tpl.parentNode.removeChild(tpl);
+          } catch (e) { /* ignore errors */ }
+        });
+      </script>
+
+    </div>
+    <div class="view-all-container">
+      <a href="@|uri-prefix|/posts/" class="btn btn-sm btn-space">View all posts</a>
+    </div>
   </div>
 </section>
