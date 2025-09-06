@@ -495,5 +495,30 @@ document.addEventListener('DOMContentLoaded', function() {
   populateInterests();
   // Attach tooltips after a short delay to ensure bars exist
   setTimeout(attachSkillTooltips, 220);
+
+  // Responsive stacking for Bars & Bricks and Heat Map at high zoom or narrow cards
+  function forceVerticalSkillsLayout() {
+    var grid = document.querySelector('.skills-grid');
+    if (!grid) return;
+    var cards = grid.querySelectorAll('.skills-card');
+    var viewportWidth = window.innerWidth;
+    if (viewportWidth < 1050) {
+      grid.style.display = 'block';
+      cards.forEach(function(card) {
+        card.style.width = '100%';
+        card.style.display = 'block';
+        card.style.marginBottom = '1.5rem';
+      });
+    } else {
+      grid.style.display = '';
+      cards.forEach(function(card) {
+        card.style.width = '';
+        card.style.display = '';
+        card.style.marginBottom = '';
+      });
+    }
+  }
+  forceVerticalSkillsLayout();
+  window.addEventListener('resize', forceVerticalSkillsLayout);
 });
 </script>

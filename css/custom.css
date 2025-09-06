@@ -270,10 +270,7 @@ h1, h2 {
 
 @media (max-width: 1200px) {
   .vault-card { 
-    flex-basis: 28%; 
-  }
-  .vaults-grid { 
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -291,7 +288,7 @@ h1, h2 {
     flex-basis: 100%; 
   }
   .vaults-grid { 
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -515,16 +512,6 @@ blockquote {
 
 
 /* Media queries for skills section */
-@media (max-width: 768px) {
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-  .skills-list {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* === Page Navigation Styling === */
 .page-link {
   background-color: #1a1a1a; /* very dark grey */
   color: var(--primary); /* vivid orange */
