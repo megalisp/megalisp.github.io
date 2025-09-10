@@ -1,0 +1,148 @@
+<style>
+.relevant-repos-group { background: linear-gradient(90deg, #0a0a0a 80%, #181818 100%); border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.18); border: 1.5px solid #181818; margin-bottom: 2.2em; padding: 1.1em 1.2em 0.5em 1.2em; transition: box-shadow 0.2s; }
+.relevant-repos-group.collapsed { padding-bottom: 0.2em; }
+.relevant-repos-group h3 { cursor: pointer; user-select: none; margin-top: 0.1em; margin-bottom: 0.2em !important; display: flex; align-items: center; gap: 0.5em; font-size: 1.18em; color: #fff; transition: color 0.2s; }
+.relevant-repos-group h3 .repo-reload-btn { margin-left: auto; background: transparent; border: 1px solid rgba(255,255,255,0.06); color: var(--primary); padding: 0.15rem 0.5rem; border-radius: 0.35rem; cursor: pointer; font-size: 0.95rem; }
+.relevant-repos-group h3 .repo-reload-btn:hover { background: rgba(255,255,255,0.03); }
+.relevant-repos-group h3 .arrow { font-size: 1.1em; transition: transform 0.2s; display: inline-block; color: #ff6f00; }
+.relevant-repos-group.collapsed h3 .arrow { transform: rotate(-90deg); }
+.relevant-repos-group .repos-list { transition: max-height 0.25s cubic-bezier(.4,0,.2,1), opacity 0.2s; overflow: hidden; opacity: 1; max-height: 500px; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
+.relevant-repos-group .repos-list::-webkit-scrollbar { height: 20px; }
+.relevant-repos-group .repos-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 6px; border: 2px solid rgba(0,0,0,0.15); }
+.repo-desc-popup-global { position: absolute; z-index: 1200; background: #222; color: #fff; border: 1px solid rgba(255,255,255,0.06); padding: 0.6rem 0.8rem; border-radius: 0.6em; min-width: 200px; max-width: 420px; box-shadow: 0 6px 18px rgba(0,0,0,0.6); font-size: 0.95rem; display: none; white-space: pre-line; max-height: 70vh; overflow: auto; }
+.relevant-repos-group.collapsed .repos-list { opacity: 0; max-height: 0; pointer-events: none; }
+</style><section class="relevant-repos" style="margin:2.5rem 0 2rem 0;"><h2 style="color:var(--primary);margin-bottom:1.2rem;">Relevant Repos</h2><div id="github-relevant-repos-groups"></div></section><script>(function(){
+     function loadRepoGroups() {
+     return new Promise(function(resolve){
+     var inj = document.getElementById('injected-repos');
+     if (inj && inj.textContent && inj.textContent.trim().length > 0) {
+     try { var parsed = JSON.parse(inj.textContent); if (Array.isArray(parsed)) return resolve(parsed); } catch(e) { }
+     }
+     if (window.fetch) {
+     fetch('/_REPOS.json', { cache: 'no-store' }).then(function(resp){ if(!resp.ok) throw new Error('bad'); return resp.json(); }).then(function(json){ if(Array.isArray(json)) return resolve(json); resolve([]); }).catch(function(){ resolve([]); });
+     } else {
+     resolve([]);
+     }
+     });
+     }
+     function buildGroups(relevantRepoGroups) {
+     const groupsContainer = document.getElementById('github-relevant-repos-groups');
+     if (!groupsContainer) return;
+     relevantRepoGroups.forEach(function(group){
+     const groupSection = document.createElement('div');
+     groupSection.className = 'relevant-repos-group';
+     groupSection.style.marginBottom = '2.2em';
+     const groupTitle = document.createElement('h3');
+     const arrowSpan = document.createElement('span');
+     arrowSpan.className = 'arrow';
+     arrowSpan.style.fontSize = '1.1em';
+     arrowSpan.innerHTML = '&#9654;';
+     const titleSpan = document.createElement('span');
+     titleSpan.textContent = group.title;
+     const reloadBtn = document.createElement('button');
+     reloadBtn.className = 'repo-reload-btn';
+     reloadBtn.type = 'button';
+     reloadBtn.title = 'Refresh group';
+     reloadBtn.innerText = '⟳';
+     groupTitle.appendChild(arrowSpan);
+     groupTitle.appendChild(titleSpan);
+     groupTitle.appendChild(reloadBtn);
+     groupTitle.onclick = function(){ groupSection.classList.toggle('collapsed'); };
+     groupSection.appendChild(groupTitle);
+     const repoList = document.createElement('div');
+     repoList.className = 'repos-list';
+     repoList.style.display = 'flex';
+     repoList.style.overflowX = 'auto';
+     repoList.style.gap = '1.2em';
+     repoList.style.paddingBottom = '0.25rem';
+     repoList.style.WebkitOverflowScrolling = 'touch';
+     (group.repos || []).forEach(function(r){
+     const ph = document.createElement('div');
+     ph.className = 'repo-pill placeholder';
+     ph.dataset.owner = r.owner;
+     ph.dataset.repo = r.repo;
+     ph.style.flex = '0 0 auto';
+     ph.style.display = 'block';
+     ph.style.minWidth = '220px';
+     ph.style.borderRadius = '8px';
+     ph.style.padding = '1em 1.2em';
+     ph.style.background = 'rgba(0,0,0,0.06)';
+     ph.style.color = '#ff6f00';
+     ph.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+     ph.textContent = r.repo;
+     repoList.appendChild(ph);
+     });
+     function fetchReposInList(listEl, repoDefs) {
+     if (!window.fetch) return;
+     reloadBtn.disabled = true; reloadBtn.innerText = '⟳';
+     var pending = repoDefs.length;
+     repoDefs.forEach(function(r){
+     fetch('https://api.github.com/repos/' + encodeURIComponent(r.owner) + '/' + encodeURIComponent(r.repo)).then(function(resp){ if(!resp.ok) throw new Error('fetch-failed'); return resp.json(); }).then(function(data){
+     var selector = '.repo-pill.placeholder[data-owner="' + r.owner + '"][data-repo="' + r.repo + '"]';
+     var ph = listEl.querySelector(selector);
+     if (!ph) return;
+     var el = document.createElement('a');
+     el.className = 'repo-pill';
+     el.href = data.html_url || ('https://github.com/' + r.owner + '/' + r.repo);
+     el.target = '_blank';
+     el.style.display = 'block';
+     el.style.flex = '0 0 auto';
+     el.style.minWidth = '220px';
+     el.style.background = 'rgba(0,0,0,0.10)';
+     el.style.borderRadius = '8px';
+     el.style.padding = '1em 1.2em';
+     el.style.color = '#ff6f00';
+     el.style.textDecoration = 'none';
+     el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+     var desc = data.description || '';
+     var truncated = desc.length > 50 ? desc.slice(0,47) + '...' : desc;
+     el.innerHTML = '<div style="font-size:1.1em;font-weight:bold;">' + (data.full_name || r.repo) + '</div><div style="font-size:0.98em;color:#ddd;margin:0.2em 0 0.4em 0;">' + truncated + '</div><div style="font-size:0.92em;color:#999;">★ ' + (data.stargazers_count || 0) + ' &nbsp; ⑂ ' + (data.forks_count || 0) + '</div>';
+     if (desc.length > 0) el.dataset.fullDesc = (desc + '').replace(/"/g,'&quot;');
+     listEl.replaceChild(el, ph);
+     }).catch(function(){ }).finally(function(){ pending--; if (pending<=0) { reloadBtn.disabled = false; reloadBtn.innerText = '⟳'; } });
+     });
+     }
+     fetchReposInList(repoList, group.repos || []);
+     reloadBtn.addEventListener('click', function(e){ e.stopPropagation(); fetchReposInList(repoList, group.repos || []); });
+     groupSection.appendChild(repoList);
+     groupsContainer.appendChild(groupSection);
+     });
+     }
+     loadRepoGroups().then(buildGroups);
+     const globalTT = document.createElement('div');
+     globalTT.className = 'repo-desc-popup-global';
+     globalTT.id = 'repo-desc-popup-global';
+     globalTT.setAttribute('role','tooltip');
+     document.body.appendChild(globalTT);
+     function clampPosition(x,y,tooltip){
+     var tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+     var pad = 8;
+     var maxX = window.scrollX + window.innerWidth - tw - pad;
+     var maxY = window.scrollY + window.innerHeight - th - pad;
+     var nx = Math.min(maxX, Math.max(window.scrollX + pad, x));
+     var ny = Math.min(maxY, Math.max(window.scrollY + pad, y));
+     return {x: nx, y: ny};
+     }
+     var pointerShownFor = null;
+     document.addEventListener('mouseover', function(e){
+     var pill = e.target.closest('.repo-pill');
+     if (!pill) return;
+     var full = pill.dataset.fullDesc;
+     if (!full) return;
+     globalTT.innerHTML = full;
+     globalTT.style.display = 'block';
+     pointerShownFor = pill;
+     var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalTT);
+     globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px';
+     });
+     document.addEventListener('mousemove', function(e){ if (globalTT.style.display === 'block') { var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalTT); globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px'; } });
+     document.addEventListener('mouseout', function(e){
+     var related = e.relatedTarget;
+     if (!related || !related.closest || !related.closest('.repo-pill')) {
+     globalTT.style.display = 'none'; pointerShownFor = null;
+     }
+     });
+     document.addEventListener('focusin', function(e){ var pill = e.target.closest('.repo-pill'); if (pill && pill.dataset.fullDesc) { globalTT.innerHTML = pill.dataset.fullDesc; globalTT.style.display = 'block'; var r = pill.getBoundingClientRect(); var pos = clampPosition(window.scrollX + r.right + 12, window.scrollY + r.top, globalTT); globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px'; } });
+     document.addEventListener('focusout', function(e){ if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.repo-pill')) { globalTT.style.display = 'none'; } });
+     document.addEventListener('touchstart', function(e){ var pill = e.target.closest('.repo-pill'); if (!pill) return; var full = pill.dataset.fullDesc; if (!full) return; if (globalTT.style.display === 'block' && pointerShownFor === pill) { globalTT.style.display = 'none'; pointerShownFor = null; } else { globalTT.innerHTML = full; globalTT.style.display = 'block'; pointerShownFor = pill; var r = pill.getBoundingClientRect(); var pos = clampPosition(window.scrollX + r.right + 12, window.scrollY + r.top, globalTT); globalTT.style.left = pos.x + 'px'; globalTT.style.top = pos.y + 'px'; } }, {passive:true});
+     })();</script>

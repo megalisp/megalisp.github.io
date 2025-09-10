@@ -1,0 +1,203 @@
+<style>
+.skills-container { background: #000; color: #e4e4e7; padding: 2rem; border-radius: 1rem; position: relative; overflow: hidden; margin: 2rem 0; }
+.skills-container::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top, rgba(249,115,22,0.15), transparent 55%); pointer-events: none; }
+.skills-grid { display: grid; gap: 2rem; grid-template-columns: 1.2fr 1fr; position: relative; z-index: 1; }
+.skills-card { background: rgba(9, 9, 11, 0.7); border: 1px solid rgba(39, 39, 42, 0.8); border-radius: 1rem; padding: 1.5rem; backdrop-filter: blur(8px); }
+.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.25em; color: #a1a1aa; margin-bottom: 0.5rem; }
+.card-title { font-size: 1.875rem; font-weight: 600; color: white; line-height: 1.2; margin-bottom: 1.5rem; }
+.skills-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+.skill-item { display: flex; flex-direction: column; gap: 0.25rem; }
+.skill-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; }
+.skill-name { color: #d4d4d8; }
+.skill-name[data-url] { cursor: pointer; text-decoration: underline; text-decoration-color: transparent; transition: color 140ms ease, text-decoration-color 140ms ease; }
+.skill-percent { color: #71717a; }
+.skill-meter { height: 4px; background: rgba(39, 39, 42, 0.8); border-radius: 2px; position: relative; overflow: hidden; }
+.skill-fill { height: 100%; background: #f97316; border-radius: 2px; transition: width 0.6s ease-out; }
+.toolbelt-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tool-badge { background: rgba(39, 39, 42, 0.6); color: #d4d4d8; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; text-decoration: none; white-space: nowrap; }
+.skill-item[data-url] { cursor: pointer; }
+.tool-badge:hover { background: rgba(249, 115, 22, 0.2); color: #f97316; text-decoration: none; }
+.tool-badge:hover { background: rgba(39, 39, 42, 0.8); }
+.radar-container { height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.interests-section { margin-top: 3rem; }
+.interests-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-top: 2rem; }
+.interest-card { background: rgba(9, 9, 11, 0.7); border: 1px solid rgba(39, 39, 42, 0.8); border-radius: 1rem; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; backdrop-filter: blur(8px); }
+.interest-title { display: flex; align-items: center; gap: 0.5rem; color: white; font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
+.interest-icon { color: #f97316; width: 1rem; height: 1rem; }
+.interest-desc { color: #a1a1aa; font-size: 0.875rem; margin-bottom: 1rem; }
+.interest-detail { color: #a1a1aa; font-size: 0.875rem; line-height: 1.6; margin-top: auto; }
+</style><div class="skills-container"><div style="margin-bottom: 2rem;"><h3 style="color: #f97316; margin-bottom: 1rem;">Interests & Skills</h3></div><div class="skills-grid"><div class="skills-card"><div class="section-title">Bars & Bricks</div><h2 class="card-title">Programming-Languages, Tech-Stacks, And Platforms.</h2><div class="skills-list" id="skills-list"><!-- Skills will be populated by JavaScript --></div><div class="section-title" style="margin-top: 2rem;">Toolbelt</div><div class="toolbelt-grid" id="toolbelt-grid"><!-- Toolbelt will be populated by JavaScript --></div></div><div class="skills-card"><div class="section-title">Heat Map</div><h3 class="card-title" style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;"><span style="color: #f97316;"></span> Breadth Radar</h3><div class="radar-container" id="radar-container"><!-- Radar chart will be populated by JavaScript --></div></div></div><div class="interests-section"><div class="section-title">Focusing On</div><div class="interests-grid" id="interests-grid"><!-- Interest cards will be populated by JavaScript --></div></div></div><script>
+const coreSkills = [{ name: "Racket", level: 90, url: "https://racket-lang.org" }, { name: "Gerbil Scheme", level: 40, url: "https://cons.io" }, { name: "Chez Scheme", level: 75, url: "https://cisco.github.io/ChezScheme/" }, { name: "Common-Lisp", level: 40, url: "https://common-lisp.net" }, { name: "RXRS Scheme", level: 70, url: "https://r6rs.org" }, { name: "Go / C / C++", level: 20, url: "https://en.wikipedia.org/wiki/C_(programming_language)" }];
+const toolbelt = [{ name: "Docker / Podman", url: "https://podman.io/" }, { name: "Fedora Atomic", url: "https://fedoraproject.org/atomic-desktops/" }, { name: "UBLue", url: "https://universal-blue.org/" }, { name: "Bootc" }, { name: "Quadlets", url: "https://docs.bazzite.gg/Installing_and_Managing_Software/Quadlet/" }, { name: "Flatpak", url: "https://flatpak.org/" }, { name: "XREPL" }, { name: "Raylib", url: "https://www.raylib.com/" }, { name: "OpenAPI", url: "https://www.openapis.org/" }, { name: "WASM", url: "https://webassembly.org/" }, { name: "HTML", url: "https://developer.mozilla.org/en-US/docs/Web/HTML" }, { name: "SXML" }, { name: "Scribble", url: "https://docs.racket-lang.org/scribble/" }];
+const radarData = [{ subject: "Frontend", value: 30, angle: 0 }, { subject: "Backend", value: 30, angle: 60 }, { subject: "DevOps", value: 30, angle: 120 }, { subject: "DX / Tooling", value: 30, angle: 180 }, { subject: "UX", value: 30, angle: 240 }, { subject: "AI / ML", value: 30, angle: 300 }];
+const interests = [{ icon: "🌌", label: "Spatial Computing", desc: "Moving interfaces from 1.5D to 2.5-3D.", detail: "ipsumzeta quorbits flenxar veloran quixthra sombrix norvalen" }, { icon: "☯️", label: "Homoiconclasm", desc: "Code Is Data. Data Is Code. It's all language.", detail: "vexalon primetuid sogran ulmora phentrix lodamir tezrin" }, { icon: "🎭", label: "Theatrics", desc: "Actor Driven Programming.", detail: "murpish tevalon crinsta dorvalen spindrek humbar lortha" }, { icon: "⚙️", label: "Modify It", desc: "Everything should be mo(l)dable.", detail: "brundel pexario yulb tremorin quastel varnum eldir" }];
+
+// Populate skills
+function populateSkills() {
+  const skillsList = document.getElementById('skills-list');
+  if (!skillsList) return;
+  
+  skillsList.innerHTML = coreSkills.map(skill => {
+    const urlAttr = skill.url ? (' data-url="' + skill.url + '"') : '';
+    return (
+      '<div class="skill-item"' + urlAttr + '>' +
+        '<div class="skill-header">' +
+          '<span class="skill-name">' + skill.name + '</span>' +
+          '<span class="skill-percent">' + skill.level + '%</span>' +
+        '</div>' +
+        '<div class="skill-meter">' +
+          '<div class="skill-fill" style="width: 0%" data-width="' + skill.level + '%"></div>' +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+  
+  // Animate skill bars
+  setTimeout(() => {
+    document.querySelectorAll('.skill-fill').forEach(fill => {
+      fill.style.width = fill.dataset.width;
+    });
+  }, 100);
+}
+
+// Populate toolbelt
+function populateToolbelt() {
+  const toolbeltGrid = document.getElementById('toolbelt-grid');
+  if (!toolbeltGrid) return;
+  
+  toolbeltGrid.innerHTML = toolbelt.map(tool => {
+    if (tool.url) {
+      return '<a href="' + tool.url + '" target="_blank" class="tool-badge">' + tool.name + '</a>';
+    } else {
+      return '<span class="tool-badge">' + tool.name + '</span>';
+    }
+  }).join('');
+}
+
+// Populate interests
+function populateInterests() {
+  const interestsGrid = document.getElementById('interests-grid');
+  if (!interestsGrid) return;
+  
+  interestsGrid.innerHTML = interests.map(interest => 
+    '<div class="interest-card">' +
+      '<div class="interest-title">' +
+        '<span class="interest-icon">' + interest.icon + '</span>' +
+        '<span>' + interest.label + '</span>' +
+      '</div>' +
+      '<div class="interest-desc">' + interest.desc + '</div>' +
+      '<div class="interest-detail">' + interest.detail + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+// Simple radar chart implementation
+function createRadarChart() {
+  const container = document.getElementById('radar-container');
+  if (!container) return;
+  
+  const size = 240;
+  const center = size / 2;
+  const radius = size * 0.35;
+  
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.style.display = 'block';
+  svg.style.margin = '0 auto';
+  
+  // Background circle
+  const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  bgCircle.setAttribute('cx', center);
+  bgCircle.setAttribute('cy', center);
+  bgCircle.setAttribute('r', radius);
+  bgCircle.setAttribute('fill', 'none');
+  bgCircle.setAttribute('stroke', 'rgba(39, 39, 42, 0.8)');
+  bgCircle.setAttribute('stroke-width', '1');
+  svg.appendChild(bgCircle);
+  
+  // Grid lines
+  for (let i = 1; i <= 3; i++) {
+    const gridCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    gridCircle.setAttribute('cx', center);
+    gridCircle.setAttribute('cy', center);
+    gridCircle.setAttribute('r', radius * (i / 3));
+    gridCircle.setAttribute('fill', 'none');
+    gridCircle.setAttribute('stroke', 'rgba(39, 39, 42, 0.4)');
+    gridCircle.setAttribute('stroke-width', '0.5');
+    svg.appendChild(gridCircle);
+  }
+  
+  // Axes and labels
+  radarData.forEach(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const x2 = center + radius * Math.cos(angle);
+    const y2 = center + radius * Math.sin(angle);
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', center);
+    line.setAttribute('y1', center);
+    line.setAttribute('x2', x2);
+    line.setAttribute('y2', y2);
+    line.setAttribute('stroke', 'rgba(39, 39, 42, 0.6)');
+    line.setAttribute('stroke-width', '0.5');
+    svg.appendChild(line);
+    
+    const labelRadius = radius + 20;
+    const labelX = center + labelRadius * Math.cos(angle);
+    const labelY = center + labelRadius * Math.sin(angle);
+    
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', labelX);
+    text.setAttribute('y', labelY);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('fill', '#a1a1aa');
+    text.setAttribute('font-size', '11');
+    text.setAttribute('font-family', 'system-ui, sans-serif');
+    text.textContent = item.subject;
+    svg.appendChild(text);
+  });
+  
+  // Data polygon
+  const points = radarData.map(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const distance = radius * (item.value / 100);
+    const x = center + distance * Math.cos(angle);
+    const y = center + distance * Math.sin(angle);
+    return x + ',' + y;
+  }).join(' ');
+  
+  const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  polygon.setAttribute('points', points);
+  polygon.setAttribute('fill', 'rgba(249, 115, 22, 0.2)');
+  polygon.setAttribute('stroke', '#f97316');
+  polygon.setAttribute('stroke-width', '2');
+  svg.appendChild(polygon);
+  
+  // Data points
+  radarData.forEach(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const distance = radius * (item.value / 100);
+    const x = center + distance * Math.cos(angle);
+    const y = center + distance * Math.sin(angle);
+    
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x);
+    circle.setAttribute('cy', y);
+    circle.setAttribute('r', '3');
+    circle.setAttribute('fill', '#f97316');
+    svg.appendChild(circle);
+  });
+  
+  container.appendChild(svg);
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', function() {
+  populateSkills();
+  populateToolbelt();
+  populateInterests();
+  createRadarChart();
+});
+</script>

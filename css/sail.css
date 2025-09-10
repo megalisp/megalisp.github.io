@@ -1,0 +1,250 @@
+:root {
+  --solar-primary: #ff7a00;
+  --solar-secondary: #ffffff;
+  --solar-tertiary: #000000;
+  --solar-bg-primary: #000000;
+  --solar-bg-secondary: #111111;
+  --solar-bg-tertiary: #222222;
+  --solar-text-primary: #ffffff;
+  --solar-text-secondary: #ff7a00;
+  --solar-text-muted: #cccccc;
+  --solar-border: #333333;
+  --solar-hover: #ff9100;
+  --solar-focus: #ff5722;
+}
+
+/* Solar Theme Base Styles */
+body {
+  background-color: var(--solar-bg-primary);
+  color: var(--solar-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Solar Theme Utilities */
+.solar-button-primary {
+  background-color: var(--solar-primary);
+  color: var(--solar-tertiary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.solar-button-primary:hover {
+  background-color: var(--solar-hover);
+}
+
+.solar-card {
+  background-color: var(--solar-bg-secondary);
+  border: 1px solid var(--solar-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.solar-nav {
+  background-color: var(--solar-bg-primary);
+  border-bottom: 1px solid var(--solar-border);
+}
+
+.solar-nav-link {
+  color: var(--solar-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.solar-nav-link:hover {
+  color: var(--solar-hover);
+}
+
+/* SAIL Utility Classes */
+.m-0 { margin: 0rem; }
+.m-1 { margin: 0.25rem; }
+.m-2 { margin: 0.5rem; }
+.m-3 { margin: 0.75rem; }
+.m-4 { margin: 1.0rem; }
+.m-5 { margin: 1.25rem; }
+.p-0 { padding: 0rem; }
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1.0rem; }
+.p-5 { padding: 1.25rem; }
+.mx-0 { margin: 0rem; }
+.mx-1 { margin: 0.25rem; }
+.mx-2 { margin: 0.5rem; }
+.mx-3 { margin: 0.75rem; }
+.mx-4 { margin: 1.0rem; }
+.mx-5 { margin: 1.25rem; }
+.my-0 { margin: 0rem; }
+.my-1 { margin: 0.25rem; }
+.my-2 { margin: 0.5rem; }
+.my-3 { margin: 0.75rem; }
+.my-4 { margin: 1.0rem; }
+.my-5 { margin: 1.25rem; }
+.mt-0 { margin: 0rem; }
+.mt-1 { margin: 0.25rem; }
+.mt-2 { margin: 0.5rem; }
+.mt-3 { margin: 0.75rem; }
+.mt-4 { margin: 1.0rem; }
+.mt-5 { margin: 1.25rem; }
+.mb-0 { margin: 0rem; }
+.mb-1 { margin: 0.25rem; }
+.mb-2 { margin: 0.5rem; }
+.mb-3 { margin: 0.75rem; }
+.mb-4 { margin: 1.0rem; }
+.mb-5 { margin: 1.25rem; }
+.ml-0 { margin: 0rem; }
+.ml-1 { margin: 0.25rem; }
+.ml-2 { margin: 0.5rem; }
+.ml-3 { margin: 0.75rem; }
+.ml-4 { margin: 1.0rem; }
+.ml-5 { margin: 1.25rem; }
+.mr-0 { margin: 0rem; }
+.mr-1 { margin: 0.25rem; }
+.mr-2 { margin: 0.5rem; }
+.mr-3 { margin: 0.75rem; }
+.mr-4 { margin: 1.0rem; }
+.mr-5 { margin: 1.25rem; }
+.pt-0 { padding: 0rem; }
+.pt-1 { padding: 0.25rem; }
+.pt-2 { padding: 0.5rem; }
+.pt-3 { padding: 0.75rem; }
+.pt-4 { padding: 1.0rem; }
+.pt-5 { padding: 1.25rem; }
+.pb-0 { padding: 0rem; }
+.pb-1 { padding: 0.25rem; }
+.pb-2 { padding: 0.5rem; }
+.pb-3 { padding: 0.75rem; }
+.pb-4 { padding: 1.0rem; }
+.pb-5 { padding: 1.25rem; }
+.pl-0 { padding: 0rem; }
+.pl-1 { padding: 0.25rem; }
+.pl-2 { padding: 0.5rem; }
+.pl-3 { padding: 0.75rem; }
+.pl-4 { padding: 1.0rem; }
+.pl-5 { padding: 1.25rem; }
+.pr-0 { padding: 0rem; }
+.pr-1 { padding: 0.25rem; }
+.pr-2 { padding: 0.5rem; }
+.pr-3 { padding: 0.75rem; }
+.pr-4 { padding: 1.0rem; }
+.pr-5 { padding: 1.25rem; }
+.d-none { display: none; }
+.d-block { display: block; }
+.d-inline { display: inline; }
+.d-inline-block { display: inline-block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+.flex-row { flex-direction: row; }
+.flex-column { flex-direction: column; }
+.justify-content-start { justify-content: flex-start; }
+.justify-content-center { justify-content: center; }
+.justify-content-end { justify-content: flex-end; }
+.justify-content-between { justify-content: space-between; }
+.align-items-start { align-items: flex-start; }
+.align-items-center { align-items: center; }
+.align-items-end { align-items: flex-end; }
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+.fw-normal { font-weight: normal; }
+.fw-bold { font-weight: bold; }
+.fw-bolder { font-weight: bolder; }
+.fs-1 { font-size: 2.5rem; }
+.fs-2 { font-size: 2rem; }
+.fs-3 { font-size: 1.75rem; }
+.fs-4 { font-size: 1.5rem; }
+.fs-5 { font-size: 1.25rem; }
+.fs-6 { font-size: 1rem; }
+.border { border: 1px solid var(--solar-border); }
+.border-0 { border: 0; }
+.border-top { border-top: 1px solid var(--solar-border); }
+.border-bottom { border-bottom: 1px solid var(--solar-border); }
+.border-left { border-left: 1px solid var(--solar-border); }
+.border-right { border-right: 1px solid var(--solar-border); }
+.rounded { border-radius: 0.375rem; }
+.rounded-0 { border-radius: 0; }
+.rounded-circle { border-radius: 50%; }
+.shadow-none { box-shadow: none; }
+.shadow-sm { box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+.shadow { box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); }
+.shadow-lg { box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175); }
+
+/* SAIL Component Styles */
+.site-header {
+  border-bottom: 2px solid var(--solar-primary);
+  padding: 1rem 0;
+}
+
+.site-title {
+  margin: 0;
+  color: var(--solar-primary);
+}
+
+.feature-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  color: var(--solar-primary);
+  margin-bottom: 1rem;
+}
+
+.hero-section {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+
+.article-card {
+  transition: transform 0.2s;
+}
+
+.article-card:hover {
+  transform: translateY(-3px);
+}
+
+.article-meta {
+  border-bottom: 1px solid var(--solar-border);
+  padding-bottom: 0.5rem;
+}
+
+.tags .badge {
+  background-color: var(--solar-primary) !important;
+  color: var(--solar-tertiary);
+}
+
+.social-links a {
+  color: var(--solar-text-secondary);
+  font-size: 1.5rem;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.social-links a:hover {
+  color: var(--solar-primary);
+  transform: translateY(-2px);
+}
+
+.breadcrumb {
+  background: none;
+  padding: 0;
+}
+
+.breadcrumb-item {
+  color: var(--solar-text-muted);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: '>';
+  color: var(--solar-border);
+}

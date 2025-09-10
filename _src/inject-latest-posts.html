@@ -1,0 +1,22 @@
+<style>
+
+</style><section class="latest-posts" style="margin:2.5rem 0 2rem 0;"><h2 style="color:var(--primary);margin-bottom:1.2rem;">Latest Blog Posts</h2><div class="latest-parent"><div class="posts-list">@|contents|<script>document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.posts-list time[datetime^="0001-01-01"]').forEach(function(timeEl) {
+              var post = timeEl.closest('article, li, .project-card');
+              if (post) post.style.display = 'none';
+            });
+          });</script><div id="recent-list-template" style="display:none;"><div class="recent-list-inline" aria-label="Recent posts"><h3 class="recent-list-title">Recent Posts</h3><ul class="recent-list"><li>2025-07-31 10:00 — <a href="#">Placeholder post one</a></li><li>2025-07-30 14:25 — <a href="#">Placeholder post two</a></li><li>2025-07-29 09:12 — <a href="#">Placeholder post three</a></li><li>2025-07-28 18:40 — <a href="#">Placeholder post four</a></li></ul></div></div><script>document.addEventListener('DOMContentLoaded', function() {
+            try {
+              var tpl = document.getElementById('recent-list-template');
+              if (!tpl) return;
+              var projectsGrid = document.querySelector('.projects-grid');
+              if (!projectsGrid) { tpl.style.display = 'none'; return; }
+              var firstCard = projectsGrid.querySelector('article.project-card');
+              if (!firstCard) { tpl.style.display = 'none'; return; }
+              var container = document.createElement('div');
+              container.className = 'recent-list-inline';
+              container.innerHTML = tpl.innerHTML;
+              firstCard.appendChild(container);
+              tpl.parentNode.removeChild(tpl);
+            } catch (e) { }
+          });</script></div><div class="view-all-container"><a href="@|uri-prefix|/posts/" class="btn btn-sm btn-space">View all posts</a></div></div></section>

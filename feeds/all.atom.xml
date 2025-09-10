@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+ <title type="text">MEGALISP = Building Big Things, In LISP.: MEGALISP = Building Big Things, In LISP.</title>
+ <link rel="self" href="https://megalisp.github.io//feeds/all.atom.xml" />
+ <link href="https://megalisp.github.io//index.html" />
+ <id>urn:https-megalisp-github-io:-index-html</id>
+ <updated>2025-07-31T05:00:00Z</updated>
+ <entry>
+  <title type="text">And... We Have Lift-Off!</title>
+  <link rel="alternate" href="https://megalisp.github.io//2025/07/and-we-have-lift-off.html?utm_source=all&amp;utm_medium=Atom" />
+  <id>urn:https-megalisp-github-io:-2025-07-and-we-have-lift-off-html</id>
+  <published>2025-07-31T05:00:00Z</published>
+  <updated>2025-07-31T05:00:00Z</updated>
+  <author>
+   <name>Joshua Steven Grant (ie: Jost Grant)</name></author>
+  <content type="html">
+&lt;p&gt;&amp;hellip;&lt;/p&gt;&lt;a href="https://megalisp.github.io//2025/07/and-we-have-lift-off.html?utm_source=all&amp;amp;utm_medium=Atom"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</content></entry>
+ <entry>
+  <title type="text">The Linux Common Denominator</title>
+  <link rel="alternate" href="https://megalisp.github.io//1/01/the-linux-common-denominator.html?utm_source=all&amp;utm_medium=Atom" />
+  <id>urn:https-megalisp-github-io:-1-01-the-linux-common-denominator-html</id>
+  <published>1-01-01T05:50:36Z</published>
+  <updated>1-01-01T05:50:36Z</updated>
+  <author>
+   <name>Joshua Steven Grant (ie: Jost Grant)</name></author>
+  <content type="html">
+&lt;p&gt;&amp;hellip;&lt;/p&gt;&lt;a href="https://megalisp.github.io//1/01/the-linux-common-denominator.html?utm_source=all&amp;amp;utm_medium=Atom"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</content></entry>
+ <entry>
+  <title type="text">Why B̶a̶d̶ Worse Technology (Almost) ALWAYS Wins</title>
+  <link rel="alternate" href="https://megalisp.github.io//1/01/why-b-a-d-worse-technology-almost-always-wins.html?utm_source=all&amp;utm_medium=Atom" />
+  <id>urn:https-megalisp-github-io:-1-01-why-b-a-d-worse-technology-almost-always-wins-html</id>
+  <published>1-01-01T05:50:36Z</published>
+  <updated>1-01-01T05:50:36Z</updated>
+  <author>
+   <name>Joshua Steven Grant (ie: Jost Grant)</name></author>
+  <content type="html">
+&lt;p&gt;&amp;hellip;&lt;/p&gt;&lt;a href="https://megalisp.github.io//1/01/why-b-a-d-worse-technology-almost-always-wins.html?utm_source=all&amp;amp;utm_medium=Atom"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</content></entry></feed>

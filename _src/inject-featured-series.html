@@ -1,0 +1,111 @@
+<style>
+.featured-series-flex { display: flex; gap: 2rem; align-items: stretch; position: relative; padding: 0.75rem; }
+.featured-series-card { flex: 3 1 0; background: linear-gradient(180deg, #050505, #0b0b0b); color: #e9e9e9; padding: 1rem; border-radius: 8px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; min-height: 320px; transition: box-shadow 0.2s; position: relative; z-index: 1; }
+.featured-series-card h3 { margin-top: 0; color: #ffffff; }
+.featured-series-card .muted { color: rgba(255, 255, 255, 0.72); }
+.featured-series-card p:last-child { margin-top: auto; display: flex; justify-content: flex-end; }
+.featured-series-tabs { flex: 1 1 0; display: flex; flex-direction: column; gap: 0.5rem; justify-content: flex-start; position: relative; z-index: 1; }
+.series-tab { background: linear-gradient(180deg, #050505, #0b0b0b); color: #ff7a00; border: none; border-radius: 6px; padding: 0.8rem 1rem; font-size: 1rem; cursor: pointer; text-align: left; transition: background 0.18s, color 0.18s; }
+.series-tab.active { background: #ff7a00; color: #181818; font-weight: bold; }
+.featured-series-flex::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.82), rgba(12,12,12,0.82)); border-radius: 12px; z-index: 0; pointer-events: none; box-shadow: 0 12px 40px rgba(0,0,0,0.72), 0 0 0 1px rgba(255,255,255,0.02) inset; border: 1px solid rgba(255,255,255,0.06); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+</style><section id="featured-series" class="featured-series"><div class="container"><h2>Featured Series</h2><p>A series is a collection of posts, such as guides, tutorials, or themed articles. Explore our curated series below.</p><div class="featured-series-flex"><div class="featured-series-card" id="series-card"><!-- Card content will be injected by JS --></div><div class="featured-series-tabs"><button class="series-tab active" data-series="guide">Getting Started Guide</button><button class="series-tab" data-series="tutorial">Advanced Tutorials</button></div></div></div></section><script>
+// Load series data from injected JSON if present, otherwise fetch /_SERIES.json
+var seriesData = null;
+var seriesKeys = [];
+var currentSeriesIndex = 0;
+
+function loadSeriesData(callback) {
+  var script = document.getElementById('injected-series');
+  var loaded = false;
+  if (script && script.textContent.trim().length > 0) {
+    try {
+      var obj = JSON.parse(script.textContent);
+      seriesData = obj || {};
+      seriesKeys = Object.keys(seriesData);
+      loaded = true;
+    } catch (e) { /* ignore and fallback to fetch */ }
+  }
+  if (loaded) {
+    callback();
+    return;
+  }
+  if (window.fetch) {
+    fetch('/_SERIES.json', { cache: 'no-store' }).then(function(resp) {
+      if (!resp.ok) throw new Error('bad response');
+      return resp.json();
+    }).then(function(obj) {
+      seriesData = obj || {};
+      seriesKeys = Object.keys(seriesData);
+      // inject into script tag for future loads
+      if (script) script.textContent = JSON.stringify(obj, null, 2);
+    }).catch(function() {
+      seriesData = {};
+      seriesKeys = [];
+    }).finally(function() { callback(); });
+  } else {
+    seriesData = {};
+    seriesKeys = [];
+    callback();
+  }
+}
+
+function renderSeriesCard(seriesKey) {
+  const s = seriesData[seriesKey];
+  if (!s) return;
+  document.getElementById('series-card').innerHTML = `
+    <h3>${s.title}</h3>
+    <p>${s.desc}</p>
+    <ul>
+      ${s.posts.map(post => `<li><a href="${post.url}">${post.title}</a></li>`).join('')}
+    </ul>
+  `;
+}
+
+function setActiveTab(index) {
+  document.querySelectorAll('.series-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === index);
+  });
+}
+
+function wireTabsAndStart() {
+  document.querySelectorAll('.series-tab').forEach((tab, idx) => {
+    tab.addEventListener('click', function() {
+      if (!seriesKeys || seriesKeys.length === 0) return;
+      currentSeriesIndex = idx;
+      setActiveTab(idx);
+      renderSeriesCard(seriesKeys[idx]);
+      resetCarousel();
+    });
+  });
+
+  // Initial render (safe-guard if no series)
+  if (seriesKeys && seriesKeys.length > 0) {
+    currentSeriesIndex = 0;
+    setActiveTab(currentSeriesIndex);
+    renderSeriesCard(seriesKeys[currentSeriesIndex]);
+    startCarousel();
+  }
+}
+
+function carouselNext() {
+  currentSeriesIndex = (currentSeriesIndex + 1) % seriesKeys.length;
+  setActiveTab(currentSeriesIndex);
+  renderSeriesCard(seriesKeys[currentSeriesIndex]);
+}
+
+let carouselTimer = null;
+function startCarousel() {
+  carouselTimer = setInterval(carouselNext, 10000);
+}
+function resetCarousel() {
+  if (carouselTimer) clearInterval(carouselTimer);
+  startCarousel();
+}
+
+// Load series data and then wire up UI
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() { loadSeriesData(wireTabsAndStart); });
+} else {
+  loadSeriesData(wireTabsAndStart);
+}
+</script>
