@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>Projects - MEGALISP - Building Big Things, In LISP</title>
+    <meta name="description" content="MEGALISP = Building Big Things, In LISP.">
+    <meta name="author" content="Joshua Steven Grant (ie: Jost Grant)">
+    <meta name="keywords" content="LISP, Racket, Scheme, Programming, Software Development">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="canonical" href="https://megalisp.github.io/proj/">
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/chroma.css">
+    <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = { theme: { extend: { colors: { solar: { primary: '#ff7a00', secondary: '#ffffff', tertiary: '#000000', 'bg-primary': '#000000', 'bg-secondary': '#111111', 'bg-tertiary': '#222222', 'text-primary': '#ffffff', 'text-secondary': '#ff7a00', 'text-muted': '#cccccc', border: '#333333', hover: '#ff9100', focus: '#ff5722' }, orange: { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#ff7a00', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12' }, fontFamily: { sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'] }, animation: { 'fade-in': 'fadeIn 0.5s ease-in-out', 'slide-up': 'slideUp 0.3s ease-out', 'scale-in': 'scaleIn 0.2s ease-out' }, keyframes: { fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }, slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }, scaleIn: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } } }, plugins: [function({ addUtilities }) { addUtilities({ '.glass': { 'background': 'rgba(255, 255, 255, 0.1)', 'backdrop-filter': 'blur(10px)', 'border': '1px solid rgba(255, 255, 255, 0.2)' }, '.solar-gradient': { 'background': 'linear-gradient(135deg, #ff7a00 0%, #ff9100 100%)' }, '.solar-glow': { 'box-shadow': '0 0 20px rgba(255, 122, 0, 0.3)' } }) } ] }}}}
+    </script>
+    
+    
+    <link rel="alternate" type="application/rss+xml" href="/posts/index.xml" title="Posts RSS Feed">
+    <link rel="alternate" type="application/rss+xml" href="/index.xml" title="RSS Feed">
+    
+    
+</head>
+<body class="site-body">
+    
+<style>
+#starfield-canvas-wrap { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #000; }
+#starfield-canvas { width: 100%; height: 100%; display: block; }
+</style>
+
+<div id="starfield-canvas-wrap" aria-hidden="true">
+  <canvas id="starfield-canvas"></canvas>
+</div>
+
+<script>
+
+(function(){
+  const canvas = document.getElementById('starfield-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0, height = 0, stars = [];
+
+  function resize(){
+    const dpr = window.devicePixelRatio || 1;
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = Math.max(300, Math.floor(width * dpr));
+    canvas.height = Math.max(200, Math.floor(height * dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function initStars(count){
+    stars = [];
+    for(let i=0;i<count;i++){
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z: Math.random() * 1, 
+        speed: 0.2 + Math.random() * 0.9,
+        size: 0.4 + Math.random() * 1.8
+      });
+    }
+  }
+
+  let last = performance.now();
+  function frame(now){
+    const dt = Math.min(40, now - last) / 16.666; 
+    last = now;
+    
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0,0,width,height);
+
+    for(let s of stars){
+      s.x += s.speed * dt;
+      s.y += (s.speed * 0.05) * dt;
+      
+      if(s.x > width + 10) s.x = -10;
+      if(s.y > height + 10) s.y = -10;
+
+      const hue = 210 + s.z * 40; 
+      const alpha = 0.6 + s.z * 0.4;
+      ctx.beginPath();
+      ctx.fillStyle = `hsla(${hue}, 80%, 90%, ${alpha})`;
+      ctx.arc(s.x, s.y, s.size * (1 + s.z), 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function start(){
+    resize();
+    initStars(Math.max(60, Math.floor((width * height) / 5000)));
+    last = performance.now();
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', ()=>{
+    resize();
+    initStars(Math.max(60, Math.floor((width * height) / 5000)));
+  });
+
+  
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else
+    start();
+
+})();
+</script>
+
+    <div class="site-wrapper">
+        <header class="site-header">
+            <style>
+ 
+.nav-item:hover {
+  color: #ff8a00 !important;
+  background-color: transparent !important;
+}
+.active-nav-item {
+  color: #ff6f00 !important;
+}
+.social-icon:hover {
+  color: #ff8a00 !important;
+}
+.dropdown button:hover {
+  color: #ff8a00 !important;
+  background-color: transparent !important;
+}
+.dropdown a:hover {
+  color: #ff8a00 !important;
+}
+</style>
+
+<nav class="w-full bg-black border-b border-gray-800 sticky top-0 z-50" role="navigation">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-12">
+      <a href="https://megalisp.github.io/" class="flex items-center text-xl font-bold text-white transition-colors font-bold" style="color: #ff6f00 !important;">'( ) MEGA</a>
+      
+      <div class="hidden md:flex md:items-center md:space-x-8 hidden md:flex md:items-center md:space-x-4">
+        
+        <a href="/plex/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Plex</a>
+        
+        <a href="/proj/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 active-nav-item">Proj</a>
+        
+        <a href="/bout/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Bout</a>
+        
+        <a href="/posts/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Posts</a>
+        
+        <a href="/series/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Series</a>
+        
+        
+        
+        <div class="relative dropdown">
+          <button class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md transition-colors flex items-center" onclick="toggleDropdown('tags-dropdown')">
+            Tags <span class="ml-1">▼</span>
+          </button>
+          <div class="absolute top-full left-0 mt-1 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg hidden" id="tags-dropdown">
+            
+            <a class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors" href="/tags/meta">Meta</a>
+            
+          </div>
+        </div>
+        
+        
+        <div class="relative dropdown">
+          <button class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md transition-colors flex items-center" onclick="toggleDropdown('sub-dropdown')">
+            Sub <span class="ml-1">▼</span>
+          </button>
+          <div class="absolute top-full left-0 mt-1 w-32 bg-gray-800 border border-gray-700 rounded-md shadow-lg hidden" id="sub-dropdown">
+            <a class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors" href="/posts/index.xml">Posts RSS</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hidden md:flex md:items-center md:space-x-4">
+        <a class="text-gray-300 transition-colors p-2 social-icon" href="https://github.com/megalisp" target="_blank" title="GitHub">
+          <i class="fab fa-github fa-lg"></i>
+        </a>
+        <a class="text-gray-300 transition-colors p-2 social-icon" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+          <i class="fas fa-heart fa-lg"></i>
+        </a>
+      </div>
+      
+      <button class="md:hidden p-2 text-gray-300 transition-colors social-icon" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+  
+  
+  <div class="md:hidden border-t border-gray-700 hidden" id="mobile-menu">
+    <div class="px-4 py-2 space-y-1">
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/plex/">Plex</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item active-nav-item bg-gray-800" href="/proj/">Proj</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/bout/">Bout</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/posts/">Posts</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/series/">Series</a>
+      
+      
+      
+      <div class="pt-2 border-t border-gray-700 mt-2">
+        <p class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tags</p>
+        
+        <a class="block px-3 py-2 text-sm text-gray-400 rounded-md transition-colors nav-item" href="/tags/meta">Meta</a>
+        
+      </div>
+      
+      
+      <div class="pt-2 border-t border-gray-700 mt-2">
+        <p class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Subscribe</p>
+        <a class="block px-3 py-2 text-sm text-gray-400 rounded-md transition-colors nav-item" href="/posts/index.xml">Posts RSS</a>
+      </div>
+      
+      <div class="pt-2 border-t border-gray-700 mt-2 flex space-x-4 px-3 py-2">
+        <a class="text-gray-400 hover:text-orange-400 transition-colors" href="https://github.com/megalisp" target="_blank" title="GitHub">
+          <i class="fab fa-github fa-lg"></i>
+        </a>
+        <a class="text-gray-400 hover:text-orange-400 transition-colors" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+          <i class="fas fa-heart fa-lg"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+function toggleDropdown(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  const allDropdowns = document.querySelectorAll('.dropdown > div:last-child');
+
+  
+  allDropdowns.forEach(d => {
+    if (d.id !== dropdownId) {
+      d.classList.add('hidden');
+    }
+  });
+
+  
+  dropdown.classList.toggle('hidden');
+}
+
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById('mobile-menu');
+  mobileMenu.classList.toggle('hidden');
+}
+
+
+document.addEventListener('click', function(event) {
+  const dropdowns = document.querySelectorAll('.dropdown');
+  dropdowns.forEach(dropdown => {
+    if (!dropdown.contains(event.target)) {
+      const dropdownMenu = dropdown.querySelector('div:last-child');
+      dropdownMenu.classList.add('hidden');
+    }
+  });
+});
+
+
+window.addEventListener('resize', function() {
+  if (window.innerWidth >= 768) {
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenu.classList.add('hidden');
+  }
+});
+</script>
+
+            
+        </header>
+        
+        <main class="site-main">
+            
+<div class="w-9/10 max-w-7xl mx-auto px-4">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <article>
+        <header class="mb-4">
+          <h1>Projects</h1>
+          <div class="text-muted mb-2">
+            <time datetime="2025-09-18">September 18, 2025</time>
+          </div>
+        </header>
+        <div class="content">
+          <div class="card mb-3">
+  <div class="card-body">
+    <h1>Projects</h1>
+    <p class="lead">Fleshing Out Soon</p>
+  </div>
+</div>
+
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+        </main>
+        
+        <style>
+.footer-credit a.accent { color: #ff7a00; font-weight: 600; text-decoration: none; }
+.footer-credit a.accent:hover { text-decoration: underline; }
+.twitter-follow-button { border: 2px solid #ff7a00; border-radius: 999px; display: inline-block; }
+.twitter-follow-button:hover { background: rgba(255,122,0,0.06); }
+.socials-center { text-align: center; margin: 0.6rem 0 0.8rem; }
+.socials-center p { margin: 0; }
+.socials-center .social { display: inline-block; margin: 0 0.6rem; color: #ff7a00; font-size: 28px; transition: transform 160ms ease, color 160ms ease; }
+.socials-center .social:hover { transform: translateY(-4px); color: #ffffff; }
+.socials-center .social:focus { outline: 2px solid #ff7a00; outline-offset: 4px; }
+</style>
+
+<footer class="site-footer galaxy-glow space-border" style="margin-top:2em;">
+  
+  <div class="socials-center" role="navigation" aria-label="Social links">
+    <p>
+      <a class="social" href="https://megalisp.github.io" target="_blank" rel="noopener" aria-label="Website">
+        <i class="fa-solid fa-house-user" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://gist.github.com/megalisp" target="_blank" rel="noopener" aria-label="Gists">
+        <i class="fa-solid fa-clipboard" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://github.com/megalisp" target="_blank" rel="noopener" aria-label="GitHub">
+        <i class="fa-brands fa-github" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://discord.gg/6Re3dCKRgV" target="_blank" rel="noopener" aria-label="Discord">
+        <i class="fa-brands fa-discord" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://www.youtube.com/@megalisp" target="_blank" rel="noopener" aria-label="YouTube">
+        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://www.twitch.tv/megalisp" target="_blank" rel="noopener" aria-label="Twitch">
+        <i class="fa-brands fa-twitch" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://megalisp.itch.io/" target="_blank" rel="noopener" aria-label="Itch.io">
+        <i class="fa-brands fa-itch-io" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://suno.com/@megalisp" target="_blank" rel="noopener" aria-label="Suno">
+        <i class="fa-solid fa-music" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://tiktok.com/@megalisp" target="_blank" rel="noopener" aria-label="TikTok">
+        <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://cash.app/$megalisp" target="_blank" rel="noopener" aria-label="Cash App">
+        <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://paypal.me/megalisp" target="_blank" rel="noopener" aria-label="PayPal">
+        <i class="fa-brands fa-paypal" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://patreon.com/megalisp" target="_blank" rel="noopener" aria-label="Patreon">
+        <i class="fa-brands fa-patreon" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://github.com/sponsors/megalisp" target="_blank" rel="noopener" aria-label="Sponsor">
+        <i class="fa-solid fa-heart" aria-hidden="true"></i>
+      </a>
+    </p>
+  </div>
+  
+  <div class="footer-divider" style="background-color:var(--primary);height:4px;width:60%;margin:0 auto 2em auto;border-radius:2px;"></div>
+  
+  <div style="text-align: center;">
+    <p style="margin-bottom: 1.5em;">
+      <a href="https://twitter.com/megalisp" class="twitter-follow-button" data-show-count="false" data-lang="en">
+        "Follow @MegaLisp"
+      </a>
+      <script type="text/javascript">
+        !function(d,s,id){
+          var js,fjs=d.getElementsByTagName(s)[0];
+          if(!d.getElementById(id)){
+            js=d.createElement(s);
+            js.id=id;
+            js.src="//platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document,"script","twitter-wjs");
+      </script>
+    </p>
+    <p class="footer-credit">
+      Built on <a class="accent" href="https://gohugo.io">Hugo</a>; Some With <a class="accent" href="https://godotengine.org" target="_blank">Godot</a>.
+    </p>
+    <p>
+      <em>All Content Here Is Tri-Licensed Under CC-BY, Apache 2.0, And MIT Unless Explicitly Stated Otherwise.</em>
+    </p>
+  </div>
+</footer>
+
+    </div>
+    
+    
+    <script type="text/javascript" src="/js/jquery-3.2.1.slim.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/js/custom.js"></script>
+    
+    
+</body>
+</html>

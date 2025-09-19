@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MEGALISP - Building Big Things, In LISP</title>
+    <link>https://megalisp.github.io/</link>
+    <description>Recent content on MEGALISP - Building Big Things, In LISP</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 19 Sep 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://megalisp.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>And... We Have Lift-Off!</title>
+      <link>https://megalisp.github.io/posts/2025-09-19-and-we-have-liftoff/</link>
+      <pubDate>Fri, 19 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>https://megalisp.github.io/posts/2025-09-19-and-we-have-liftoff/</guid>
+      <description>&amp;hellip;</description>
+    </item>
+    <item>
+      <title>Projects</title>
+      <link>https://megalisp.github.io/proj/</link>
+      <pubDate>Thu, 18 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>https://megalisp.github.io/proj/</guid>
+      <description>&lt;div class=&#34;card mb-3&#34;&gt;&#xA;  &lt;div class=&#34;card-body&#34;&gt;&#xA;    &lt;h1&gt;Projects&lt;/h1&gt;&#xA;    &lt;p class=&#34;lead&#34;&gt;Fleshing Out Soon&lt;/p&gt;&#xA;  &lt;/div&gt;&#xA;&lt;/div&gt;</description>
+    </item>
+    <item>
+      <title>The Megaplex</title>
+      <link>https://megalisp.github.io/plex/</link>
+      <pubDate>Thu, 18 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>https://megalisp.github.io/plex/</guid>
+      <description>&lt;div class=&#34;card&#34;&gt;&#xA;  &lt;div class=&#34;card-body&#34;&gt;&#xA;    &lt;div class=&#34;bubble-quote mb-4&#34;&gt;&#xA;      &lt;span class=&#34;quote-mark&#34;&gt;&#34;&lt;/span&gt;&#xA;      We Are Still &lt;strong&gt;Setting Things Up&lt;/strong&gt; Expect Things To Be Wonky Till End Of Year-ish 2025.&#xA;      &lt;span class=&#34;quote-mark&#34;&gt;&#34;&lt;/span&gt;&#xA;    &lt;/div&gt;&#xA;  &lt;/div&gt;&#xA;&lt;/div&gt;&#xA;&lt;div class=&#34;card&#34;&gt;&#xA;  &lt;div class=&#34;card-body&#34;&gt;&#xA;&lt;h2 id=&#34;the-megaplex&#34;&gt;The Megaplex&lt;/h2&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;Megalisp&amp;rsquo;s Community&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;p&gt;Welcome to the Megaplex — the community hub for Megalisp.&lt;/p&gt;&#xA;&lt;p&gt;We&amp;rsquo;re trying to cultivate Techno-Optimism through a Retro-Futurist Aesthetic.&lt;/p&gt;&#xA;&lt;p&gt;Going all-in on Lisp via Racket; Hoping to take it and move it somewhere else ultimately.&lt;/p&gt;&#xA;&lt;p&gt;&lt;em&gt;(We&amp;rsquo;ll see how possible that is in-practice lol)&lt;/em&gt;&lt;/p&gt;&#xA;&lt;br&gt;&#xA;&lt;hr&gt;&#xA;&lt;br&gt;&#xA;&lt;h2 id=&#34;da-rules&#34;&gt;Da Rules&lt;/h2&gt;&#xA;&lt;p&gt;&amp;ldquo;This Is A Christian Minecraft Server&amp;rdquo; level community. Keep it safe-for-work, safe-for-church.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Bout</title>
+      <link>https://megalisp.github.io/bout/</link>
+      <pubDate>Sat, 25 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://megalisp.github.io/bout/</guid>
+      <description>&lt;style&gt;&#xA;  .flip-indicator {&#xA;    font-size: 2rem;&#xA;    color: #ff7a00;&#xA;    margin-right: 1rem;&#xA;    margin-left: 0.5rem;&#xA;    transition: transform 0.3s cubic-bezier(.68,-0.55,.27,1.55);&#xA;    user-select: none;&#xA;    cursor: pointer;&#xA;    opacity: 0.85;&#xA;  }&#xA;  #profileSwap:hover .flip-indicator {&#xA;    transform: rotateY(180deg) scale(1.2);&#xA;    opacity: 1;&#xA;  }&#xA;  .profile-right {&#xA;    display: flex;&#xA;    flex-direction: row-reverse;&#xA;    align-items: center;&#xA;    justify-content: flex-end;&#xA;    width: 100%;&#xA;    gap: 2rem;&#xA;  }&#xA;  .profile-text {&#xA;    text-align: right;&#xA;    min-width: 220px;&#xA;    flex: 1;&#xA;  }&#xA;  #profileImg {&#xA;    margin-left: 2rem;&#xA;    margin-right: 0;&#xA;    float: right;&#xA;    box-shadow: 0 2px 12px rgba(0,0,0,0.12);&#xA;  }&#xA;&lt;/style&gt;&#xA;&lt;h1 id=&#34;bout&#34;&gt;Bout&lt;/h1&gt;&#xA;&lt;div class=&#34;profile-right mb-4&#34; id=&#34;profileSwap&#34; style=&#34;cursor:pointer;&#34;&gt;&#xA;  &lt;img id=&#34;profileImg&#34; src=&#34;https://megalisp.github.io/face-megalisp.png&#34; alt=&#34;Avatar&#34; class=&#34;rounded shadow&#34; style=&#34;width:128px;height:128px;object-fit:cover;transition:box-shadow 0.2s;&#34;&gt;&#xA;  &lt;div class=&#34;profile-text&#34;&gt;&#xA;    &lt;h2 class=&#34;mb-1 d-flex align-items-center justify-content-end&#34; id=&#34;profileName&#34;&gt;&#xA;      &lt;span id=&#34;profileNameText&#34;&gt;MEGALISP (@megalisp)&lt;/span&gt;&#xA;      &lt;span class=&#34;flip-indicator&#34; id=&#34;flipIndicator&#34; title=&#34;Click to flip profile&#34;&gt;↻&lt;/span&gt;&#xA;    &lt;/h2&gt;&#xA;    &lt;p class=&#34;lead mb-0&#34; id=&#34;profileDesc&#34;&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

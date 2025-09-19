@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta name="generator" content="Hugo 0.150.0">
+    <meta charset="utf-8">
+    <title>MEGALISP - Building Big Things, In LISP</title>
+    <meta name="description" content="MEGALISP = Building Big Things, In LISP.">
+    <meta name="author" content="Joshua Steven Grant (ie: Jost Grant)">
+    <meta name="keywords" content="LISP, Racket, Scheme, Programming, Software Development">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="canonical" href="https://megalisp.github.io/">
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/chroma.css">
+    <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = { theme: { extend: { colors: { solar: { primary: '#ff7a00', secondary: '#ffffff', tertiary: '#000000', 'bg-primary': '#000000', 'bg-secondary': '#111111', 'bg-tertiary': '#222222', 'text-primary': '#ffffff', 'text-secondary': '#ff7a00', 'text-muted': '#cccccc', border: '#333333', hover: '#ff9100', focus: '#ff5722' }, orange: { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#ff7a00', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12' }, fontFamily: { sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'] }, animation: { 'fade-in': 'fadeIn 0.5s ease-in-out', 'slide-up': 'slideUp 0.3s ease-out', 'scale-in': 'scaleIn 0.2s ease-out' }, keyframes: { fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }, slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }, scaleIn: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } } }, plugins: [function({ addUtilities }) { addUtilities({ '.glass': { 'background': 'rgba(255, 255, 255, 0.1)', 'backdrop-filter': 'blur(10px)', 'border': '1px solid rgba(255, 255, 255, 0.2)' }, '.solar-gradient': { 'background': 'linear-gradient(135deg, #ff7a00 0%, #ff9100 100%)' }, '.solar-glow': { 'box-shadow': '0 0 20px rgba(255, 122, 0, 0.3)' } }) } ] }}}}
+    </script>
+    
+    
+    <link rel="alternate" type="application/rss+xml" href="/posts/index.xml" title="Posts RSS Feed">
+    <link rel="alternate" type="application/rss+xml" href="/index.xml" title="RSS Feed">
+    
+    
+</head>
+<body class="site-body">
+    
+<style>
+#starfield-canvas-wrap { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: #000; }
+#starfield-canvas { width: 100%; height: 100%; display: block; }
+</style>
+
+<div id="starfield-canvas-wrap" aria-hidden="true">
+  <canvas id="starfield-canvas"></canvas>
+</div>
+
+<script>
+
+(function(){
+  const canvas = document.getElementById('starfield-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0, height = 0, stars = [];
+
+  function resize(){
+    const dpr = window.devicePixelRatio || 1;
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = Math.max(300, Math.floor(width * dpr));
+    canvas.height = Math.max(200, Math.floor(height * dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function initStars(count){
+    stars = [];
+    for(let i=0;i<count;i++){
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z: Math.random() * 1, 
+        speed: 0.2 + Math.random() * 0.9,
+        size: 0.4 + Math.random() * 1.8
+      });
+    }
+  }
+
+  let last = performance.now();
+  function frame(now){
+    const dt = Math.min(40, now - last) / 16.666; 
+    last = now;
+    
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0,0,width,height);
+
+    for(let s of stars){
+      s.x += s.speed * dt;
+      s.y += (s.speed * 0.05) * dt;
+      
+      if(s.x > width + 10) s.x = -10;
+      if(s.y > height + 10) s.y = -10;
+
+      const hue = 210 + s.z * 40; 
+      const alpha = 0.6 + s.z * 0.4;
+      ctx.beginPath();
+      ctx.fillStyle = `hsla(${hue}, 80%, 90%, ${alpha})`;
+      ctx.arc(s.x, s.y, s.size * (1 + s.z), 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function start(){
+    resize();
+    initStars(Math.max(60, Math.floor((width * height) / 5000)));
+    last = performance.now();
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', ()=>{
+    resize();
+    initStars(Math.max(60, Math.floor((width * height) / 5000)));
+  });
+
+  
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', start);
+  else
+    start();
+
+})();
+</script>
+
+    <div class="site-wrapper">
+        <header class="site-header">
+            <style>
+ 
+.nav-item:hover {
+  color: #ff8a00 !important;
+  background-color: transparent !important;
+}
+.active-nav-item {
+  color: #ff6f00 !important;
+}
+.social-icon:hover {
+  color: #ff8a00 !important;
+}
+.dropdown button:hover {
+  color: #ff8a00 !important;
+  background-color: transparent !important;
+}
+.dropdown a:hover {
+  color: #ff8a00 !important;
+}
+</style>
+
+<nav class="w-full bg-black border-b border-gray-800 sticky top-0 z-50" role="navigation">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-12">
+      <a href="https://megalisp.github.io/" class="flex items-center text-xl font-bold text-white transition-colors font-bold" style="color: #ff6f00 !important;">'( ) MEGA</a>
+      
+      <div class="hidden md:flex md:items-center md:space-x-8 hidden md:flex md:items-center md:space-x-4">
+        
+        <a href="/plex/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Plex</a>
+        
+        <a href="/proj/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Proj</a>
+        
+        <a href="/bout/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Bout</a>
+        
+        <a href="/posts/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Posts</a>
+        
+        <a href="/series/" class="px-3 py-2 text-sm font-medium rounded-md transition-colors nav-item text-gray-300 hover:bg-gray-800 ">Series</a>
+        
+        
+        
+        <div class="relative dropdown">
+          <button class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md transition-colors flex items-center" onclick="toggleDropdown('tags-dropdown')">
+            Tags <span class="ml-1">▼</span>
+          </button>
+          <div class="absolute top-full left-0 mt-1 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg hidden" id="tags-dropdown">
+            
+            <a class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors" href="/tags/meta">Meta</a>
+            
+          </div>
+        </div>
+        
+        
+        <div class="relative dropdown">
+          <button class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md transition-colors flex items-center" onclick="toggleDropdown('sub-dropdown')">
+            Sub <span class="ml-1">▼</span>
+          </button>
+          <div class="absolute top-full left-0 mt-1 w-32 bg-gray-800 border border-gray-700 rounded-md shadow-lg hidden" id="sub-dropdown">
+            <a class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 transition-colors" href="/posts/index.xml">Posts RSS</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hidden md:flex md:items-center md:space-x-4">
+        <a class="text-gray-300 transition-colors p-2 social-icon" href="https://github.com/megalisp" target="_blank" title="GitHub">
+          <i class="fab fa-github fa-lg"></i>
+        </a>
+        <a class="text-gray-300 transition-colors p-2 social-icon" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+          <i class="fas fa-heart fa-lg"></i>
+        </a>
+      </div>
+      
+      <button class="md:hidden p-2 text-gray-300 transition-colors social-icon" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+  
+  
+  <div class="md:hidden border-t border-gray-700 hidden" id="mobile-menu">
+    <div class="px-4 py-2 space-y-1">
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/plex/">Plex</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/proj/">Proj</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/bout/">Bout</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/posts/">Posts</a>
+      
+      <a class="block px-3 py-2 text-gray-300 rounded-md transition-colors nav-item " href="/series/">Series</a>
+      
+      
+      
+      <div class="pt-2 border-t border-gray-700 mt-2">
+        <p class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tags</p>
+        
+        <a class="block px-3 py-2 text-sm text-gray-400 rounded-md transition-colors nav-item" href="/tags/meta">Meta</a>
+        
+      </div>
+      
+      
+      <div class="pt-2 border-t border-gray-700 mt-2">
+        <p class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Subscribe</p>
+        <a class="block px-3 py-2 text-sm text-gray-400 rounded-md transition-colors nav-item" href="/posts/index.xml">Posts RSS</a>
+      </div>
+      
+      <div class="pt-2 border-t border-gray-700 mt-2 flex space-x-4 px-3 py-2">
+        <a class="text-gray-400 hover:text-orange-400 transition-colors" href="https://github.com/megalisp" target="_blank" title="GitHub">
+          <i class="fab fa-github fa-lg"></i>
+        </a>
+        <a class="text-gray-400 hover:text-orange-400 transition-colors" href="https://github.com/sponsors/megalisp" target="_blank" title="Sponsor">
+          <i class="fas fa-heart fa-lg"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+function toggleDropdown(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  const allDropdowns = document.querySelectorAll('.dropdown > div:last-child');
+
+  
+  allDropdowns.forEach(d => {
+    if (d.id !== dropdownId) {
+      d.classList.add('hidden');
+    }
+  });
+
+  
+  dropdown.classList.toggle('hidden');
+}
+
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById('mobile-menu');
+  mobileMenu.classList.toggle('hidden');
+}
+
+
+document.addEventListener('click', function(event) {
+  const dropdowns = document.querySelectorAll('.dropdown');
+  dropdowns.forEach(dropdown => {
+    if (!dropdown.contains(event.target)) {
+      const dropdownMenu = dropdown.querySelector('div:last-child');
+      dropdownMenu.classList.add('hidden');
+    }
+  });
+});
+
+
+window.addEventListener('resize', function() {
+  if (window.innerWidth >= 768) {
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenu.classList.add('hidden');
+  }
+});
+</script>
+
+            
+<style>
+#homepage-notice { position: relative; width: 100%; background: repeating-linear-gradient(135deg, #fff, #fff 20px, #ff6f00 20px, #ff6f00 40px); padding: 0.35em 0; box-shadow: 0 2px 12px #0002; z-index: 1000; min-height: unset; }
+#homepage-notice .notice-inner { display: flex; align-items: center; justify-content: center; position: relative; width: 100%; box-sizing: border-box; padding: 0 1rem; }
+.notice-wrap { position: relative; width: 100%; display: flex; align-items: center; }
+.notice-nav-btn { background: #111; color: #ff7a00; border: none; width: 2.2em; min-height: 2.2em; padding: 0.25em; display: inline-flex; align-items: center; justify-content: center; margin: 0 0.15rem; border-radius: 0.35rem; cursor: pointer; box-shadow: 0 1px 3px #0006; font-size: 1em; }
+.notice-nav-btn:hover { color: #fff; }
+.notice-body { background: #111; color: #fff; padding: 0.3em 0.6em; border-radius: 0.5em; display: flex; align-items: center; gap: 0.5rem; flex: 1 1 auto; position: relative; box-sizing: border-box; }
+.notice-nav-left { display: flex; align-items: center; gap: 0.15rem; }
+#homepage-notice .notice-text { color: #fff; font-weight: 600; font-size: 1.0em; text-align: center; display: block; box-sizing: border-box; position: relative; left: auto; transform: none; white-space: normal; overflow: visible; text-overflow: unset; max-width: none; z-index: 2; flex: 1 1 auto; word-break: break-word; line-height: 1.3; padding: 0.15em 0; }
+#notice-close-btn { position: relative; top: auto; right: auto; transform: none; background: #111; border: none; font-size: 1.05em; color: #ffffff; cursor: pointer; line-height: 1; width: 1.8em; height: 1.8em; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px #0006; z-index: 1100; }
+.notice-controls { display: flex; align-items: center; gap: 0.5rem; }
+#homepage-notice .notice-text a, #homepage-notice .notice-text a:visited, #homepage-notice .notice-item a { color: #ff7a00; text-decoration: underline; }
+#homepage-notice .notice-text a:hover, #homepage-notice .notice-item a:hover { color: #ffffff; text-decoration: underline; }
+#homepage-notice .notice-text mark, #homepage-notice .notice-item mark { background: #ff7a00; color: #111; padding: 0 0.12em; border-radius: 0.12em; font-weight: 700; }
+</style>
+
+<div id="homepage-notice">
+  <div class="notice-inner">
+    <div class="w-9/10 max-w-7xl mx-auto px-4 notice-wrap">
+      <div class="notice-body">
+        <div class="notice-controls">
+          <div class="notice-nav-left" style="display:flex; align-items:center;">
+            <button class="notice-nav-btn" id="notice-prev-btn" aria-label="previous message">&lt;</button>
+            <button class="notice-nav-btn" id="notice-next-btn" aria-label="next message">&gt;</button>
+          </div>
+        </div>
+        <span class="notice-text" id="notice-text">Loading...</span>
+        <button id="notice-close-btn" aria-label="Close notice">&times;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script type="application/json" id="notice-ticker-json">
+"[\"⚠️ ==WARNING==: Site Under Active Development!\",\"NEW POST: [And We Have Lift-Off — 2025-07-31](/2025/07/and-we-have-lift-off.html)\",\"Subscribe to the **newsletter** for updates — [sign up](/newsletter)\",\"Follow [@megalisp](https://x.com/@megalisp) on X/Twitter for short updates.\",\"Join Us At [The Megaplex](https://discord.gg/#) on Discord.\"]"
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Notice script starting...');
+    var btn = document.getElementById('notice-close-btn');
+    var bar = document.getElementById('homepage-notice');
+    var textEl = document.getElementById('notice-text');
+    var tickerInterval = null;
+    var messages = ['⚠️ ==WARNING==: Site Under Active Development!']; 
+    
+    console.log('Found elements:', {
+        btn: !!btn,
+        bar: !!bar, 
+        textEl: !!textEl
+    });
+
+    
+    var tickerScript = document.getElementById('notice-ticker-json');
+    console.log('Ticker script element:', !!tickerScript);
+    if (tickerScript) {
+        console.log('Ticker script content:', tickerScript.textContent);
+    }
+    
+    if (tickerScript && tickerScript.textContent.trim()) {
+        try {
+            var tickerData = JSON.parse(tickerScript.textContent);
+            
+            if (typeof tickerData === 'string') {
+                tickerData = JSON.parse(tickerData);
+            }
+            if (Array.isArray(tickerData) && tickerData.length > 0) {
+                messages = tickerData.map(function(x){ return String(x); });
+                console.log('Loaded ticker messages:', messages);
+            }
+        } catch (e) {
+            console.error('Failed to parse ticker JSON:', e);
+        }
+    }
+
+    
+    function markdownToHtml(text) {
+        if (!text) return '';
+        
+        text = text.replace(/==([^=]+)==/g, '<mark>$1</mark>');
+        
+        text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+        
+        text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        
+        text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        return text;
+    }
+
+    function startTicker() {
+        console.log('Starting ticker with messages:', messages);
+        if (!messages || messages.length === 0) return;
+        var idx = 0;
+        if (textEl) textEl.innerHTML = markdownToHtml(messages[0]);
+        textEl._tickerIndex = 0;
+
+        function advance() {
+            var ni = (textEl._tickerIndex + 1) % messages.length;
+            textEl._tickerIndex = ni;
+            console.log('Advancing to message', ni, ':', messages[ni]);
+            if (textEl) textEl.innerHTML = markdownToHtml(messages[ni]);
+        }
+
+        var prevBtn = document.getElementById('notice-prev-btn');
+        var nextBtn = document.getElementById('notice-next-btn');
+        
+        console.log('Found navigation buttons:', {
+            prevBtn: !!prevBtn,
+            nextBtn: !!nextBtn
+        });
+
+        function showIndex(i) {
+            if (!messages || !messages.length) return;
+            i = ((i % messages.length) + messages.length) % messages.length;
+            textEl._tickerIndex = i;
+            console.log('Showing index', i, ':', messages[i]);
+            if (textEl) textEl.innerHTML = markdownToHtml(messages[i]);
+        }
+
+        function resetInterval() {
+            if (tickerInterval) clearInterval(tickerInterval);
+            if (messages.length > 1) {
+                console.log('Setting up auto-advance interval');
+                tickerInterval = setInterval(advance, 8000);
+            }
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', function() { 
+            console.log('Previous button clicked');
+            showIndex(textEl._tickerIndex - 1); 
+            resetInterval(); 
+        });
+        if (nextBtn) nextBtn.addEventListener('click', function() { 
+            console.log('Next button clicked');
+            showIndex(textEl._tickerIndex + 1); 
+            resetInterval(); 
+        });
+
+        if (messages.length > 1) {
+            console.log('Setting up initial auto-advance interval');
+            tickerInterval = setInterval(advance, 8000);
+        } else {
+            console.log('Only one message, no auto-advance');
+        }
+    }
+
+    startTicker();
+
+    if (btn && bar) {
+        btn.onclick = function() {
+            bar.style.display = 'none';
+            if (tickerInterval) { clearInterval(tickerInterval); tickerInterval = null; }
+        };
+    }
+});
+</script>
+
+        </header>
+        
+        <main class="site-main">
+            
+<style>
+.site-hero { background: linear-gradient(180deg, var(--primary) 0%, #ff7a00 60%); color: var(--secondary); padding: 4rem 0; }
+.site-hero .hero-inner { max-width: 1100px; margin: 0 auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; }
+.hero-title { font-size: 2.25rem; margin: 0 0 1rem 0; font-weight: 800; color: var(--hero-brown); line-height: 1.1; text-align: left; }
+.hero-sub { font-size: 1.05rem; opacity: 0.95; margin: 0 0 1.5rem 0; line-height: 1.6; text-align: left; }
+.hero-cta { margin-top: 1rem; text-align: left; }
+.btn-space { background: linear-gradient(180deg, #ff9100, #ff7a00); color: #000; box-shadow: 0 6px 18px rgba(255,145,0,0.18), inset 0 -2px 4px rgba(0,0,0,0.16); }
+.btn-space:hover { transform: translateY(-2px); }
+.hero-image { display: flex; align-items: center; justify-content: center; }
+
+ 
+@media (max-width: 1100px) {
+  .site-hero .hero-inner { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .hero-title { text-align: center; }
+  .hero-sub { text-align: center; }
+  .hero-cta { text-align: center; }
+  .hero-image { order: 1; margin-top: 1rem; }
+}
+</style>
+
+<header class="site-hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h1 class="hero-title">Building Big Things, In LISP!</h1>
+      <p class="hero-sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra.</p>
+      <p class="hero-cta">
+        <a class="btn btn-space" href="/bout/">Read More</a>
+      </p>
+    </div>
+    <div class="hero-image">
+      <img src="/face-megalisp.png" alt="face" style="width: 140px; height: 140px; border-radius: 50%; box-shadow: 0 12px 32px rgba(0,0,0,0.35);">
+    </div>
+  </div>
+</header>
+
+<div class="w-9/10 max-w-7xl mx-auto px-4">
+<style>
+.timeline-wrap { position: relative; width: 100%; margin: 40px 0 56px 0; }
+.timeline-container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; position: relative; }
+.timeline-bar { height: 8px; background: var(--primary); border-radius: 4px; position: relative; width: 100%; z-index: 1; margin-top: 32px; }
+.timeline-events { display: flex; justify-content: space-between; align-items: flex-start; position: relative; top: -15px; z-index: 2; width: 100%; height: 0; }
+.timeline-event { text-align: center; width: 25%; position: relative; height: 0; }
+.timeline-dot { width: 18px; height: 18px; background: var(--primary); border-radius: 50%; margin: 0 auto; box-shadow: 0 2px 8px rgba(255,111,0,0.18); border: 2px solid #000; position: absolute; left: 50%; top: 12px; transform: translate(-50%, -50%); z-index: 3; }
+.timeline-event-label { font-size: 12px; color: var(--primary); margin-top: 22px; font-weight: 700; background: rgba(255,140,0,0.08); border-radius: 6px; padding: 2px 0; box-shadow: 0 2px 8px rgba(255,140,0,0.04); position: relative; z-index: 4; }
+</style>
+
+
+
+<div class="timeline-wrap">
+  <div class="timeline-container">
+    <div class="timeline-bar"></div>
+    <div class="timeline-events">
+      
+      <div class="timeline-event">
+        <div class="timeline-dot" style="background: #fff; border: 2px solid #000;"></div>
+        <div class="timeline-event-label">Initial ProtoSite</div>
+      </div>
+      
+      <div class="timeline-event">
+        <div class="timeline-dot"></div>
+        <div class="timeline-event-label">Buncha Tweaks</div>
+      </div>
+      
+      <div class="timeline-event">
+        <div class="timeline-dot"></div>
+        <div class="timeline-event-label">Start Posting</div>
+      </div>
+      
+      <div class="timeline-event">
+        <div class="timeline-dot"></div>
+        <div class="timeline-event-label">Post Often</div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<style>
+.vaults { padding: 1rem 1.2rem; }
+.vaults .layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 0 auto; }
+.vaults-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.9rem; width: 100%; align-items: stretch; }
+.vault-card { box-sizing: border-box; flex: 1 0 150px; max-width: 220px; min-width: 120px; height: 130px; margin-bottom: 1.2rem; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.06)); border: 1px solid rgba(255,255,255,0.04); outline: 3px solid var(--primary); outline-offset: -5px; color: var(--secondary); padding: 1rem; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+.vault-card h4 { margin: 0.5rem 0 0.25rem; color: var(--primary); }
+.vault-card p { margin: 0.25rem 0 0; }
+.vault-emoji { font-size: 1.6rem; }
+.vault-card a { color: var(--primary); text-decoration: none; font-weight: 600; }
+.vault-card a:hover { text-decoration: underline; }
+.vault-ellipsis { position: absolute; top: 8px; right: 10px; color: #ffffff; background: transparent; border: none; font-size: 1.2rem; line-height: 1; text-decoration: none; padding: 0.1rem 0.3rem; border-radius: 4px; opacity: 0.95; }
+.vault-ellipsis:hover { color: #ffffff; text-decoration: none; }
+.vault-desc { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(6px); background: rgba(0,0,0,0.92); color: #ffffff; padding: 0.5rem 0.9rem; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; width: 360px; max-width: calc(100% - 20px); box-sizing: border-box; text-align: center; font-size: 0.95rem; line-height: 1.25; z-index: 40; border: 1px dashed #ff7a00; }
+.vault-card:hover .vault-desc { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.vault-card:hover { outline-color: #ffffff; border-color: rgba(255,255,255,0.12); }
+.vault-card:hover h4, .vault-card:hover h4 a, .vault-card:hover a { color: #ffffff; }
+</style>
+
+
+
+<section class="vaults" style="text-align:center; margin-top:1.5rem;">
+  <div class="layout" style="max-width:100%;">
+    <div style="grid-column:1/-1; text-align:center;">
+      <h2>Vaults</h2>
+      <p class="muted">A lot of my writing and thoughts — organized as Obsidian Vaults.</p>
+    </div>
+    <div class="vaults-grid" style="grid-column:1/-1;">
+      
+      <div class="vault-card">
+        <div class="vault-emoji">🧠</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;">
+            <a href="https://megalisp.github.io/megalo">Megalo</a>
+          </h4>
+        </div>
+        <div class="vault-desc">Collections of personal notes about projects I&#39;m working on.</div>
+      </div>
+      
+      <div class="vault-card">
+        <div class="vault-emoji">🤖</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;">
+            <a href="https://megalisp.github.io/mecha">Mecha</a>
+          </h4>
+        </div>
+        <div class="vault-desc">The mechanics of game systems, &#39;engines&#39;, simulations, and interactive tooling.</div>
+      </div>
+      
+      <div class="vault-card">
+        <div class="vault-emoji">🌞</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;">
+            <a href="https://megalisp.github.io/gday">G&#39;Day</a>
+          </h4>
+        </div>
+        <div class="vault-desc">&#34;Near Daily&#34; Godot Notes / Adventures.</div>
+      </div>
+      
+      <div class="vault-card">
+        <div class="vault-emoji">⚙️</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;">
+            <a href="https://megalisp.github.io/shift">Shift</a>
+          </h4>
+        </div>
+        <div class="vault-desc">Misc &#39;shift&#39; I&#39;m doing in Godot - a general dropbox for experiments and ideas.</div>
+      </div>
+      
+      <div class="vault-card">
+        <div class="vault-emoji">⚽</div>
+        <div style="display:flex;align-items:center;gap:0.4em;">
+          <h4 style="margin:0;">
+            <a href="https://megalisp.github.io/goli/vault">Goli</a>
+          </h4>
+        </div>
+        <div class="vault-desc">What I want in a Game-centered Lisp: exploring Godot-Lisp possibilities and game development with Lisp paradigms.</div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<style>
+.video-hover-container { position: relative; width: 100%; height: 100%; }
+.video-hover-iframe { pointer-events: none; filter: grayscale(0.2) brightness(0.8); transition: filter 0.3s; }
+.video-hover-container:hover .video-hover-iframe { pointer-events: auto; filter: none; }
+.video-hover-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: rgba(5,5,5,0.50); transition: opacity 0.3s; opacity: 1; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; letter-spacing: 0.05em; }
+.video-hover-overlay .placeholder-text { background: #000000a8; color: #ff6f00; padding: 0.35em 1.1em; border-radius: 0.6em; font-weight: bold; font-size: 1em; box-shadow: 0 2px 8px #0003; }
+.video-hover-container:hover .video-hover-overlay { opacity: 0; pointer-events: none; }
+</style>
+<section class="intro-video" style="margin:2.5rem 0 1rem 0; text-align:center; width:100%;">
+  <h2 style="color:var(--primary);margin-bottom:1.2rem;">Intro Vid</h2>
+  <div style="display:flex;justify-content:center;width:100%;">
+    <div style="position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px #0008;margin:0 auto;">
+      <div class="video-hover-container">
+        <div class="video-hover-overlay">
+          <span class="placeholder-text">[ P L A C E H O L D E R ]</span>
+        </div>
+        <iframe class="video-hover-iframe" 
+                width="560" 
+                height="315" 
+                src="https://www.youtube.com/embed/xghZgrE1zRI?autoplay=1&amp;controls=0&amp;mute=1&amp;rel=0&amp;modestbranding=1&amp;showinfo=0" 
+                title="Intro Vid" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                allowfullscreen="true" 
+                style="width:100%;height:100%;border:0;">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.events { padding: 1.2rem; }
+.events { --calendar-total-height: 472px; }
+.events .events-inner { display: grid; grid-template-columns: 1fr 320px; gap: 1.25rem; align-items: stretch; }
+.events h2 { color: var(--primary); margin-bottom: 0.6rem; }
+.events .calendar { background: linear-gradient(180deg, #070707, #0b0b0b); border: 1px solid rgba(255,255,255,0.04); padding: 0.75rem; border-radius: 8px; display: flex; flex-direction: column; height: var(--calendar-total-height); }
+.events .calendar .cal-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem; }
+.events .calendar .cal-controls { display: flex; gap: 0.5rem; align-items: center; flex: none; }
+.events .calendar .cal-controls button { background: transparent; border: 1px solid rgba(255,255,255,0.06); color: var(--secondary); padding: 0.25rem 0.6rem; border-radius: 6px; cursor: pointer; }
+.events .calendar .cal-controls button:hover { border-color: rgba(255,255,255,0.12); color: var(--primary); }
+.events .calendar .cal-title { flex: 1; text-align: right; font-size: 0.98rem; }
+.events .calendar .weekdays, .events .calendar .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; grid-auto-rows: 56px; }
+.events .calendar .days { flex: 1; height: 392px; }
+.events .calendar .weekday { font-size: 0.8rem; text-align: center; color: rgba(255,255,255,0.6); padding: 0.25rem 0; }
+.events .calendar .day { height: 56px; padding: 0.35rem; box-sizing: border-box; color: var(--secondary); border-radius: 6px; text-align: right; position: relative; }
+.events .calendar .day.empty { visibility: visible; background: transparent; border: none; }
+.events .calendar .day.empty > div { color: rgba(255,255,255,0.4); font-weight: 700; font-size: 1rem; line-height: 1; text-align: right; }
+.events .calendar .day .dots { position: absolute; left: 6px; top: 6px; display: grid; grid-auto-flow: column; grid-template-rows: repeat(3,8px); gap: 4px; }
+.events .calendar .day .dot { width: 8px; height: 8px; border-radius: 50%; display: block; }
+.events .calendar .day.event { background: linear-gradient(180deg, rgba(255,150,30,0.26), rgba(255,140,0,0.16)); border: 1px solid rgba(255,140,0,0.6); box-shadow: 0 4px 14px rgba(255,140,0,0.10); }
+.events .calendar .day.today:not(.event) { background: linear-gradient(180deg, rgba(255,111,0,0.34), rgba(255,111,0,0.16)); border: 2px solid #ff6f00; box-shadow: 0 8px 22px rgba(255,111,0,0.28), inset 0 -2px 8px rgba(0,0,0,0.35); }
+.events .calendar .day.today > div { color: #ffffff; font-weight: 800; font-size: 1.05rem; display: grid !important; grid-template-columns: 1fr !important; }
+.events .calendar .day.event.today { background: linear-gradient(180deg, rgba(255,111,0,0.36), rgba(255,111,0,0.20)); border: 2px solid #ff6f00; box-shadow: 0 10px 26px rgba(255,111,0,0.30), inset 0 -2px 10px rgba(0,0,0,0.35); }
+.events .upcoming { background: linear-gradient(180deg, #070707, #0b0b0b); border: 1px solid rgba(255,255,255,0.04); padding: 0.75rem; border-radius: 8px; display: flex; flex-direction: column; height: var(--calendar-total-height); }
+.events .upcoming .upcoming-header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.4rem; }
+.events .upcoming ul { list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
+.events .upcoming ul::-webkit-scrollbar { width: 10px; }
+.events .upcoming ul::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 6px; border: 2px solid rgba(0,0,0,0.15); }
+.events .upcoming li { padding: 0.5rem 0; border-bottom: 1px dashed rgba(255,255,255,0.03); display: block; }
+.events .upcoming li:last-child { border-bottom: none; }
+.events .upcoming li.highlight { background: linear-gradient(135deg, rgba(255,150,30,0.24), rgba(255,140,0,0.16)); border-left: 3px solid rgba(255,140,0,0.8); transition: background 0.28s ease; }
+.event-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 0.5rem; vertical-align: middle; }
+.event-meta { color: rgba(255,255,255,0.75); font-weight: 600; display: block; }
+.event-title { color: var(--secondary); font-weight: 700; display: block; margin-top: 0.25rem; }
+.event-date { color: rgba(255,255,255,0.75); font-weight: 600; margin-right: 0.5rem; }
+.no-events { color: rgba(255,255,255,0.6); }
+.legend-btn { background: var(--primary); color: #000000; border: none; padding: 0.15rem 0.5rem; border-radius: 6px; cursor: pointer; font-weight: 700; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; }
+.legend-btn:focus { outline: 2px solid rgba(255,255,255,0.06); }
+.legend-btn:hover, .legend-btn[aria-expanded="true"] { background: #ffffff; color: var(--primary); }
+.event-legend { font-size: 0.92rem; margin-bottom: 0.5rem; padding: 0.4rem; border-radius: 6px; background: rgba(255,255,255,0.02); }
+.event-legend .legend-title { font-weight: 800; color: #fff; padding: 0.25rem 0.6rem; padding-bottom: 0.2rem; border: none; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem; border-bottom: 2px solid #ffffff; }
+.event-legend .legend-items { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 0.25rem; }
+.event-legend .legend-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.15rem 0; }
+.event-legend .legend-circle { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.calendar-tooltip { position: absolute; z-index: 1200; background: #0b0b0b; color: #fff; border: 1px solid rgba(255,255,255,0.06); padding: 0.5rem; border-radius: 6px; min-width: 180px; max-width: 340px; box-shadow: 0 6px 18px rgba(0,0,0,0.6); font-size: 0.9rem; display: none; max-height: 70vh; overflow: auto; }
+.calendar-tooltip .tt-item { padding: 0.25rem 0; border-bottom: 1px dashed rgba(255,255,255,0.03); }
+.calendar-tooltip .tt-item:last-child { border-bottom: none; }
+.calendar-tooltip .tt-time { color: rgba(255,255,255,0.7); font-weight: 600; margin-right: 0.4rem; }
+.calendar-tooltip .tt-title { color: var(--secondary); font-weight: 700; }
+.calendar-tooltip .tt-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.25rem; }
+.calendar-tooltip .tt-category { font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 0.5rem; }
+.calendar-tooltip .tt-cat-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+</style>
+
+<section class="events" style="margin:2rem 0;">
+  <div class="layout" style="max-width:100%;">
+    <div style="grid-column:1/-1;">
+      <h2>Events & Calendar</h2>
+      <p class="muted">Tentative Upcoming Todos. Apt To Change!</p>
+    </div>
+    <div class="events-inner" style="grid-column:1/-1;">
+      <div class="calendar" id="site-calendar" aria-label="Monthly calendar">
+        <div class="cal-header" id="cal-header" aria-hidden="true">
+          <div class="cal-controls">
+            <button id="cal-prev" aria-label="Previous month">‹</button>
+            <button id="cal-today" aria-label="Today">Today</button>
+            <button id="cal-next" aria-label="Next month">›</button>
+          </div>
+          <div class="cal-title" id="cal-title"></div>
+        </div>
+        <div class="weekdays" id="cal-weekdays"></div>
+        <div class="days" id="cal-days"></div>
+      </div>
+      <aside class="upcoming" id="upcoming-events" aria-label="Upcoming events">
+        <div class="upcoming-header">
+          <h3 style="margin:0;">Upcoming</h3>
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <button id="legend-toggle" class="legend-btn" aria-expanded="false" aria-controls="event-legend">?</button>
+          </div>
+        </div>
+        <div id="event-legend" class="event-legend" style="display:none;"></div>
+        <ul id="upcoming-list">
+            <li data-date="2025-09-23">
+              <div class="event-meta">
+                <span class="event-dot" style="background-color: #8bc34a;"></span>
+                2025-09-23 · 00:00
+              </div>
+              <div class="event-title">
+                <a href="#" style="color: inherit; text-decoration: none;">Megaplex Discord</a>
+                <div class="event-desc muted">Initial version of the Discord Server up and going.</div>
+              </div>
+            </li>
+            <li data-date="2025-09-27">
+              <div class="event-meta">
+                <span class="event-dot" style="background-color: #e53935;"></span>
+                2025-09-27 · 20:00
+              </div>
+              <div class="event-title">
+                <a href="#" style="color: inherit; text-decoration: none;">Intro Video</a>
+                <div class="event-desc muted">Initial intro-video, even if it&#39;s just demostream b-roll.</div>
+              </div>
+            </li>
+            <li data-date="2025-09-29">
+              <div class="event-meta">
+                <span class="event-dot" style="background-color: #00bcd4;"></span>
+                2025-09-29 · 00:00
+              </div>
+              <div class="event-title">
+                <a href="https://github.com/uf-os/uf-os/releases/" style="color: inherit; text-decoration: none;">UF-OS: &#39;&#39;Arch Script&#39;&#39;</a>
+                <div class="event-desc muted">A directional release for UF-OS describing where we&#39;re heading (ie: our Intentions).</div>
+              </div>
+            </li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+<script type="application/json" id="events-data">[{"category":"Misc","color":"#ff6f00","date":"2025-09-19","description":"Full website revamp. Starting on much better footing to regularly post by end of year.","time":"00:00","title":"Major Website Revamp!","url":"#"},{"category":"Social","color":"#8bc34a","date":"2025-09-23","description":"Initial version of the Discord Server up and going.","time":"00:00","title":"Megaplex Discord","url":"#"},{"category":"Video","color":"#e53935","date":"2025-09-27","description":"Initial intro-video, even if it's just demostream b-roll.","time":"20:00","title":"Intro Video","url":"#"},{"category":"Stream","color":"#9c27b0","description":"Live coding session.","recurrence":{"byDay":["Tue","Thu"],"end":"2025-11-30","freq":"weekly","interval":1,"skip":["2025-10-14"],"start":"2025-10-01"},"time":"19:00","title":"Coding Stream","url":"#"},{"category":"Release","color":"#00bcd4","date":"2025-09-29","description":"A directional release for UF-OS describing where we're heading (ie: our Intentions).","time":"00:00","title":"UF-OS: ''Arch Script''","url":"https://github.com/uf-os/uf-os/releases/"}]</script>
+
+<script>
+
+function loadEventsJson(){
+  var el = document.getElementById('events-data');
+  if (el) {
+    try {
+      return Promise.resolve(JSON.parse(el.textContent));
+    } catch (e) {
+      console.error('Failed to parse events JSON', e);
+      return Promise.resolve([]);
+    }
+  }
+  return Promise.resolve([]);
+}
+
+function renderCalendarForMonth(events, year, month){
+  var weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var whead = document.getElementById('cal-weekdays');
+  var daysEl = document.getElementById('cal-days');
+  whead.innerHTML = '';
+  weekdays.forEach(function(d){ var el=document.createElement('div'); el.className='weekday'; el.textContent=d; whead.appendChild(el); });
+
+  var headerTitle = document.getElementById('cal-title');
+  var firstOfMonth = new Date(year, month, 1);
+  if(headerTitle) headerTitle.textContent = firstOfMonth.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+
+  var startDay = firstOfMonth.getDay();
+  var daysInMonth = new Date(year, month+1, 0).getDate();
+  daysEl.innerHTML = '';
+
+  for(var i=0;i<startDay;i++){ var e=document.createElement('div'); e.className='day empty'; e.innerHTML = '<div>/</div>'; daysEl.appendChild(e); }
+
+  for(var d=1; d<=daysInMonth; d++){
+    var cell = document.createElement('div');
+    cell.className='day';
+    cell.setAttribute('data-day', d);
+    var cellText = document.createElement('div');
+    cellText.textContent = d;
+    cell.appendChild(cellText);
+
+    var cellDateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    var matches = events.filter(function(ev){ return ev.date===cellDateStr; });
+    if(matches.length){
+      var seenM = {};
+      var uniqMatches = [];
+      matches.forEach(function(m){ var key = (m.title||'') + '|' + (m.date||'') + '|' + (m.time||'') + '|' + (m.url||'') + '|' + (m.category||'') + '|' + (m.color||''); if(!seenM[key]){ seenM[key]=true; uniqMatches.push(m); } });
+      cell.classList.add('event');
+      var color = uniqMatches[0].color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+      var dots = document.createElement('div');
+      dots.className = 'dots';
+      var maxDots = 9;
+      for(var mi=0; mi< Math.min(uniqMatches.length, maxDots); mi++){
+        var mev = uniqMatches[mi];
+        var dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.style.background = (mev.color || color);
+        dots.appendChild(dot);
+      }
+      cell.appendChild(dots);
+      cell.title = uniqMatches.map(function(m){ return m.title + ' at ' + (m.time||''); }).join('\n');
+      try{ cell.dataset.events = JSON.stringify(uniqMatches); } catch(e){ cell.dataset.events = ''; }
+      cell.dataset.date = cellDateStr;
+    }
+
+    var today = new Date();
+    if(today.getFullYear()===year && today.getMonth()===month && today.getDate()===d){
+      cell.classList.add('today');
+    }
+
+    daysEl.appendChild(cell);
+  }
+  var totalCells = startDay + daysInMonth;
+  var needed = (7*6) - totalCells;
+  for(var k=0; k<needed; k++){ var e=document.createElement('div'); e.className='day empty'; e.innerHTML = '<div>/</div>'; daysEl.appendChild(e); }
+}
+
+
+function addDays(date, days){ var d=new Date(date); d.setDate(d.getDate()+days); return d; }
+function toISODate(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function weekdayNameToNum(name){ var map = { 'Sun':0,'Mon':1,'Tue':2,'Wed':3,'Thu':4,'Fri':5,'Sat':6, 'Sunday':0,'Monday':1,'Tuesday':2,'Wednesday':3,'Thursday':4,'Friday':5,'Saturday':6 }; return map[name]===undefined?null:map[name]; }
+
+function expandRecurrence(ev, rangeStart, rangeEnd){
+  var out = [];
+  if(!ev.recurrence) return out;
+  var r = ev.recurrence;
+  var freq = (r.freq||'weekly');
+  var interval = r.interval || 1;
+  var start = r.start ? new Date(r.start) : (ev.date ? new Date(ev.date) : new Date());
+  var end = r.end ? new Date(r.end) : new Date(rangeEnd);
+  if(freq === 'weekly'){
+    var days = [];
+    if(r.byDay && r.byDay.length){ r.byDay.forEach(function(d){ var n = (typeof d === 'number')? d : weekdayNameToNum(d); if(n!==null) days.push(n); }); }
+    if(days.length===0){ if(ev.date){ days = [ new Date(ev.date).getDay() ]; } else { days = [ start.getDay() ]; } }
+    var cursor = new Date(start);
+    if(cursor < rangeStart) cursor = new Date(rangeStart);
+    var iter = new Date(cursor);
+    iter.setDate(iter.getDate() - 7);
+    var skipList = (r.skip || ev.skip || []);
+    while(iter <= end){
+      iter.setDate(iter.getDate() + 1);
+      if(iter < start) continue;
+      if(iter < rangeStart) continue;
+      if(iter > end) break;
+      var wd = iter.getDay();
+      if(days.indexOf(wd) !== -1){
+        var iso = toISODate(iter);
+        if(skipList && skipList.indexOf(iso) !== -1) continue;
+        if(interval > 1){
+          var weeks = Math.floor((Math.floor((iter - start)/(1000*60*60*24)))/7);
+          if((weeks % interval) !== 0) continue;
+        }
+        var occ = Object.assign({}, ev);
+        occ.date = toISODate(iter);
+        delete occ.recurrence;
+        out.push(occ);
+      }
+    }
+  }
+  return out;
+}
+
+function expandAllEvents(baseEvents, monthsAhead){
+  var now = new Date();
+  var rangeStart = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  var rangeEnd = new Date(now.getFullYear(), now.getMonth()+ (monthsAhead||12) +1, 0);
+  var out = [];
+  baseEvents.forEach(function(ev){ if(ev.recurrence){ var ex = expandRecurrence(ev, rangeStart, rangeEnd); out = out.concat(ex); } else { out.push(ev); } });
+  return out;
+}
+
+
+var CAL_YEAR, CAL_MONTH, _ALL_EVENTS_FOR_UI;
+function showMonth(year, month, events){
+  CAL_YEAR = year; CAL_MONTH = month; _ALL_EVENTS_FOR_UI = events || _ALL_EVENTS_FOR_UI || [];
+  renderCalendarForMonth(_ALL_EVENTS_FOR_UI, year, month);
+}
+
+function prevMonth(){ var y=CAL_YEAR, m=CAL_MONTH-1; if(m<0){ m=11; y--; } showMonth(y,m, _ALL_EVENTS_FOR_UI); }
+function nextMonth(){ var y=CAL_YEAR, m=CAL_MONTH+1; if(m>11){ m=0; y++; } showMonth(y,m, _ALL_EVENTS_FOR_UI); }
+function goToday(){ var n=new Date(); showMonth(n.getFullYear(), n.getMonth(), _ALL_EVENTS_FOR_UI); }
+
+function renderUpcoming(events, maxItems){
+  maxItems = (typeof maxItems === 'number')? maxItems : 8;
+  var ul = document.getElementById('upcoming-list');
+  var now = new Date();
+  var future = events.filter(function(ev){ return new Date(ev.date + 'T00:00:00') >= new Date(now.toDateString()); });
+  future.sort(function(a,b){ return new Date(a.date) - new Date(b.date); });
+  ul.innerHTML = '';
+  if(future.length===0){
+    var li=document.createElement('li'); li.className='no-events'; li.textContent='No upcoming events.'; ul.appendChild(li); return;
+  }
+  future.slice(0, maxItems).forEach(function(ev){
+    var li=document.createElement('li');
+    li.setAttribute('data-date', ev.date);
+    var itemId = 'up-'+ev.date+'-'+(ev.title||'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    li.id = itemId;
+    var dot=document.createElement('span'); dot.className='event-dot'; dot.style.background = ev.color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+    var meta=document.createElement('div'); meta.className='event-meta'; meta.appendChild(dot); meta.appendChild(document.createTextNode(ev.date + (ev.time?(' · '+ev.time):'')));
+    var titleDiv=document.createElement('div'); titleDiv.className='event-title';
+    var a=document.createElement('a'); a.href = ev.url || '#'; a.textContent = ev.title; a.style.color='inherit'; a.style.textDecoration='none';
+    titleDiv.appendChild(a);
+    if(ev.description){ var desc=document.createElement('div'); desc.className='event-desc muted'; desc.textContent = ev.description; titleDiv.appendChild(desc); }
+    li.appendChild(meta); li.appendChild(titleDiv);
+    ul.appendChild(li);
+  });
+}
+
+
+document.addEventListener('DOMContentLoaded', function(){
+  console.log('Events: DOMContentLoaded');
+  var now = new Date();
+  loadEventsJson().then(function(fetched){
+    console.log('Events: Data loaded:', fetched);
+    return fetched;
+  }).catch(function(err){
+    console.error('Failed to load events, rendering empty calendar:', err);
+    return [];
+  }).then(function(baseEvents){
+    var EXPANDED_EVENTS = expandAllEvents(baseEvents, 6);
+    var ALL_EVENTS = EXPANDED_EVENTS;
+    showMonth(now.getFullYear(), now.getMonth(), ALL_EVENTS);
+    renderUpcoming(ALL_EVENTS);
+    var prev=document.getElementById('cal-prev'), next=document.getElementById('cal-next'), today=document.getElementById('cal-today');
+    if(prev) prev.addEventListener('click', prevMonth);
+    if(next) next.addEventListener('click', nextMonth);
+    if(today) today.addEventListener('click', goToday);
+    var legendBtn = document.getElementById('legend-toggle');
+    var legendBox = document.getElementById('event-legend');
+    if(legendBtn && legendBox){
+      var mapping = {};
+      ALL_EVENTS.forEach(function(ev){ var cat = ev.category || 'Other'; var col = ev.color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(); if(!mapping[cat]) mapping[cat]=col; });
+      legendBox.innerHTML = '';
+      var title = document.createElement('div'); title.className='legend-title'; title.textContent = 'Legend'; title.style.borderColor = 'rgba(255,111,0,0.9)'; legendBox.appendChild(title);
+      var itemsWrap = document.createElement('div'); itemsWrap.className='legend-items';
+      Object.keys(mapping).forEach(function(cat){ var item=document.createElement('div'); item.className='legend-item'; item.style.borderColor = 'rgba(255,111,0,0.12)'; var c=document.createElement('span'); c.className='legend-circle'; c.style.background = mapping[cat]; var label=document.createElement('span'); label.textContent = cat; item.appendChild(c); item.appendChild(label); itemsWrap.appendChild(item); });
+      legendBox.appendChild(itemsWrap);
+      legendBtn.addEventListener('click', function(){ if(legendBox.style.display==='none' || legendBox.style.display===''){ legendBox.style.display='block'; legendBtn.setAttribute('aria-expanded','true'); legendBtn.classList.add('active'); } else { legendBox.style.display='none'; legendBtn.setAttribute('aria-expanded','false'); legendBtn.classList.remove('active'); } });
+    }
+    var tooltip = document.createElement('div'); tooltip.className='calendar-tooltip'; tooltip.id='calendar-tooltip'; document.body.appendChild(tooltip);
+    function showTooltip(evt, items){
+      if(!items || !items.length) return; tooltip.innerHTML='';
+      var seen = {};
+      var uniq = [];
+      items.forEach(function(it){ var key = (it.title||'') + '|' + (it.date||'') + '|' + (it.time||'') + '|' + (it.url||''); if(!seen[key]){ seen[key]=true; uniq.push(it); } });
+      uniq.forEach(function(it){
+        var block = document.createElement('div'); block.className = 'tt-item';
+        var header = document.createElement('div'); header.className = 'tt-header';
+        var catDot = document.createElement('span'); catDot.className = 'tt-cat-dot'; catDot.style.background = it.color || getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+        var catLabel = document.createElement('span'); catLabel.className = 'tt-category'; catLabel.textContent = it.category || 'Event';
+        header.appendChild(catDot); header.appendChild(catLabel);
+        block.appendChild(header);
+        var row = document.createElement('div'); row.className = 'tt-row';
+        var time = document.createElement('span'); time.className='tt-time'; time.textContent = (it.time? (it.time + ' · '): '');
+        var t = document.createElement('span'); t.className='tt-title'; var a=document.createElement('a'); a.href = it.url || '#'; a.textContent = it.title || ''; a.style.color='inherit'; a.style.textDecoration='none'; t.appendChild(a);
+        row.appendChild(time); row.appendChild(t);
+        block.appendChild(row);
+        if(it.description){ var desc=document.createElement('div'); desc.className='muted'; desc.textContent = it.description; desc.style.marginTop='0.25rem'; block.appendChild(desc); }
+        tooltip.appendChild(block);
+      });
+      tooltip.style.display='block'; tooltip.style.left = (evt.pageX + 12) + 'px'; tooltip.style.top = (evt.pageY + 12) + 'px';
+      var maxW = 0; Array.from(tooltip.children).forEach(function(c){ var w = c.scrollWidth; if(w>maxW) maxW=w; });
+      var minW = Math.max(180, Math.min(600, maxW + 40)); tooltip.style.minWidth = minW + 'px';
+    }
+    function hideTooltip(){ tooltip.style.display='none'; tooltip.innerHTML=''; }
+    var daysContainer = document.getElementById('cal-days');
+    if(daysContainer){
+      daysContainer.addEventListener('mouseover', function(e){ var day = e.target.closest('.day.event'); if(!day) return; try{ var items = day.dataset.events? JSON.parse(day.dataset.events): []; showTooltip(e, items); } catch(ex){ } });
+      daysContainer.addEventListener('mousemove', function(e){ if(tooltip.style.display==='block'){ tooltip.style.left = (e.pageX + 12) + 'px'; tooltip.style.top = (e.pageY + 12) + 'px'; } });
+      daysContainer.addEventListener('mouseout', function(e){ var related = e.relatedTarget; if(!related || !eventIsInside(related, daysContainer)){ hideTooltip(); } });
+      daysContainer.addEventListener('click', function(e){
+        var day = e.target.closest('.day');
+        if(!day) return;
+        e.preventDefault(); e.stopPropagation();
+        var date = day.dataset.date; if(!date) return;
+        var ul = document.getElementById('upcoming-list'); if(!ul) return;
+        var targets = Array.from(ul.querySelectorAll('[data-date="'+date+'"]'));
+        if(!targets.length){
+          try{ renderUpcoming(ALL_EVENTS, 40); } catch(x){}
+          targets = Array.from(ul.querySelectorAll('[data-date="'+date+'"]'));
+        }
+        if(targets.length){
+          var first = targets[0];
+          var containerTop = ul.getBoundingClientRect().top;
+          var targetTop = first.getBoundingClientRect().top;
+          var currentScroll = ul.scrollTop;
+          var offset = targetTop - containerTop + currentScroll - 8;
+          ul.scrollTo({ top: offset, behavior: 'smooth' });
+          targets.forEach(function(t){ t.classList.add('highlight'); });
+          try{ first.tabIndex = -1; first.focus(); } catch(x){}
+          setTimeout(function(){ targets.forEach(function(t){ t.classList.remove('highlight'); }); }, 2200);
+        }
+      });
+    }
+    function eventIsInside(node, container){ return container.contains(node); }
+  }).catch(function(err){
+    console.error('Events initialization failed:', err);
+    var ALL_EVENTS = [];
+    showMonth(now.getFullYear(), now.getMonth(), ALL_EVENTS);
+    renderUpcoming(ALL_EVENTS);
+  });
+});
+</script>
+
+<style>
+.skills-container { background: #000; color: #e4e4e7; padding: 2rem; border-radius: 1rem; position: relative; overflow: hidden; margin: 2rem 0; }
+.skills-container::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top, rgba(249,115,22,0.15), transparent 55%); pointer-events: none; }
+.skills-grid { display: grid; gap: 2rem; grid-template-columns: 1fr 1fr; position: relative; z-index: 1; }
+
+ 
+@media (max-width: 1024px) {
+  .skills-grid { grid-template-columns: 1fr; }
+}
+.skills-card { background: rgba(9, 9, 11, 0.7); border: 1px solid rgba(39, 39, 42, 0.8); border-radius: 1rem; padding: 1.5rem; backdrop-filter: blur(8px); }
+.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.25em; color: #a1a1aa; margin-bottom: 0.5rem; }
+.card-title { font-size: 1.875rem; font-weight: 600; color: white; line-height: 1.2; margin-bottom: 1.5rem; }
+.skills-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+.skill-item { display: flex; flex-direction: column; gap: 0.25rem; }
+.skill-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; }
+.skill-name { color: #d4d4d8; }
+.skill-name[data-url] { cursor: pointer; text-decoration: underline; text-decoration-color: transparent; transition: color 140ms ease, text-decoration-color 140ms ease; }
+.skill-name[data-url]:hover { color: #f97316; text-decoration-color: #f97316; }
+.skill-percent { color: #ffffff; font-weight: bold; }
+.skill-meter { height: 4px; background: rgba(39, 39, 42, 0.8); border-radius: 2px; position: relative; overflow: hidden; cursor: inherit; transition: background 0.2s ease; }
+.skill-fill { height: 100%; background: #f97316; border-radius: 2px; transition: width 0.6s ease-out; }
+.toolbelt-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tool-badge { background: rgba(39, 39, 42, 0.6); color: #d4d4d8; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; text-decoration: none; white-space: nowrap; }
+.skill-item[data-url] { cursor: pointer; padding: 0.25rem; margin: -0.25rem; border-radius: 4px; transition: background 0.2s ease; }
+.skill-item[data-url]:hover { background: rgba(249, 115, 22, 0.08); }
+.skill-item[data-url]:hover .skill-meter { background: rgba(249, 115, 22, 0.2); }
+.tool-badge:hover { background: rgba(249, 115, 22, 0.2); color: #f97316; text-decoration: none; }
+.tool-badge:hover { background: rgba(39, 39, 42, 0.8); }
+.radar-container { height: 456px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.skill-tooltip-global { position: absolute; z-index: 1000; background: #1a1a1a; color: #ddd; padding: 0.8em 1em; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #333; max-width: 300px; font-size: 0.9em; line-height: 1.4; display: none; pointer-events: none; }
+.interests-section { margin-top: 3rem; }
+.interests-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-top: 2rem; }
+.interest-card { background: rgba(9, 9, 11, 0.7); border: 1px solid rgba(39, 39, 42, 0.8); border-radius: 1rem; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; backdrop-filter: blur(8px); }
+.interest-title { display: flex; align-items: center; gap: 0.5rem; color: white; font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
+.interest-icon { color: #f97316; width: 1rem; height: 1rem; }
+.interest-desc { color: #a1a1aa; font-size: 0.875rem; margin-bottom: 1rem; }
+.interest-detail { color: #a1a1aa; font-size: 0.875rem; line-height: 1.6; margin-top: auto; }
+</style>
+
+<div class="skills-container">
+  <div style="margin-bottom: 2rem;">
+    <h3 style="color: #f97316; margin-bottom: 1rem;">Interests & Skills</h3>
+  </div>
+  
+  <div class="skills-grid">
+    <div class="skills-card">
+      <div class="section-title">Bars & Bricks</div>
+      <h2 class="card-title">Programming-Languages, Tech-Stacks, And Platforms.</h2>
+      
+      <div class="skills-list">
+        
+        
+        
+          
+        
+        <div class="skill-item" data-skill-tooltip="70% Pretty Familiar" data-url="https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html">
+          <div class="skill-header">
+            <span class="skill-name" data-url="https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html">GDScript</span>
+            <span class="skill-percent">70%</span>
+          </div>
+          <div class="skill-meter">
+            <div class="skill-fill" style="width: 0%" data-width="70%"></div>
+          </div>
+        </div>
+        
+        
+        
+          
+        
+        <div class="skill-item" data-skill-tooltip="50% Somewhat Familiar" data-url="https://www.scheme.org/">
+          <div class="skill-header">
+            <span class="skill-name" data-url="https://www.scheme.org/">Scheme</span>
+            <span class="skill-percent">50%</span>
+          </div>
+          <div class="skill-meter">
+            <div class="skill-fill" style="width: 0%" data-width="50%"></div>
+          </div>
+        </div>
+        
+        
+        
+          
+        
+        <div class="skill-item" data-skill-tooltip="40% Somewhat Familiar" data-url="https://lisp-lang.org/">
+          <div class="skill-header">
+            <span class="skill-name" data-url="https://lisp-lang.org/">Common-Lisp</span>
+            <span class="skill-percent">40%</span>
+          </div>
+          <div class="skill-meter">
+            <div class="skill-fill" style="width: 0%" data-width="40%"></div>
+          </div>
+        </div>
+        
+        
+        
+          
+        
+        <div class="skill-item" data-skill-tooltip="30% Little Familiar" data-url="https://golang.org">
+          <div class="skill-header">
+            <span class="skill-name" data-url="https://golang.org">GoLang</span>
+            <span class="skill-percent">30%</span>
+          </div>
+          <div class="skill-meter">
+            <div class="skill-fill" style="width: 0%" data-width="30%"></div>
+          </div>
+        </div>
+        
+        
+        
+          
+        
+        <div class="skill-item" data-skill-tooltip="20% Little Familiar" data-url="https://isocpp.org/">
+          <div class="skill-header">
+            <span class="skill-name" data-url="https://isocpp.org/">C&#43;&#43;</span>
+            <span class="skill-percent">20%</span>
+          </div>
+          <div class="skill-meter">
+            <div class="skill-fill" style="width: 0%" data-width="20%"></div>
+          </div>
+        </div>
+        
+        
+        
+          
+        
+        <div class="skill-item" data-skill-tooltip="20% Little Familiar" data-url="https://www.c-language.org/">
+          <div class="skill-header">
+            <span class="skill-name" data-url="https://www.c-language.org/">C</span>
+            <span class="skill-percent">20%</span>
+          </div>
+          <div class="skill-meter">
+            <div class="skill-fill" style="width: 0%" data-width="20%"></div>
+          </div>
+        </div>
+        
+      </div>
+      
+      <div class="section-title" style="margin-top: 2rem;">Toolbelt</div>
+      <div class="toolbelt-grid">
+        
+          
+          <a href="https://podman.io/" target="_blank" class="tool-badge">Docker / Podman</a>
+          
+        
+          
+          <a href="https://archlinux.org/" target="_blank" class="tool-badge">Arch Linux</a>
+          
+        
+          
+          <span class="tool-badge">Bootc</span>
+          
+        
+          
+          <a href="https://docs.bazzite.gg/Installing_and_Managing_Software/Quadlet/" target="_blank" class="tool-badge">Quadlets</a>
+          
+        
+          
+          <a href="https://flatpak.org/" target="_blank" class="tool-badge">Flatpak</a>
+          
+        
+          
+          <a href="https://hyprland.org/" target="_blank" class="tool-badge">Hyprland</a>
+          
+        
+          
+          <a href="https://godotengine.org/" target="_blank" class="tool-badge">Godot Engine</a>
+          
+        
+          
+          <a href="https://www.raylib.com/" target="_blank" class="tool-badge">Raylib</a>
+          
+        
+          
+          <a href="https://www.openapis.org/" target="_blank" class="tool-badge">OpenAPI</a>
+          
+        
+          
+          <a href="https://webassembly.org/" target="_blank" class="tool-badge">WASM</a>
+          
+        
+          
+          <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" class="tool-badge">HTML</a>
+          
+        
+          
+          <a href="https://gohugo.io/" target="_blank" class="tool-badge">Hugo</a>
+          
+        
+      </div>
+    </div>
+    
+    <div class="skills-card">
+      <div class="section-title">Heat Map</div>
+      <h3 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="color: #f97316;"></span> Breadth Radar
+      </h3>
+      <div class="radar-container" id="radar-container">
+        
+      </div>
+    </div>
+  </div>
+  
+  <div class="interests-section">
+    <div class="section-title">Focusing On</div>
+    <div class="interests-grid">
+      
+      <div class="interest-card">
+        <div class="interest-title">
+          <span class="interest-icon">🌌</span>
+          <span>Spatial Computing</span>
+        </div>
+        <div class="interest-desc">Moving interfaces from 1.5D to 2.5-3D.</div>
+        <div class="interest-detail">ipsumzeta quorbits flenxar veloran quixthra sombrix norvalen</div>
+      </div>
+      
+      <div class="interest-card">
+        <div class="interest-title">
+          <span class="interest-icon">☯️</span>
+          <span>Homoiconclasm</span>
+        </div>
+        <div class="interest-desc">Code Is Data. Data Is Code. It&#39;s all language.</div>
+        <div class="interest-detail">vexalon primetuid sogran ulmora phentrix lodamir tezrin</div>
+      </div>
+      
+      <div class="interest-card">
+        <div class="interest-title">
+          <span class="interest-icon">♻️</span>
+          <span>Distribution</span>
+        </div>
+        <div class="interest-desc">Distributed Programming x Data.</div>
+        <div class="interest-detail">murpish tevalon crinsta dorvalen spindrek humbar lortha</div>
+      </div>
+      
+      <div class="interest-card">
+        <div class="interest-title">
+          <span class="interest-icon">🔧</span>
+          <span>Modifying</span>
+        </div>
+        <div class="interest-desc">Everything should be mo(l)dable.</div>
+        <div class="interest-detail">brundel pexario yulb tremorin quastel varnum eldir</div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+<div id="radar-data" style="display: none;" data-radar="[{&#34;angle&#34;:0,&#34;subject&#34;:&#34;Frontend&#34;,&#34;value&#34;:30},{&#34;angle&#34;:60,&#34;subject&#34;:&#34;Backend&#34;,&#34;value&#34;:30},{&#34;angle&#34;:120,&#34;subject&#34;:&#34;DevOps&#34;,&#34;value&#34;:30},{&#34;angle&#34;:180,&#34;subject&#34;:&#34;DX / Tooling&#34;,&#34;value&#34;:30},{&#34;angle&#34;:240,&#34;subject&#34;:&#34;UX&#34;,&#34;value&#34;:30},{&#34;angle&#34;:300,&#34;subject&#34;:&#34;AI / ML&#34;,&#34;value&#34;:30}]"></div>
+
+<script>
+
+function getRadarData() {
+  const dataElement = document.getElementById('radar-data');
+  if (dataElement) {
+    const radarDataStr = dataElement.getAttribute('data-radar');
+    try {
+      return JSON.parse(radarDataStr);
+    } catch (e) {
+      console.error('Failed to parse radar data:', e);
+      return [];
+    }
+  }
+  return [];
+}
+
+var radarData = getRadarData();
+
+
+function createRadarChart() {
+  const container = document.getElementById('radar-container');
+  if (!container) return;
+  
+  const radarData = getRadarData();
+  if (!radarData || radarData.length === 0) return;
+  
+  const size = 480;
+  const center = size / 2;
+  const radius = size * 0.35;
+  
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.style.display = 'block';
+  svg.style.margin = '0 auto';
+  
+  
+  const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  bgCircle.setAttribute('cx', center);
+  bgCircle.setAttribute('cy', center);
+  bgCircle.setAttribute('r', radius);
+  bgCircle.setAttribute('fill', 'none');
+  bgCircle.setAttribute('stroke', 'rgba(39, 39, 42, 0.8)');
+  bgCircle.setAttribute('stroke-width', '1');
+  svg.appendChild(bgCircle);
+  
+  
+  for (let i = 1; i <= 3; i++) {
+    const gridCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    gridCircle.setAttribute('cx', center);
+    gridCircle.setAttribute('cy', center);
+    gridCircle.setAttribute('r', radius * (i / 3));
+    gridCircle.setAttribute('fill', 'none');
+    gridCircle.setAttribute('stroke', 'rgba(39, 39, 42, 0.4)');
+    gridCircle.setAttribute('stroke-width', '0.5');
+    svg.appendChild(gridCircle);
+  }
+  
+  
+  radarData.forEach(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const x2 = center + radius * Math.cos(angle);
+    const y2 = center + radius * Math.sin(angle);
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', center);
+    line.setAttribute('y1', center);
+    line.setAttribute('x2', x2);
+    line.setAttribute('y2', y2);
+    line.setAttribute('stroke', 'rgba(39, 39, 42, 0.6)');
+    line.setAttribute('stroke-width', '0.5');
+    svg.appendChild(line);
+    
+    const labelRadius = radius + 20;
+    const labelX = center + labelRadius * Math.cos(angle);
+    const labelY = center + labelRadius * Math.sin(angle);
+    
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', labelX);
+    text.setAttribute('y', labelY);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('fill', '#a1a1aa');
+    text.setAttribute('font-size', '11');
+    text.setAttribute('font-family', 'system-ui, sans-serif');
+    text.textContent = item.subject;
+    svg.appendChild(text);
+  });
+  
+  
+  const points = radarData.map(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const distance = radius * (item.value / 100);
+    const x = center + distance * Math.cos(angle);
+    const y = center + distance * Math.sin(angle);
+    return x + ',' + y;
+  }).join(' ');
+  
+  const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  polygon.setAttribute('points', points);
+  polygon.setAttribute('fill', 'rgba(249, 115, 22, 0.2)');
+  polygon.setAttribute('stroke', '#f97316');
+  polygon.setAttribute('stroke-width', '2');
+  svg.appendChild(polygon);
+  
+  
+  radarData.forEach(item => {
+    const angle = (item.angle - 90) * Math.PI / 180;
+    const distance = radius * (item.value / 100);
+    const x = center + distance * Math.cos(angle);
+    const y = center + distance * Math.sin(angle);
+    
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x);
+    circle.setAttribute('cy', y);
+    circle.setAttribute('r', '3');
+    circle.setAttribute('fill', '#f97316');
+    svg.appendChild(circle);
+  });
+  
+  container.appendChild(svg);
+}
+
+
+function animateSkillBars() {
+  setTimeout(() => {
+    document.querySelectorAll('.skill-fill').forEach(fill => {
+      fill.style.width = fill.dataset.width;
+    });
+  }, 100);
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Interests: DOMContentLoaded');
+  const radarData = getRadarData();
+  console.log('Interests: Radar data loaded:', radarData);
+  createRadarChart();
+  animateSkillBars();
+  
+  
+  const globalSkillTT = document.createElement('div');
+  globalSkillTT.className = 'skill-tooltip-global';
+  globalSkillTT.id = 'skill-tooltip-global';
+  globalSkillTT.setAttribute('role','tooltip');
+  document.body.appendChild(globalSkillTT);
+  
+  function clampPosition(x,y,tooltip){
+    var tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+    var pad = 8;
+    var maxX = window.scrollX + window.innerWidth - tw - pad;
+    var maxY = window.scrollY + window.innerHeight - th - pad;
+    var nx = Math.min(maxX, Math.max(window.scrollX + pad, x));
+    var ny = Math.min(maxY, Math.max(window.scrollY + pad, y));
+    return {x: nx, y: ny};
+  }
+  
+  var skillPointerShownFor = null;
+  
+  document.addEventListener('mouseover', function(e){
+    var skillItem = e.target.closest('.skill-item');
+    if (!skillItem) return;
+    var tooltipText = skillItem.dataset.skillTooltip;
+    if (!tooltipText) return;
+    globalSkillTT.innerHTML = tooltipText;
+    globalSkillTT.style.display = 'block';
+    skillPointerShownFor = skillItem;
+    var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalSkillTT);
+    globalSkillTT.style.left = pos.x + 'px'; 
+    globalSkillTT.style.top = pos.y + 'px';
+  });
+  
+  document.addEventListener('mousemove', function(e){ 
+    if (globalSkillTT.style.display === 'block') { 
+      var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalSkillTT); 
+      globalSkillTT.style.left = pos.x + 'px'; 
+      globalSkillTT.style.top = pos.y + 'px'; 
+    } 
+  });
+  
+  document.addEventListener('mouseout', function(e){
+    var related = e.relatedTarget;
+    if (!related || !related.closest || !related.closest('.skill-item')) {
+      globalSkillTT.style.display = 'none'; 
+      skillPointerShownFor = null;
+    }
+  });
+  
+  
+  document.addEventListener('click', function(e){
+    var skillItem = e.target.closest('.skill-item[data-url]');
+    if (skillItem) {
+      var url = skillItem.dataset.url;
+      if (url) {
+        window.open(url, '_blank');
+      }
+    }
+  });
+});
+</script>
+
+<style>
+.featured { margin-bottom: 1.25rem; }
+.featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.feature-card { background: linear-gradient(180deg, #050505, #0b0b0b); color: #e9e9e9; padding: 0; border-radius: 8px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; overflow: hidden; }
+.feature-card-image { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin: 1rem auto 0 auto; display: block; }
+.feature-card-content { padding: 1rem; display: flex; flex-direction: column; flex: 1; text-align: center; }
+.feature-card h3 { margin-top: 0; color: #ffffff; text-align: center; }
+.feature-card .muted { color: rgba(255, 255, 255, 0.72); text-align: center; }
+.feature-card p:last-child { margin-top: auto; display: flex; justify-content: flex-end; }
+</style>
+<section class="featured">
+  <h2>Featured Projects</h2>
+  <div class="featured-grid">
+    <div class="feature-card">
+      <img src="/proj-godot-gato.webp" alt="Godot &#39;Gato" class="feature-card-image">
+      <div class="feature-card-content">
+        <h3><a href="https://github.com/godot-gato">Godot &#39;Gato</a></h3>
+        <p class="muted">Λ Neko Themed AI Assistant / Desktop Companion Built-Into And Built-For Godot.</p>
+        <p><a class="btn btn-sm btn-space" href="https://github.com/godot-gato">Go!</a></p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <img src="/proj-uf-os.webp" alt="UF-OS" class="feature-card-image">
+      <div class="feature-card-content">
+        <h3><a href="https://github.com/uf-os">UF-OS</a></h3>
+        <p class="muted">Λ Bootc-Based ArchLinux Distro Aimed At Driving Godot Towards Spatial Computing.</p>
+        <p><a class="btn btn-sm btn-space" href="https://github.com/uf-os">Go!</a></p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <img src="/proj-gatelinux.webp" alt="GateLinux" class="feature-card-image">
+      <div class="feature-card-content">
+        <h3><a href="https://github.com/gatelinux">GateLinux</a></h3>
+        <p class="muted">Λ Solid Steel, Build-Time ArchLinux Image Factory And Related Ecosystem.</p>
+        <p><a class="btn btn-sm btn-space" href="https://github.com/gatelinux">Go!</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.relevant-repos-group { background: linear-gradient(90deg, #0a0a0a 80%, #181818 100%); border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.18); border: 1.5px solid #181818; margin-bottom: 2.2em; padding: 1.1em 1.2em 0.5em 1.2em; transition: box-shadow 0.2s; }
+.relevant-repos-group.collapsed { padding-bottom: 0.2em; }
+.relevant-repos-group h3 { cursor: pointer; user-select: none; margin-top: 0.1em; margin-bottom: 0.2em !important; display: flex; align-items: center; gap: 0.5em; font-size: 1.18em; color: #fff; transition: color 0.2s; }
+.relevant-repos-group h3 .arrow { font-size: 1.1em; transition: transform 0.2s; display: inline-block; color: #ff6f00; }
+.relevant-repos-group.collapsed h3 .arrow { transform: rotate(-90deg); }
+.relevant-repos-group .repos-list { transition: max-height 0.25s cubic-bezier(.4,0,.2,1), opacity 0.2s; overflow: hidden; opacity: 1; max-height: 500px; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
+.relevant-repos-group .repos-list::-webkit-scrollbar { height: 20px; }
+.relevant-repos-group .repos-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 6px; border: 2px solid rgba(0,0,0,0.15); }
+.relevant-repos-group.collapsed .repos-list { opacity: 0; max-height: 0; pointer-events: none; }
+.repo-pill { flex: 0 0 auto; display: block; min-width: 220px; border-radius: 8px; padding: 1em 1.2em; background: rgba(0,0,0,0.10); color: #ff6f00; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.2s, transform 0.2s; }
+.repo-pill:hover { background: rgba(0,0,0,0.15); transform: translateY(-2px); text-decoration: none; color: #ff6f00; }
+.repo-title { font-size: 1.1em; font-weight: bold; margin-bottom: 0.3em; }
+.repo-quip { font-size: 0.98em; color: #ddd; margin: 0.2em 0 0.4em 0; }
+.repo-desc { font-size: 0.92em; color: #999; }
+.repo-desc-popup-global { position: absolute; z-index: 1000; background: #1a1a1a; color: #ddd; padding: 0.8em 1em; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #333; max-width: 300px; font-size: 0.9em; line-height: 1.4; display: none; pointer-events: none; }
+</style>
+
+<section class="relevant-repos" style="margin:2.5rem 0 2rem 0;">
+  <h2 style="color:var(--primary);margin-bottom:1.2rem;">Relevant Repos</h2>
+  <div id="github-relevant-repos-groups">
+    <div class="relevant-repos-group">
+      <h3>
+        <span class="arrow">&#9654;</span>
+        <span>MEGAPLEX</span>
+      </h3>
+      <div class="repos-list" style="display: flex; overflow-x: auto; gap: 1.2em; padding-bottom: 0.25rem; -webkit-overflow-scrolling: touch;">
+        <a href="https://github.com/loremcorp/ipsum-engine" 
+           target="_blank" 
+           class="repo-pill"
+           data-full-desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac urna eu felis dapibus condimentum sit amet a augue.">
+          <div class="repo-title">loremcorp/ipsum-engine</div>
+          <div class="repo-quip">Lorem ipsum dolor sit amet.</div>
+          <div class="repo-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ...</div>
+        </a>
+        <a href="https://github.com/dolorsoft/sit-amet-framework" 
+           target="_blank" 
+           class="repo-pill"
+           data-full-desc="Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer lacinia sollicitudin massa.">
+          <div class="repo-title">dolorsoft/sit-amet-framework</div>
+          <div class="repo-quip">Sed do eiusmod tempor incididunt.</div>
+          <div class="repo-desc">Vestibulum ante ipsum primis in faucibus orci luctus et ultrices...</div>
+        </a>
+        <a href="https://github.com/consecteturdevs/adipiscing-ui" 
+           target="_blank" 
+           class="repo-pill"
+           data-full-desc="Cras suscipit, quam vitae dapibus facilisis, enim diam dictum urna, eget dictum eros elit ut nulla.">
+          <div class="repo-title">consecteturdevs/adipiscing-ui</div>
+          <div class="repo-quip">Ut enim ad minim veniam.</div>
+          <div class="repo-desc">Cras suscipit, quam vitae dapibus facilisis, enim diam dictum ur...</div>
+        </a>
+        <a href="https://github.com/elitworks/nullam-api" 
+           target="_blank" 
+           class="repo-pill"
+           data-full-desc="Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi.">
+          <div class="repo-title">elitworks/nullam-api</div>
+          <div class="repo-quip">Quis nostrud exercitation ullamco.</div>
+          <div class="repo-desc">Nullam ac urna eu felis dapibus condimentum sit amet a augue. Se...</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  
+  const repoGroups = document.querySelectorAll('.relevant-repos-group');
+  
+  repoGroups.forEach(function(group) {
+    const groupTitle = group.querySelector('h3');
+    if (groupTitle) {
+      groupTitle.addEventListener('click', function(e) {
+        group.classList.toggle('collapsed');
+      });
+    }
+  });
+
+  
+  const globalTT = document.createElement('div');
+  globalTT.className = 'repo-desc-popup-global';
+  globalTT.id = 'repo-desc-popup-global';
+  globalTT.setAttribute('role','tooltip');
+  document.body.appendChild(globalTT);
+  
+  function clampPosition(x,y,tooltip){
+    var tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+    var pad = 8;
+    var maxX = window.scrollX + window.innerWidth - tw - pad;
+    var maxY = window.scrollY + window.innerHeight - th - pad;
+    var nx = Math.min(maxX, Math.max(window.scrollX + pad, x));
+    var ny = Math.min(maxY, Math.max(window.scrollY + pad, y));
+    return {x: nx, y: ny};
+  }
+  
+  var pointerShownFor = null;
+  
+  document.addEventListener('mouseover', function(e){
+    var pill = e.target.closest('.repo-pill');
+    if (!pill) return;
+    var full = pill.dataset.fullDesc;
+    if (!full) return;
+    globalTT.innerHTML = full;
+    globalTT.style.display = 'block';
+    pointerShownFor = pill;
+    var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalTT);
+    globalTT.style.left = pos.x + 'px'; 
+    globalTT.style.top = pos.y + 'px';
+  });
+  
+  document.addEventListener('mousemove', function(e){ 
+    if (globalTT.style.display === 'block') { 
+      var pos = clampPosition(e.pageX + 12, e.pageY + 12, globalTT); 
+      globalTT.style.left = pos.x + 'px'; 
+      globalTT.style.top = pos.y + 'px'; 
+    } 
+  });
+  
+  document.addEventListener('mouseout', function(e){
+    var related = e.relatedTarget;
+    if (!related || !related.closest || !related.closest('.repo-pill')) {
+      globalTT.style.display = 'none'; 
+      pointerShownFor = null;
+    }
+  });
+})();
+</script>
+
+<style>
+.featured-series-flex { display: flex; gap: 2rem; align-items: stretch; position: relative; padding: 0.75rem; }
+.featured-series-card { flex: 3 1 0; background: linear-gradient(180deg, #050505, #0b0b0b); color: #e9e9e9; padding: 1rem; border-radius: 8px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; min-height: 320px; max-height: 400px; transition: box-shadow 0.2s; position: relative; z-index: 1; overflow: hidden; }
+.featured-series-card h3 { margin-top: 0; color: #ffffff; flex-shrink: 0; }
+.featured-series-card > p { flex-shrink: 0; color: rgba(255, 255, 255, 0.72); }
+.featured-series-card ul { flex: 1; overflow-y: auto; margin: 0; padding: 0; list-style: none; scrollbar-width: thin; scrollbar-color: #ff7a00 transparent; }
+.featured-series-card ul::-webkit-scrollbar { width: 6px; }
+.featured-series-card ul::-webkit-scrollbar-thumb { background: #ff7a00; border-radius: 3px; }
+.featured-series-card ul::-webkit-scrollbar-track { background: transparent; }
+.featured-series-card li { padding: 0.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.featured-series-card li:last-child { border-bottom: none; }
+.featured-series-card li a { color: #ff7a00; text-decoration: none; }
+.featured-series-card li a:hover { color: #ffffff; }
+.featured-series-tabs { flex: 1 1 0; display: flex; flex-direction: column; gap: 0.5rem; justify-content: flex-start; position: relative; z-index: 1; max-height: 400px; }
+.series-tab { background: linear-gradient(180deg, #050505, #0b0b0b); color: #ff7a00; border: none; border-radius: 6px; padding: 0.8rem 1rem; font-size: 1rem; cursor: pointer; text-align: left; transition: background 0.18s, color 0.18s; }
+.series-tab.active { background: #ff7a00; color: #181818; font-weight: bold; }
+.featured-series-flex::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.82), rgba(12,12,12,0.82)); border-radius: 12px; z-index: 0; pointer-events: none; box-shadow: 0 12px 40px rgba(0,0,0,0.72), 0 0 0 1px rgba(255,255,255,0.02) inset; border: 1px solid rgba(255,255,255,0.06); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.featured-series { margin: 2rem 0; }
+</style>
+
+<section id="featured-series" class="featured-series">
+  <div class="container">
+    <h2>Featured Series</h2>
+    <p>A series is a collection of posts, such as guides, tutorials, or themed articles. Explore our curated series below.</p>
+    <div class="featured-series-flex">
+      <div class="featured-series-card" id="series-card">
+        <h3>Getting Started Series</h3>
+        <p>A collection of introductory guides and practical tips for new users.</p>
+        <ul>
+          <li><a href="/posts/lorem-getting-started-1.html">Ut enim ad minim veniam</a></li>
+          <li><a href="/posts/lorem-getting-started-2.html">Quis nostrud exercitation ullamco</a></li>
+        </ul>
+      </div>
+      <div class="featured-series-tabs">
+        <button class="series-tab active" 
+                data-series="guide"
+                data-index="0">
+          Getting Started Series
+        </button>
+        <button class="series-tab" 
+                data-series="tutorial"
+                data-index="1">
+          Advanced Techniques Series
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script type="application/json" id="series-data">
+{"guide": {
+  "title": "\"Getting Started Series\"",
+  "desc": "\"A collection of introductory guides and practical tips for new users.\"",
+  "posts": [{
+      "title": "\"Ut enim ad minim veniam\"",
+      "url": "\"/posts/lorem-getting-started-1.html\""
+    },{
+      "title": "\"Quis nostrud exercitation ullamco\"",
+      "url": "\"/posts/lorem-getting-started-2.html\""
+    }]
+},"tutorial": {
+  "title": "\"Advanced Techniques Series\"",
+  "desc": "\"Explore advanced workflows, deep dives, and expert strategies for experienced users.\"",
+  "posts": [{
+      "title": "\"Duis aute irure dolor in reprehenderit\"",
+      "url": "\"/posts/lorem-advanced-1.html\""
+    },{
+      "title": "\"Excepteur sint occaecat cupidatat non proident\"",
+      "url": "\"/posts/lorem-advanced-2.html\""
+    }]
+}}
+</script>
+
+<script>
+
+var seriesData = null;
+var carouselInterval = null;
+var currentSeriesIndex = 0;
+var seriesKeys = [];
+
+function loadSeriesData() {
+  var script = document.getElementById('series-data');
+  if (!script) {
+    console.error('Featured Series: series-data script element not found');
+    return false;
+  }
+  
+  try {
+    const textContent = script.textContent.trim();
+    if (!textContent) {
+      console.error('Featured Series: series-data script element is empty');
+      return false;
+    }
+    
+    console.log('Featured Series: Raw JSON text:', textContent);
+    
+    seriesData = JSON.parse(textContent);
+    seriesKeys = Object.keys(seriesData);
+    console.log('Featured Series: Successfully parsed series data:', seriesData);
+    console.log('Featured Series: Data type:', typeof seriesData);
+    console.log('Featured Series: Is array:', Array.isArray(seriesData));
+    console.log('Featured Series: Series keys:', seriesKeys);
+    return true;
+  } catch (e) {
+    console.error('Featured Series: Failed to parse JSON:', e);
+    seriesData = {};
+    return false;
+  }
+}
+
+function renderSeriesCard(seriesKey) {
+  console.log('Featured Series: Rendering card for series:', seriesKey);
+  
+  const s = seriesData[seriesKey];
+  if (!s) {
+    console.error('Featured Series: Series not found:', seriesKey);
+    return;
+  }
+  
+  const card = document.getElementById('series-card');
+  if (!card) {
+    console.error('Featured Series: series-card element not found');
+    return;
+  }
+  
+  console.log('Featured Series: Rendering series:', s.title);
+  console.log('Featured Series: Posts data:', s.posts);
+  console.log('Featured Series: Posts type:', typeof s.posts);
+  console.log('Featured Series: Posts is array:', Array.isArray(s.posts));
+  
+  
+  const posts = Array.isArray(s.posts) ? s.posts : [];
+  
+  card.innerHTML = `
+    <h3>${s.title}</h3>
+    <p>${s.desc}</p>
+    <ul>
+      ${posts.map(post => `<li><a href="${post.url}">${post.title}</a></li>`).join('')}
+    </ul>
+  `;
+}
+
+function setActiveTab(targetIndex) {
+  document.querySelectorAll('.series-tab').forEach((tab, index) => {
+    tab.classList.toggle('active', index === targetIndex);
+  });
+  currentSeriesIndex = targetIndex;
+}
+
+function startCarousel() {
+  if (seriesKeys.length <= 1) return; 
+  
+  carouselInterval = setInterval(() => {
+    currentSeriesIndex = (currentSeriesIndex + 1) % seriesKeys.length;
+    const seriesKey = seriesKeys[currentSeriesIndex];
+    
+    console.log('Featured Series: Auto-cycling to', currentSeriesIndex, seriesKey);
+    
+    setActiveTab(currentSeriesIndex);
+    renderSeriesCard(seriesKey);
+  }, 10000); 
+}
+
+function stopCarousel() {
+  if (carouselInterval) {
+    clearInterval(carouselInterval);
+    carouselInterval = null;
+    console.log('Featured Series: Carousel stopped');
+  }
+}
+
+function restartCarousel() {
+  stopCarousel();
+  setTimeout(startCarousel, 10000); 
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Featured Series: DOMContentLoaded');
+  
+  if (!loadSeriesData()) {
+    console.error('Featured Series: Failed to load series data');
+    return;
+  }
+  
+  console.log('Featured Series: Series data loaded:', seriesData);
+  
+  
+  const tabs = document.querySelectorAll('.series-tab');
+  console.log('Featured Series: Found tabs:', tabs.length);
+  tabs.forEach((tab, index) => {
+    console.log(`Tab ${index}: ${tab.textContent.trim()} -> ${tab.getAttribute('data-series')}`);
+  });
+  
+  
+  tabs.forEach((tab, index) => {
+    console.log('Featured Series: Adding click handler to tab', index, tab.getAttribute('data-series'));
+    
+    tab.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Featured Series: Tab clicked', index, tab.getAttribute('data-series'));
+      
+      const seriesKey = tab.getAttribute('data-series');
+      console.log('Featured Series: Looking for series key:', seriesKey);
+      console.log('Featured Series: Available keys:', Object.keys(seriesData));
+      
+      
+      stopCarousel();
+      
+      setActiveTab(index);
+      renderSeriesCard(seriesKey);
+      
+      
+      restartCarousel();
+    });
+  });
+  
+  
+  console.log('Featured Series: Starting carousel with', seriesKeys.length, 'items');
+  startCarousel();
+});
+</script>
+
+<style>
+.latest-posts { margin: 2.5rem 0 2rem 0; }
+.latest-posts h2 { color: var(--primary); margin-bottom: 1.2rem; }
+.posts-list { margin-bottom: 1.5rem; }
+.view-all-container { text-align: center; }
+.posts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.post-card { background: linear-gradient(180deg, #050505, #0b0b0b); color: #e9e9e9; padding: 1.25rem; border-radius: 8px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.03); transition: transform 0.2s, box-shadow 0.2s; }
+.post-card:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8); }
+.post-card h3 { margin-top: 0; margin-bottom: 0.75rem; }
+.post-card h3 a { color: #ffffff; text-decoration: none; }
+.post-card h3 a:hover { color: var(--primary); }
+.post-meta { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-bottom: 0.75rem; }
+.post-excerpt { color: rgba(255, 255, 255, 0.8); line-height: 1.5; margin-bottom: 1rem; }
+.post-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.post-tag { background: rgba(255, 122, 0, 0.2); color: var(--primary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none; }
+.post-tag:hover { background: rgba(255, 122, 0, 0.3); }
+</style>
+
+<section class="latest-posts">
+  <h2>Latest Blog Posts</h2>
+  <div class="latest-parent">
+    <div class="posts-list">
+      <div class="posts-grid">
+        <article class="post-card">
+          <h3><a href="/posts/2025-09-19-and-we-have-liftoff/">And... We Have Lift-Off!</a></h3>
+          <div class="post-meta">
+            <time datetime="2025-09-19">September 19, 2025</time>
+          </div>
+          <div class="post-excerpt">&hellip;</div>
+          <div class="post-tags">
+            <a href="/tags/meta" class="post-tag">Meta</a>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="view-all-container">
+      <a href="/posts/" class="btn btn-sm btn-space">View all posts</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.newsletter-card { background: linear-gradient(180deg, #0b0b0b, #1a1a1a); padding: 1rem; border-radius: 8px; color: #eaeaea; border: 1px solid rgba(255,255,255,0.03); box-shadow: 0 8px 28px rgba(0,0,0,0.7); }
+</style>
+<section class="newsletter">
+  <div class="newsletter-card">
+    <h3>Join the Launch List</h3>
+    <p>Short, occasional updates about major projects and demos.</p>
+    <p><a class="btn btn-space" href="mailto:megalisp&#43;subscribe@example.com?subject=Subscribe">Subscribe</a></p>
+  </div>
+</section>
+
+</div>
+
+        </main>
+        
+        <style>
+.footer-credit a.accent { color: #ff7a00; font-weight: 600; text-decoration: none; }
+.footer-credit a.accent:hover { text-decoration: underline; }
+.twitter-follow-button { border: 2px solid #ff7a00; border-radius: 999px; display: inline-block; }
+.twitter-follow-button:hover { background: rgba(255,122,0,0.06); }
+.socials-center { text-align: center; margin: 0.6rem 0 0.8rem; }
+.socials-center p { margin: 0; }
+.socials-center .social { display: inline-block; margin: 0 0.6rem; color: #ff7a00; font-size: 28px; transition: transform 160ms ease, color 160ms ease; }
+.socials-center .social:hover { transform: translateY(-4px); color: #ffffff; }
+.socials-center .social:focus { outline: 2px solid #ff7a00; outline-offset: 4px; }
+</style>
+
+<footer class="site-footer galaxy-glow space-border" style="margin-top:2em;">
+  
+  <div class="socials-center" role="navigation" aria-label="Social links">
+    <p>
+      <a class="social" href="https://megalisp.github.io" target="_blank" rel="noopener" aria-label="Website">
+        <i class="fa-solid fa-house-user" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://gist.github.com/megalisp" target="_blank" rel="noopener" aria-label="Gists">
+        <i class="fa-solid fa-clipboard" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://github.com/megalisp" target="_blank" rel="noopener" aria-label="GitHub">
+        <i class="fa-brands fa-github" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://discord.gg/6Re3dCKRgV" target="_blank" rel="noopener" aria-label="Discord">
+        <i class="fa-brands fa-discord" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://www.youtube.com/@megalisp" target="_blank" rel="noopener" aria-label="YouTube">
+        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://www.twitch.tv/megalisp" target="_blank" rel="noopener" aria-label="Twitch">
+        <i class="fa-brands fa-twitch" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://megalisp.itch.io/" target="_blank" rel="noopener" aria-label="Itch.io">
+        <i class="fa-brands fa-itch-io" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://suno.com/@megalisp" target="_blank" rel="noopener" aria-label="Suno">
+        <i class="fa-solid fa-music" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://tiktok.com/@megalisp" target="_blank" rel="noopener" aria-label="TikTok">
+        <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://cash.app/$megalisp" target="_blank" rel="noopener" aria-label="Cash App">
+        <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://paypal.me/megalisp" target="_blank" rel="noopener" aria-label="PayPal">
+        <i class="fa-brands fa-paypal" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://patreon.com/megalisp" target="_blank" rel="noopener" aria-label="Patreon">
+        <i class="fa-brands fa-patreon" aria-hidden="true"></i>
+      </a>
+      <a class="social" href="https://github.com/sponsors/megalisp" target="_blank" rel="noopener" aria-label="Sponsor">
+        <i class="fa-solid fa-heart" aria-hidden="true"></i>
+      </a>
+    </p>
+  </div>
+  
+  <div class="footer-divider" style="background-color:var(--primary);height:4px;width:60%;margin:0 auto 2em auto;border-radius:2px;"></div>
+  
+  <div style="text-align: center;">
+    <p style="margin-bottom: 1.5em;">
+      <a href="https://twitter.com/megalisp" class="twitter-follow-button" data-show-count="false" data-lang="en">
+        "Follow @MegaLisp"
+      </a>
+      <script type="text/javascript">
+        !function(d,s,id){
+          var js,fjs=d.getElementsByTagName(s)[0];
+          if(!d.getElementById(id)){
+            js=d.createElement(s);
+            js.id=id;
+            js.src="//platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document,"script","twitter-wjs");
+      </script>
+    </p>
+    <p class="footer-credit">
+      Built on <a class="accent" href="https://gohugo.io">Hugo</a>; Some With <a class="accent" href="https://godotengine.org" target="_blank">Godot</a>.
+    </p>
+    <p>
+      <em>All Content Here Is Tri-Licensed Under CC-BY, Apache 2.0, And MIT Unless Explicitly Stated Otherwise.</em>
+    </p>
+  </div>
+</footer>
+
+    </div>
+    
+    
+    <script type="text/javascript" src="/js/jquery-3.2.1.slim.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/js/custom.js"></script>
+    
+    
+</body>
+</html>
