@@ -536,6 +536,8 @@ document.addEventListener('DOMContentLoaded', function() {
 .vault-card:hover .vault-desc { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
 .vault-card:hover { outline-color: #ffffff; border-color: rgba(255,255,255,0.12); }
 .vault-card:hover h4, .vault-card:hover h4 a, .vault-card:hover a { color: #ffffff; }
+.vaults-wheel-link { display: inline-block; padding: 0.8rem; border-radius: 50%; transition: background-color 0.2s ease; }
+.vaults-wheel-link:hover { background-color: #f97316; }
 </style>
 
 
@@ -552,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="vault-emoji">🧠</div>
         <div style="display:flex;align-items:center;gap:0.4em;">
           <h4 style="margin:0;">
-            <a href="https://megalisp.github.io/vaults/megalo">Megalo</a>
+            <a href="https://megalisp.github.io/vault-megalo/index.html">Megalo</a>
           </h4>
         </div>
         <div class="vault-desc">Collections Of Personal Notes, Writing / Pieces, Assets / Gallery, Etc.</div>
@@ -562,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="vault-emoji">🗿</div>
         <div style="display:flex;align-items:center;gap:0.4em;">
           <h4 style="margin:0;">
-            <a href="https://megalisp.github.io/vaults/mania">Mania</a>
+            <a href="https://megalisp.github.io/vault-mania/index.html">Mania</a>
           </h4>
         </div>
         <div class="vault-desc">Sporadic, Spastic Dropbox Of Thoughts, Fragments Of An Idea, Misc Thoughts.</div>
@@ -572,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="vault-emoji">🤖</div>
         <div style="display:flex;align-items:center;gap:0.4em;">
           <h4 style="margin:0;">
-            <a href="https://megalisp.github.io/vaults/mecha">Mecha</a>
+            <a href="https://megalisp.github.io/vault-mecha/index.html">Mecha</a>
           </h4>
         </div>
         <div class="vault-desc">The Mechanics Of Game Systems, &#39;Engines&#39;, Simulations, And Interactive Tooling.</div>
@@ -582,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="vault-emoji">🌞</div>
         <div style="display:flex;align-items:center;gap:0.4em;">
           <h4 style="margin:0;">
-            <a href="https://megalisp.github.io/vaults/gday">G&#39;Day</a>
+            <a href="https://megalisp.github.io/vault-gday/index.html">G&#39;Day</a>
           </h4>
         </div>
         <div class="vault-desc">Devlog Notes on GDMode, And Related Ecosystem (Godot-Gato, UF-OS, Etc, Etc.)</div>
@@ -592,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="vault-emoji">🧊</div>
         <div style="display:flex;align-items:center;gap:0.4em;">
           <h4 style="margin:0;">
-            <a href="https://megalisp.github.io/vaults/ice3">Ice3</a>
+            <a href="https://megalisp.github.io/vault-ice3/index.html">Ice3</a>
           </h4>
         </div>
         <div class="vault-desc">Devlog Notes on Blocksmith, And Related Ecosystem (Found3 in-general, Cubicle, Etc.)</div>
@@ -602,7 +604,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="vault-emoji">⚙️</div>
         <div style="display:flex;align-items:center;gap:0.4em;">
           <h4 style="margin:0;">
-            <a href="https://megalisp.github.io/vaults/shift">Shift</a>
+            <a href="https://megalisp.github.io/vault-shift/index.html">Shift</a>
           </h4>
         </div>
         <div class="vault-desc">Misc &#39;Shift&#39; I&#39;m Doing In Godot - A General Experiments / Case-Studies And Personal Docs..</div>
@@ -612,12 +614,15 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="vault-emoji">⚽</div>
         <div style="display:flex;align-items:center;gap:0.4em;">
           <h4 style="margin:0;">
-            <a href="https://megalisp.github.io/vaults/goli">Goli</a>
+            <a href="https://megalisp.github.io/vault-goli/index.html">Goli</a>
           </h4>
         </div>
         <div class="vault-desc">What I want in a Game-centered Lisp: Documenting Ideas, And Attempts To Implement It In-General.</div>
       </div>
       
+    </div>
+    <div style="margin-top: 1.5rem; text-align: center;">
+      <a href="https://megalisp.github.io/vaults/" class="vaults-wheel-link" style="font-size: 2rem; text-decoration: none;" title="View All Vaults">🛞</a>
     </div>
   </div>
 </section>
